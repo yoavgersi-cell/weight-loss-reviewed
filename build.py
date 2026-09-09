@@ -488,6 +488,24 @@ def stars(score):
     filled = round(score / 2)  # 0-10 -> 0-5
     return "★" * filled + "☆" * (5 - filled)
 
+# Provider logos: drop a file named <slug>.<ext> into assets/logos/ and it is
+# picked up automatically. Falls back to the text name if no logo is present.
+LOGO_EXTS = ["svg", "png", "webp", "jpg", "jpeg"]
+
+def logo_src(slug):
+    for ext in LOGO_EXTS:
+        rel = f"assets/logos/{slug}.{ext}"
+        if os.path.exists(os.path.join(ROOT, rel)):
+            return "/" + rel
+    return None
+
+def logo_img(slug, cls="plogo"):
+    src = logo_src(slug)
+    if not src:
+        return ""
+    name = PROVIDERS[slug]["name"]
+    return f'<img class="{cls}" src="{src}" alt="{name} logo" loading="lazy">'
+
 TIER_MEANING = {"$": "Budget", "$$": "Mid-range", "$$$": "Premium"}
 
 def review_url(slug):  return f"/reviews/{slug}"
@@ -609,7 +627,7 @@ def render_home():
         rows.append(f"""<article class="rowcard{top}">
   <div class="rank">{i}</div>
   <div class="cell cell-main">
-    <div class="provider-name"><a href="{review_url(slug)}">{p['name']}</a> {badge}
+    <div class="provider-name">{logo_img(slug)}<a href="{review_url(slug)}">{p['name']}</a> {badge}
       <span class="tier" title="{TIER_MEANING[p['tier']]}">{p['tier']} · {TIER_MEANING[p['tier']]}</span></div>
     <div class="highlight">{p['highlight']}</div>
     <ul class="bullets">{bullets}</ul>
@@ -704,6 +722,7 @@ def render_review(slug):
 {crumbs([("Home","/"),("Reviews","/reviews"),(p["name"]+" Review", "")])}
 <section class="hero"><div class="wrap narrow">
   <span class="eyebrow">{p['best_for']} · Ranked #{rank} of {len(PROVIDER_ORDER)}</span>
+  {f'<div style="margin:16px 0 8px"><img class="plogo" style="height:46px;max-width:220px" src="{logo_src(slug)}" alt="{p["name"]} logo"></div>' if logo_src(slug) else ''}
   <h1>{p['name']} Review ({YEAR})</h1>
   <div class="meta-line"><span class="chip-score">{p['score']}<span style="font-weight:600;color:var(--muted)">/10</span></span>
     <span class="stars" style="color:var(--accent)">{stars(p['score'])}</span>
@@ -776,6 +795,7 @@ def render_versus(v):
   </div>
   <div class="vs-matchup">
     <div class="vs-col{win_a}">
+      {logo_img(v['a'], cls='plogo plogo-block')}
       <div class="provider-name" style="justify-content:center">{a['name']} {tag_a}</div>
       <div class="score-num">{a['score']}<span style="font-size:1rem;color:var(--muted)">/10</span></div>
       <div class="stars">{stars(a['score'])}</div>
@@ -785,6 +805,7 @@ def render_versus(v):
     </div>
     <div class="vs-mid">VS</div>
     <div class="vs-col{win_b}">
+      {logo_img(v['b'], cls='plogo plogo-block')}
       <div class="provider-name" style="justify-content:center">{b['name']} {tag_b}</div>
       <div class="score-num">{b['score']}<span style="font-size:1rem;color:var(--muted)">/10</span></div>
       <div class="stars">{stars(b['score'])}</div>

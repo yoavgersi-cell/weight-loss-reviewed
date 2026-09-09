@@ -184,6 +184,11 @@ table.cmp tr:last-child td { border-bottom: none; }
 /* score chip inline */
 .chip-score { display: inline-flex; align-items: baseline; gap: 4px; font-weight: 900; color: var(--brand-dark); }
 
+/* provider logos */
+.plogo { height: 30px; width: auto; max-width: 150px; object-fit: contain; vertical-align: middle; }
+.plogo-block { display: block; height: 46px; max-width: 200px; margin: 0 auto 12px; }
+.plogo-sm { height: 22px; max-width: 120px; }
+
 /* article body */
 .article-body { font-size: 1.06rem; color: var(--ink-soft); }
 .article-body h2 { color: var(--ink); }
