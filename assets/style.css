@@ -107,6 +107,14 @@ p { margin: 0 0 1em; }
 .hero-flag .dot { width: 7px; height: 7px; border-radius: 50%; background: #6ee7b7; box-shadow: 0 0 0 3px rgba(110,231,183,.3); }
 .hero h1 { color: #fff; max-width: 15ch; }
 .hero p.lede { font-size: 1.16rem; color: rgba(255,255,255,.92); max-width: 60ch; margin-bottom: 20px; }
+/* home hero: fixed 300px band, H1 one line + subhead max 2 lines */
+.hero-home .wrap { min-height: 300px; display: flex; flex-direction: column; justify-content: center;
+  gap: 14px; padding-top: 20px; padding-bottom: 20px; }
+.hero-home .hero-flag { margin-bottom: 0; align-self: flex-start; }
+.hero-home h1 { max-width: none; margin: 0; font-size: clamp(1.85rem, 3.1vw, 2.65rem); white-space: nowrap; }
+.hero-home p.lede { margin: 0; max-width: 64ch; display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 760px) { .hero-home h1 { white-space: normal; } }
 .hero-trust { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 22px; }
 .hero-trust span { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; color: rgba(255,255,255,.92); font-weight: 600; }
 .hero-trust svg { width: 18px; height: 18px; flex: none; }

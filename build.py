@@ -926,15 +926,10 @@ def render_home():
     )
 
     body = f"""
-<section class="hero"><div class="wrap">
+<section class="hero hero-home"><div class="wrap">
   <span class="hero-flag"><span class="dot"></span> Updated {UPDATED} · Independently reviewed</span>
-  <h1>Compare the best online weight-loss programs</h1>
-  <p class="lede">We put {len(PROVIDER_ORDER)} GLP-1 programs through the same scoring — clinician support, medication access, value and transparency — so you can find the right fit in minutes, not weeks.</p>
-  <div class="hero-trust">
-    <span>{icon('shield', size=18)} Independent &amp; unbiased scoring</span>
-    <span>{icon('user-check', size=18)} Clinician-informed reviews</span>
-    <span>{icon('scale', size=18)} Transparent methodology</span>
-  </div>
+  <h1>The best online weight-loss programs</h1>
+  <p class="lede">We score every GLP-1 program the same way — so you can compare the top online providers and find your fit in minutes.</p>
 </div></section>
 
 <div class="layout">
