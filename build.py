@@ -28,8 +28,8 @@ YEAR = TODAY.year
 AFFILIATE_LINKS = {
     "embody":   "#",
     "ro":       "https://ro.co",
-    "altarex":  "#",
-    "trimarex": "#",
+    "altrx":  "#",
+    "trimrx": "#",
     "bmimd":    "#",
 }
 
@@ -39,7 +39,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 # Providers  (ranking = list order in PROVIDER_ORDER)
 # scores are editorial (our rating, 0-10). price_tier is a relative indicator.
 # --------------------------------------------------------------------------
-PROVIDER_ORDER = ["embody", "ro", "altarex", "trimarex", "bmimd"]
+PROVIDER_ORDER = ["embody", "ro", "altrx", "trimrx", "bmimd"]
 
 PROVIDERS = {
     "embody": {
@@ -98,8 +98,8 @@ PROVIDERS = {
         "verdict": "Ro is the safe, established choice. If brand trust and smooth logistics matter more to you than squeezing out the lowest price, it's hard to go wrong. You pay a bit more for the polish and the name — for a lot of people that trade is worth it.",
         "summary": "Ro is a well-known national telehealth company that offers a structured weight-management program including GLP-1 medications. It leans on scale — a large clinician network, mature pharmacy logistics, and a refined app — to deliver a dependable, if pricier, experience.",
     },
-    "altarex": {
-        "name": "Altarex",
+    "altrx": {
+        "name": "AltRx",
         "score": 8.6,
         "tier": "$",
         "best_for": "Best value",
@@ -123,11 +123,11 @@ PROVIDERS = {
             "Lighter ongoing coaching than the premium programs",
             "Support is mostly async messaging rather than scheduled visits",
         ],
-        "verdict": "Altarex wins on price and speed. If you already know you want a compounded GLP-1 and don't need hand-holding, it's the most cost-effective door in. Just go in knowing the support is leaner — this is value-first, not coaching-first.",
-        "summary": "Altarex is a value-focused telehealth program built around compounded GLP-1 medications and a fast, streamlined intake. It trades some of the coaching depth of premium programs for a notably lower monthly cost and quick time-to-start.",
+        "verdict": "AltRx wins on price and speed. If you already know you want a compounded GLP-1 and don't need hand-holding, it's the most cost-effective door in. Just go in knowing the support is leaner — this is value-first, not coaching-first.",
+        "summary": "AltRx is a value-focused telehealth program built around compounded GLP-1 medications and a fast, streamlined intake. It trades some of the coaching depth of premium programs for a notably lower monthly cost and quick time-to-start.",
     },
-    "trimarex": {
-        "name": "Trimarex",
+    "trimrx": {
+        "name": "TrimRx",
         "score": 8.4,
         "tier": "$$",
         "best_for": "Best for tirzepatide",
@@ -151,8 +151,8 @@ PROVIDERS = {
             "Narrower focus means fewer options if you'd rather try semaglutide first",
             "App and tracking tools are functional but basic",
         ],
-        "verdict": "Trimarex is the pick when you already want tirzepatide and want a program built around it rather than treating it as an afterthought. If you're undecided between GLP-1 options, a broader program may serve you better — but for tirzepatide specifically, Trimarex knows its lane.",
-        "summary": "Trimarex is a telehealth weight-loss program that specializes in tirzepatide-based plans with flexible titration support. It's a focused option for members who have already decided tirzepatide is the route they want to take.",
+        "verdict": "TrimRx is the pick when you already want tirzepatide and want a program built around it rather than treating it as an afterthought. If you're undecided between GLP-1 options, a broader program may serve you better — but for tirzepatide specifically, TrimRx knows its lane.",
+        "summary": "TrimRx is a telehealth weight-loss program that specializes in tirzepatide-based plans with flexible titration support. It's a focused option for members who have already decided tirzepatide is the route they want to take.",
     },
     "bmimd": {
         "name": "BMIMD",
@@ -206,9 +206,9 @@ VERSUS = [
         ],
     },
     {
-        "a": "embody", "b": "altarex", "winner": "embody",
+        "a": "embody", "b": "altrx", "winner": "embody",
         "intro": "The premium all-rounder versus the budget champion. This one comes down to a simple question: are you paying for support, or paying as little as possible?",
-        "verdict": "If money is the deciding factor, Altarex wins outright — it's cheaper and faster to start. But Embody is the better program: you get real clinician time and coaching that Altarex simply doesn't include at its price. Pay less and self-manage with Altarex, or pay more and be supported with Embody.",
+        "verdict": "If money is the deciding factor, AltRx wins outright — it's cheaper and faster to start. But Embody is the better program: you get real clinician time and coaching that AltRx simply doesn't include at its price. Pay less and self-manage with AltRx, or pay more and be supported with Embody.",
         "pick_a": "You want clinician access and coaching, and will pay a bit more for it.",
         "pick_b": "You want the lowest entry price and are comfortable self-managing.",
         "rows": [
@@ -220,9 +220,9 @@ VERSUS = [
         ],
     },
     {
-        "a": "embody", "b": "trimarex", "winner": "embody",
+        "a": "embody", "b": "trimrx", "winner": "embody",
         "intro": "A broad, do-everything program against a tirzepatide specialist. The right answer depends on whether you've already picked your medication.",
-        "verdict": "Embody is the better all-around program and the safer default if you're still weighing your options. But if you've specifically decided on tirzepatide, Trimarex's focus and titration support are a genuine advantage. Undecided? Start with Embody. Set on tirzepatide? Trimarex earns a look.",
+        "verdict": "Embody is the better all-around program and the safer default if you're still weighing your options. But if you've specifically decided on tirzepatide, TrimRx's focus and titration support are a genuine advantage. Undecided? Start with Embody. Set on tirzepatide? TrimRx earns a look.",
         "pick_a": "You want flexibility across GLP-1 options and stronger overall support.",
         "pick_b": "You've already decided tirzepatide is your route.",
         "rows": [
@@ -262,9 +262,9 @@ VERSUS = [
         ],
     },
     {
-        "a": "altarex", "b": "trimarex", "winner": "altarex",
-        "intro": "Two mid-market programs that both keep costs sensible. Altarex is the value generalist; Trimarex is the tirzepatide specialist. Here's the split.",
-        "verdict": "Altarex wins on price and speed and is the better default if you just want an affordable GLP-1 start. Trimarex is worth the small step up if tirzepatide specifically is your plan and you want titration support built around it. Budget-first: Altarex. Tirzepatide-first: Trimarex.",
+        "a": "altrx", "b": "trimrx", "winner": "altrx",
+        "intro": "Two mid-market programs that both keep costs sensible. AltRx is the value generalist; TrimRx is the tirzepatide specialist. Here's the split.",
+        "verdict": "AltRx wins on price and speed and is the better default if you just want an affordable GLP-1 start. TrimRx is worth the small step up if tirzepatide specifically is your plan and you want titration support built around it. Budget-first: AltRx. Tirzepatide-first: TrimRx.",
         "pick_a": "You want the lowest cost and a fast, simple start.",
         "pick_b": "You specifically want tirzepatide with titration guidance.",
         "rows": [
@@ -276,9 +276,9 @@ VERSUS = [
         ],
     },
     {
-        "a": "ro", "b": "altarex", "winner": "ro",
+        "a": "ro", "b": "altrx", "winner": "ro",
         "intro": "Premium brand experience versus rock-bottom pricing. This is the clearest 'you get what you pay for' matchup in our lineup.",
-        "verdict": "If budget rules the decision, Altarex is dramatically cheaper and starts faster. If you want the reassurance of an established national brand with mature logistics — and can absorb the higher cost — Ro delivers that. There's no wrong answer; there's only which trade-off you'd rather make.",
+        "verdict": "If budget rules the decision, AltRx is dramatically cheaper and starts faster. If you want the reassurance of an established national brand with mature logistics — and can absorb the higher cost — Ro delivers that. There's no wrong answer; there's only which trade-off you'd rather make.",
         "pick_a": "You value brand trust and polished logistics over price.",
         "pick_b": "You want the lowest possible entry cost.",
         "rows": [
@@ -351,7 +351,7 @@ ARTICLES = [
 
 <div class="callout warn"><h3>A note on very low prices</h3><p>If a quote is far below everyone else, find out why before you celebrate. Ask about the pharmacy, what's included, and what happens at higher doses. Unusually cheap sometimes means something's missing.</p></div>
 
-<p>Want the value-first option? <a href="/reviews/altarex">Altarex</a> was the budget leader in our lineup; if you'd rather trade a little cost for more support, our <a href="/">full comparison</a> lays out the differences.</p>
+<p>Want the value-first option? <a href="/reviews/altrx">AltRx</a> was the budget leader in our lineup; if you'd rather trade a little cost for more support, our <a href="/">full comparison</a> lays out the differences.</p>
 
 <p class="muted"><em>Prices change constantly and vary by provider, dose, and pharmacy. Always confirm the current total cost directly with the provider. This article is general information, not medical or pricing advice.</em></p>
 """,
@@ -406,7 +406,7 @@ ARTICLES = [
   <li><strong>Tolerability.</strong> Some people handle one better than the other. Side effects and how gently you can titrate matter a lot.</li>
   <li><strong>Availability and cost.</strong> Supply and price for a specific product shift over time and can steer the decision.</li>
   <li><strong>Your health profile.</strong> Existing conditions and medications can make one option more appropriate.</li>
-  <li><strong>Program specialization.</strong> Some programs are built around one medication — <a href="/reviews/trimarex">Trimarex</a>, for instance, focuses on tirzepatide.</li>
+  <li><strong>Program specialization.</strong> Some programs are built around one medication — <a href="/reviews/trimrx">TrimRx</a>, for instance, focuses on tirzepatide.</li>
 </ul>
 
 <div class="callout"><h3>How to actually decide</h3><p>Don't pick the molecule from an article — pick a program with a clinician who'll help you choose and adjust. If you're undecided, a broad program keeps both doors open; if you've already settled on tirzepatide, a specialist may serve you better. Our <a href="/">comparison</a> flags which is which.</p></div>

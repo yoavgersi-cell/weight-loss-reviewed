@@ -2,6 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/reviews/altarex", "destination": "/reviews/altrx", "permanent": true },
+    { "source": "/reviews/trimarex", "destination": "/reviews/trimrx", "permanent": true },
+    { "source": "/vs/embody-vs-altarex", "destination": "/vs/embody-vs-altrx", "permanent": true },
+    { "source": "/vs/embody-vs-trimarex", "destination": "/vs/embody-vs-trimrx", "permanent": true },
+    { "source": "/vs/altarex-vs-trimarex", "destination": "/vs/altrx-vs-trimrx", "permanent": true },
+    { "source": "/vs/ro-vs-altarex", "destination": "/vs/ro-vs-altrx", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
