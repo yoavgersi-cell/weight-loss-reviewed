@@ -161,7 +161,7 @@ PROVIDERS = {
         "summary": "TrimRx is a telehealth weight-loss program that specializes in tirzepatide-based plans with flexible titration support. It's a focused option for members who have already decided tirzepatide is the route they want to take.",
     },
     "bmimd": {
-        "name": "BMIMD",
+        "name": "bmiMD",
         "score": 8.2,
         "tier": "$$$",
         "best_for": "Most medical-first",
@@ -185,8 +185,8 @@ PROVIDERS = {
             "Slower, more thorough onboarding — not built for instant starts",
             "Premium pricing and less of a consumer-app feel",
         ],
-        "verdict": "BMIMD is the choice when the medicine matters more than the app. If you have health complexity — or you just want a physician clearly in charge — its thoroughness is reassuring. If you want fast and cheap, look elsewhere; that's not what this program is for.",
-        "summary": "BMIMD takes a physician-led, medical-first approach to weight management. It's one of the most clinically thorough programs we reviewed, which makes it a strong fit for people with complex health needs — at the cost of speed and a higher price point.",
+        "verdict": "bmiMD is the choice when the medicine matters more than the app. If you have health complexity — or you just want a physician clearly in charge — its thoroughness is reassuring. If you want fast and cheap, look elsewhere; that's not what this program is for.",
+        "summary": "bmiMD takes a physician-led, medical-first approach to weight management. It's one of the most clinically thorough programs we reviewed, which makes it a strong fit for people with complex health needs — at the cost of speed and a higher price point.",
     },
     "found": {
         "name": "Found",
@@ -382,7 +382,7 @@ VERSUS = [
     {
         "a": "embody", "b": "bmimd", "winner": "embody",
         "intro": "Consumer-friendly full-service versus a medical-first, physician-led model. Both are strong; they're built for different people.",
-        "verdict": "For most healthy adults who want an effective, well-supported program, Embody is the smoother, better-value experience. BMIMD pulls ahead if you have health complexity — comorbidities, medication interactions, a history that needs careful oversight. Match the program to how medically complex your situation is.",
+        "verdict": "For most healthy adults who want an effective, well-supported program, Embody is the smoother, better-value experience. bmiMD pulls ahead if you have health complexity — comorbidities, medication interactions, a history that needs careful oversight. Match the program to how medically complex your situation is.",
         "pick_a": "You're a straightforward case and want a great consumer experience.",
         "pick_b": "You have health complexity and want a physician clearly in charge.",
         "rows": [
@@ -396,7 +396,7 @@ VERSUS = [
     {
         "a": "ro", "b": "bmimd", "winner": "ro",
         "intro": "Two premium programs, two different philosophies: a polished national platform versus a physician-led medical practice. Both sit at the higher end on price.",
-        "verdict": "Ro is the better pick for a smooth, scaled, brand-backed experience. BMIMD is the better pick if medical depth is the point and you'd trade some polish for a physician's close involvement. Same rough price band — the deciding factor is whether you value logistics or clinical thoroughness more.",
+        "verdict": "Ro is the better pick for a smooth, scaled, brand-backed experience. bmiMD is the better pick if medical depth is the point and you'd trade some polish for a physician's close involvement. Same rough price band — the deciding factor is whether you value logistics or clinical thoroughness more.",
         "pick_a": "You want a big-brand experience with frictionless logistics.",
         "pick_b": "You want maximum medical oversight for a complex situation.",
         "rows": [
