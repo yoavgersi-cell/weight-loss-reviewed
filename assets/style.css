@@ -163,7 +163,7 @@ p { margin: 0 0 1em; }
   border-right: 1px solid var(--line-soft); background: var(--bg-soft); border-radius: var(--radius) 0 0 var(--radius); }
 .rowcard.top .rank { background: var(--brand-tint); color: var(--brand-deep); padding-top: 22px; }
 .logo-cell { display: grid; place-items: center; padding: 20px 16px; border-right: 1px solid var(--line-soft); }
-.logo-cell .plogo { max-height: 46px; max-width: 118px; width: auto; }
+.logo-cell .plogo { height: auto; max-height: 42px; max-width: 118px; width: auto; }
 .cell { padding: 20px 22px; display: flex; flex-direction: column; justify-content: center; }
 .cell-main { gap: 9px; }
 .provider-name { font-weight: 800; font-size: 1.28rem; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

@@ -40,6 +40,17 @@ AFFILIATE_LINKS = {
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
+def _asset_ver():
+    """Fingerprint of the stylesheet, so a CSS change busts the immutable cache."""
+    import hashlib
+    try:
+        with open(os.path.join(ROOT, "assets", "style.css"), "rb") as f:
+            return hashlib.md5(f.read()).hexdigest()[:10]
+    except OSError:
+        return datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+ASSET_VER = _asset_ver()
+
 # --------------------------------------------------------------------------
 # Providers  (ranking = list order in PROVIDER_ORDER)
 # scores are editorial (our rating, 0-10). price_tier is a relative indicator.
@@ -758,7 +769,7 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
-<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/style.css?v={ASSET_VER}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Ctext x='16' y='22' font-size='15' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EWR%3C/text%3E%3C/svg%3E">
 {ld}
 </head>
