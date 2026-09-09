@@ -659,12 +659,45 @@ def versus_url(v):     return f"/vs/{v['a']}-vs-{v['b']}"
 def article_url(a):    return f"/guides/{a['slug']}"
 
 NAV = [
-    ("Rankings", "/"),
+    ("Compare", "/"),
     ("Reviews", "/reviews"),
     ("Comparisons", "/vs"),
-    ("Guides", "/guides"),
-    ("How we score", "/methodology"),
+    ("Articles", "/guides"),
+    ("How We Rank", "/methodology"),
 ]
+
+# Inline icons (Heroicons-style, stroke=currentColor) — keeps everything crisp
+# and theme-colored without external requests.
+_IC = {
+    "check": '<path d="M4.5 12.75l6 6 9-13.5" stroke-width="2"/>',
+    "check-c": '<circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M8.5 12.5l2.5 2.5 4.5-5" stroke-width="2"/>',
+    "shield": '<path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3z" stroke-width="1.8"/><path d="M9 12l2 2 4-4" stroke-width="1.8"/>',
+    "lock": '<rect x="5" y="11" width="14" height="9" rx="2" stroke-width="1.8"/><path d="M8 11V8a4 4 0 018 0v3" stroke-width="1.8"/>',
+    "scale": '<path d="M12 4v16M7 20h10M6 8h12M6 8l-3 6a3 3 0 006 0L6 8zm12 0l-3 6a3 3 0 006 0l-3-6z" stroke-width="1.7"/>',
+    "clipboard": '<rect x="5" y="5" width="14" height="16" rx="2" stroke-width="1.8"/><path d="M9 5V4a1 1 0 011-1h4a1 1 0 011 1v1M9 11h6M9 15h4" stroke-width="1.8"/>',
+    "dollar": '<circle cx="12" cy="12" r="9" stroke-width="1.8"/><path d="M12 7v10M14.5 9.3C14 8.5 13 8 12 8c-1.4 0-2.5.8-2.5 2s1.1 1.8 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2c-1 0-2-.5-2.5-1.3" stroke-width="1.6"/>',
+    "user-check": '<circle cx="9" cy="8" r="3.2" stroke-width="1.8"/><path d="M3.5 20a5.5 5.5 0 0111 0M16 12l2 2 4-4" stroke-width="1.8"/>',
+    "heart": '<path d="M12 20s-7-4.4-9.2-8.5C1.3 8.6 2.7 5.5 6 5.5c2 0 3.2 1.2 4 2.4.8-1.2 2-2.4 4-2.4 3.3 0 4.7 3.1 3.2 6C19 15.6 12 20 12 20z" stroke-width="1.7"/>',
+    "spark": '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" stroke-width="1.6"/>',
+    "chart": '<path d="M4 20V10M10 20V4M16 20v-7M4 20h16" stroke-width="1.9"/>',
+    "badge": '<path d="M12 3l2.1 1.5 2.6-.2 1 2.4 2.2 1.4-.6 2.5.6 2.5-2.2 1.4-1 2.4-2.6-.2L12 21l-2.1-1.5-2.6.2-1-2.4L4.1 16l.6-2.5L4.1 11l2.2-1.4 1-2.4 2.6.2L12 3z" stroke-width="1.5"/><path d="M9 12l2 2 4-4" stroke-width="1.7"/>',
+    "pill": '<rect x="3.5" y="8.5" width="17" height="7" rx="3.5" stroke-width="1.8"/><path d="M12 8.5v7" stroke-width="1.8"/>',
+    "clock": '<circle cx="12" cy="12" r="9" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke-width="1.8"/>',
+    "arrow": '<path d="M5 12h14M13 6l6 6-6 6" stroke-width="2"/>',
+}
+
+def icon(name, cls="", size=24):
+    body = _IC.get(name, "")
+    c = f' class="{cls}"' if cls else ""
+    return (f'<svg{c} viewBox="0 0 24 24" width="{size}" height="{size}" fill="none" '
+            f'stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{body}</svg>')
+
+def score_word(score):
+    if score >= 9.5: return "Exceptional"
+    if score >= 9.0: return "Excellent"
+    if score >= 8.5: return "Great"
+    if score >= 8.0: return "Very good"
+    return "Good"
 
 def header(active=""):
     def link(name, href):
@@ -684,8 +717,13 @@ def footer():
   <div class="foot-grid">
     <div>
       <a class="brand" href="/"><span class="mark">WR</span>Weight&nbsp;Loss&nbsp;<em>Reviewed</em></a>
-      <p>Independent, editorial scoring of online weight-loss programs. We rank what we'd actually recommend to a friend — and we tell you how we score.</p>
+      <p>Independent, editorial scoring of online weight-loss programs. We rank what we'd actually recommend to a friend — and we tell you exactly how we score.</p>
       <p><a href="/methodology">Our scoring methodology →</a></p>
+      <div class="foot-badges">
+        <span>{icon('shield', size=16)} Independent</span>
+        <span>{icon('lock', size=16)} Secure &amp; private</span>
+        <span>{icon('user-check', size=16)} Clinician-informed</span>
+      </div>
     </div>
     <div><h4>Reviews</h4>{review_links}</div>
     <div><h4>Popular guides</h4>{guide_links}<a href="/guides">All guides →</a></div>
@@ -700,7 +738,8 @@ def footer():
 def base_page(title, description, path, body, active="", jsonld="", article_meta=None):
     canonical = SITE["domain"] + (path if path != "/" else "/")
     og_type = "article" if article_meta else "website"
-    ld = f'<script type="application/ld+json">{jsonld}</script>' if jsonld else ""
+    blocks = jsonld if isinstance(jsonld, (list, tuple)) else ([jsonld] if jsonld else [])
+    ld = "".join(f'<script type="application/ld+json">{b}</script>' for b in blocks if b)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -716,7 +755,9 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <meta property="og:site_name" content="{SITE['name']}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<link rel="preconnect" href="{SITE['domain']}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Ctext x='16' y='22' font-size='15' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EWR%3C/text%3E%3C/svg%3E">
 {ld}
@@ -760,88 +801,224 @@ def ld_article(a):
             % (a["title"].replace('"', "'"), a["description"].replace('"', "'"),
                a["date"], a["date"], SITE["name"], SITE["name"]))
 
+# Homepage FAQ — also emitted as FAQPage structured data.
+FAQ = [
+    ("How do online weight-loss programs work?",
+     "You complete a medical intake online, a licensed clinician reviews it (often over a video or structured visit) to decide whether a medication such as a GLP-1 is appropriate and safe for you, and if so a prescription is sent to a pharmacy and delivered to your door. The better programs add coaching and ongoing check-ins on top of the prescription."),
+    ("Who qualifies for a GLP-1 weight-loss medication?",
+     "Eligibility is a clinical decision, but these medications are generally considered for adults with a higher body-mass index, or a slightly lower BMI alongside a weight-related condition. A licensed clinician weighs your full health history, current medications and any contraindications. No legitimate program can promise a prescription before that review."),
+    ("How much do these programs cost?",
+     "It varies widely by provider, medication (branded vs compounded), and your dose. Rather than publish prices that go stale within weeks, we show a relative tier ($–$$$) and link you to each provider's current offer. When comparing, always look at the total monthly cost at your expected maintenance dose — not just the intro price."),
+    ("Is it safe to get weight-loss medication online?",
+     "It can be, when there is a genuine clinical evaluation by a licensed prescriber, clear medication and pharmacy information, and a real way to reach someone about side effects. Be wary of any service that ‘guarantees’ a prescription with no meaningful review. Every program we rank is scored partly on exactly these safety signals."),
+    ("Semaglutide or tirzepatide — which is better?",
+     "Neither is universally better; they work in related but different ways, and the right choice depends on your tolerance, health profile, availability and your clinician's judgment. Some programs specialize in one. If you're undecided, a broad program keeps both options open."),
+    ("Will I regain weight if I stop?",
+     "Because these medications work on appetite regulation, stopping without a plan can bring hunger — and weight — back. That's why we weight ongoing coaching and maintenance support heavily: the programs that help you build habits and taper carefully give you the best shot at keeping results."),
+]
+
+def ld_faq():
+    items = ",".join(
+        '{"@type":"Question","name":"%s","acceptedAnswer":{"@type":"Answer","text":"%s"}}'
+        % (q.replace('"', "'"), a.replace('"', "'"))
+        for q, a in FAQ
+    )
+    return '{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[%s]}' % items
+
 # --------------------------------------------------------------------------
 # Page: Home (comparison chart)
 # --------------------------------------------------------------------------
-def render_home():
-    rows = []
-    for i, slug in enumerate(PROVIDER_ORDER, 1):
-        p = PROVIDERS[slug]
-        top = " top" if i == 1 else ""
-        badge = '<span class="badge-best">Best overall</span>' if i == 1 else ""
-        bullets = "".join(f"<li>{b}</li>" for b in p["bullets"])
-        rows.append(f"""<article class="rowcard{top}">
+def provider_card(slug, i):
+    p = PROVIDERS[slug]
+    top = " top" if i == 1 else ""
+    ribbon = f'<div class="ribbon">{icon("badge", size=15)} Editor\'s Choice</div>' if i == 1 else ""
+    logo = logo_img(slug) or f'<span style="font-weight:800;color:var(--ink)">{p["name"]}</span>'
+    lis = [f'<li class="offer">{icon("spark", size=16)}{p["highlight"]}</li>']
+    lis += [f'<li>{icon("check", size=16)}{b}</li>' for b in p["bullets"]]
+    bullets = "".join(lis)
+    return f"""<article class="rowcard{top}" id="{slug}">
+  {ribbon}
   <div class="rank">{i}</div>
+  <div class="logo-cell">{logo}</div>
   <div class="cell cell-main">
-    <div class="provider-name">{logo_img(slug)}<a href="{review_url(slug)}">{p['name']}</a> {badge}
-      <span class="tier" title="{TIER_MEANING[p['tier']]}">{p['tier']} · {TIER_MEANING[p['tier']]}</span></div>
-    <div class="highlight">{p['highlight']}</div>
+    <div class="provider-name"><a href="{review_url(slug)}">{p['name']}</a> <span class="best-tag">{p['best_for']}</span></div>
+    <div class="trust-inline"><span class="verified">{icon('check-c', size=15)} Independently reviewed</span>
+      <span class="sep">•</span> <a href="{review_url(slug)}">Read our full review</a>
+      <span class="sep">•</span> {p['tier']} · {TIER_MEANING[p['tier']]}</div>
     <ul class="bullets">{bullets}</ul>
   </div>
-  <div class="cell cell-score">
-    <div class="score-num">{p['score']}<span>/10</span></div>
-    <div class="stars">{stars(p['score'])}</div>
-    <div class="score-label">Editorial score</div>
-  </div>
-  <div class="cell cell-cta">
-    {cta(slug)}
+  <div class="aside-cell">
+    <div class="score-badge"><div class="score-num">{p['score']}<span>/10</span></div><div class="score-word">{score_word(p['score'])}</div></div>
+    <div class="stars-row">{stars(p['score'])}</div>
+    {cta(slug, label='View Plans', cls='btn btn-primary btn-block')}
     <a class="btn btn-ghost btn-sm btn-block" href="{review_url(slug)}">Read review</a>
+    <div class="aside-note">Editor rating {p['score']}/10</div>
   </div>
-</article>""")
-    chart = "\n".join(rows)
+</article>"""
 
+def sidebar():
+    top = PROVIDER_ORDER[0]; p = PROVIDERS[top]
+    mini = "".join(
+        f'<li><span class="mr-num">{i}</span><span class="mr-name">{PROVIDERS[s]["name"]}</span>'
+        f'<span class="mr-score">{PROVIDERS[s]["score"]}</span></li>'
+        for i, s in enumerate(PROVIDER_ORDER[:5], 1))
+    return f"""<aside class="sidebar">
+  <div class="widget widget-choice">
+    <div class="wc-head">{icon('badge', size=16)} Editor's Choice</div>
+    <div class="wc-body">
+      {logo_img(top, cls='plogo plogo-block')}
+      <div class="score-num">{p['score']}<span>/10</span></div>
+      <div class="stars-row">{stars(p['score'])}</div>
+      <p class="muted" style="font-size:.87rem;margin:.5em 0 1.1em">{p['best_for']} — our top pick for {YEAR}.</p>
+      {cta(top, label='View Plans', cls='btn btn-primary btn-block')}
+      <a class="btn btn-ghost btn-sm btn-block" href="{review_url(top)}" style="margin-top:9px">Read review</a>
+    </div>
+  </div>
+  <div class="widget widget-pad">
+    <h4>Why trust us</h4>
+    <ul class="trust-list">
+      <li>{icon('shield')}<span><b>Independent</b>We rank on merit — commissions never move a score.</span></li>
+      <li>{icon('user-check')}<span><b>Clinician-informed</b>Scored on real clinical support, not just price.</span></li>
+      <li>{icon('scale')}<span><b>Transparent</b>See exactly <a href="/methodology">how we score</a>.</span></li>
+    </ul>
+  </div>
+  <div class="widget widget-pad">
+    <h4>Top 5 right now</h4>
+    <ul class="mini-rank">{mini}</ul>
+  </div>
+  <div class="widget widget-secure widget-pad">
+    <div class="ws-row">{icon('lock')}<div><b>Secure &amp; private</b><p>Encrypted HTTPS throughout. We never sell your personal information.</p></div></div>
+  </div>
+  <!-- PROMO IMAGE SLOT: drop a provider banner <img> here when ready -->
+</aside>"""
+
+def render_home():
+    cards = "\n".join(provider_card(s, i) for i, s in enumerate(PROVIDER_ORDER, 1))
     vs_cards = "".join(
         f'<a class="post-card" href="{versus_url(v)}"><div class="thumb"></div><div class="pc-body">'
-        f'<h3>{PROVIDERS[v["a"]]["name"]} vs {PROVIDERS[v["b"]]["name"]}</h3>'
-        f'<p>{PROVIDERS[v["a"]]["name"]} scores {PROVIDERS[v["a"]]["score"]}, {PROVIDERS[v["b"]]["name"]} scores {PROVIDERS[v["b"]]["score"]}. See who wins and why.</p>'
+        f'<span class="tag">Comparison</span><h3>{PROVIDERS[v["a"]]["name"]} vs {PROVIDERS[v["b"]]["name"]}</h3>'
+        f'<p>Scores {PROVIDERS[v["a"]]["score"]} vs {PROVIDERS[v["b"]]["score"]} — see who wins and why.</p>'
         f'<span class="read">Compare →</span></div></a>'
-        for v in VERSUS[:4]
+        for v in VERSUS[:3]
     )
     guide_cards = "".join(
         f'<a class="post-card" href="{article_url(a)}"><div class="thumb"></div><div class="pc-body">'
         f'<span class="tag">{a["tag"]}</span><h3>{a["title"]}</h3><p>{a["description"]}</p>'
-        f'<span class="read">Read guide →</span></div></a>'
+        f'<span class="read">Read article →</span></div></a>'
         for a in ARTICLES[:3]
+    )
+    faq_html = "".join(
+        f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>'
+        for q, a in FAQ
+    )
+    rank_factors = "".join(
+        f'<li>{icon("check", size=20)}<div><b>{n}</b></div></li>'
+        for n in SUBSCORE_ORDER
     )
 
     body = f"""
 <section class="hero"><div class="wrap">
-  <span class="eyebrow">Updated {UPDATED} · {len(PROVIDER_ORDER)} programs scored</span>
-  <h1>The best online weight-loss programs, ranked</h1>
-  <p class="lede">We score every program on the things that actually decide your results — clinician support, medication access, value and transparency — so you can compare them in one scannable chart.</p>
-  <p class="updated">Independent editorial rankings · <a href="/methodology">how we score</a></p>
+  <span class="hero-flag"><span class="dot"></span> Updated {UPDATED} · Independently reviewed</span>
+  <h1>Compare the best online weight-loss programs</h1>
+  <p class="lede">We put {len(PROVIDER_ORDER)} GLP-1 programs through the same scoring — clinician support, medication access, value and transparency — so you can find the right fit in minutes, not weeks.</p>
+  <div class="hero-trust">
+    <span>{icon('shield', size=18)} Independent &amp; unbiased scoring</span>
+    <span>{icon('user-check', size=18)} Clinician-informed reviews</span>
+    <span>{icon('scale', size=18)} Transparent methodology</span>
+  </div>
 </div></section>
 
-<div class="wrap">
-  <div class="disclosure-note">We may earn a commission from links on this page. It never affects our scores. <a href="/disclosure">Learn more</a>.</div>
-  <div class="chart">{chart}</div>
-  <p class="muted center" style="font-size:.85rem">Scores are our editorial rating. Price tiers ($–$$$) are relative indicators — always check the provider for current pricing.</p>
+<div class="layout">
+  <main class="main-col">
+    <div class="chart-head"><h2>Top {len(PROVIDER_ORDER)} programs, ranked</h2><span class="muted" style="font-size:.9rem">Editor-scored · {UPDATED}</span></div>
+    <div class="disclosure-note">{icon('badge', size=16)} <span>We may earn a commission when you sign up through our links — at no cost to you, and with no effect on our scores. <a href="/disclosure">How this works</a>.</span></div>
+    <div class="chart">{cards}</div>
+    <p class="muted" style="font-size:.85rem;margin-top:16px">Scores are our independent editorial rating out of 10. Price tiers ($–$$$) are relative indicators — always confirm current pricing with the provider.</p>
+  </main>
+  {sidebar()}
 </div>
 
-<section class="section-alt section-pad"><div class="wrap">
-  <h2 style="margin-top:0">Head-to-head comparisons</h2>
-  <p class="lead">Can't decide between two? These break the matchup down to a clear verdict.</p>
-  <div class="post-grid">{vs_cards}</div>
-  <p><a class="btn btn-ghost" href="/vs">See all comparisons →</a></p>
+<section class="section section-blue"><div class="wrap">
+  <div class="sec-head center" style="margin:0 auto 8px"><span class="eyebrow-2">Start here</span><h2>How to choose an online weight-loss program</h2></div>
+  <p class="lead center" style="max-width:680px;margin:0 auto">The medication is often the same from program to program. What actually decides your results — and your bill — is everything around it. Here's what matters most.</p>
+  <div class="info-grid">
+    <div class="info-card"><div class="ic-ico">{icon('heart')}</div><h3>Why consider one?</h3>
+      <p>Modern GLP-1 medications, paired with coaching, have made real weight loss achievable for many people who struggled with diet and exercise alone. A good program combines the medication with the support to make it stick.</p></div>
+    <div class="info-card"><div class="ic-ico">{icon('user-check')}</div><h3>Who is it for?</h3>
+      <p>Generally, adults with a higher BMI — or a slightly lower BMI plus a weight-related condition. Eligibility is always a clinical decision made by a licensed prescriber based on your full health picture.</p></div>
+    <div class="info-card"><div class="ic-ico">{icon('dollar')}</div><h3>What does it cost?</h3>
+      <p>It depends on the provider, whether the medication is branded or compounded, and your dose. Compare the <em>total</em> monthly cost at your maintenance dose — not just the intro price — and check what's included.</p></div>
+  </div>
 </div></section>
 
-<section class="section-pad"><div class="wrap">
-  <h2 style="margin-top:0">Guides worth reading first</h2>
+<section class="section"><div class="wrap">
+  <div class="prose" style="max-width:820px">
+    <span class="eyebrow-2">Eligibility</span>
+    <h2>Who qualifies for a GLP-1 weight-loss program?</h2>
+    <p>There's no self-serve checklist that makes you eligible — a licensed clinician decides. That said, these are the factors that typically come into the conversation:</p>
+    <ul class="check-grid">
+      <li>{icon('check-c', size=20)} A body-mass index in the range clinicians treat for weight</li>
+      <li>{icon('check-c', size=20)} Or a lower BMI with a weight-related condition</li>
+      <li>{icon('check-c', size=20)} No contraindication to the specific medication</li>
+      <li>{icon('check-c', size=20)} A full review of your medical history and current meds</li>
+      <li>{icon('check-c', size=20)} Being an adult (programs set their own minimum age)</li>
+      <li>{icon('check-c', size=20)} Willingness to follow up and adjust with your clinician</li>
+    </ul>
+    <div class="callout warn"><h3>{icon('shield')} This is not medical advice</h3><p>Whether a weight-loss medication is right and safe for you is a decision for you and a licensed clinician — not an article. GLP-1 medications are prescription drugs with real risks and aren't appropriate for everyone. Use our rankings to choose <em>where</em> to get evaluated, not <em>whether</em> to take a medication.</p></div>
+  </div>
+</div></section>
+
+<section class="section section-alt"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow-2">Pricing</span><h2>How much do online weight-loss programs cost?</h2></div>
+  <div class="prose" style="max-width:820px">
+    <p>Prices move constantly and vary by provider, medication and dose, so we show a relative tier rather than a number that's wrong within weeks. Here's what actually drives the total:</p>
+  </div>
+  <div class="stat-strip">
+    <div class="stat"><div class="big">$</div><div class="lbl">Budget — leanest plans, mostly compounded, less coaching</div></div>
+    <div class="stat"><div class="big">$$</div><div class="lbl">Mid-range — balanced medication access and support</div></div>
+    <div class="stat"><div class="big">$$$</div><div class="lbl">Premium — brand-led or physician-heavy, more hand-holding</div></div>
+  </div>
+  <div class="prose" style="max-width:820px">
+    <p>When comparing, put every offer in the same shape: total monthly cost at your expected <strong>maintenance</strong> dose, including membership, visits and shipping. A cheap intro price can balloon at higher doses. We break the numbers down in <a href="/guides/compounded-semaglutide-cost">how much compounded semaglutide costs</a>.</p>
+  </div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow-2">Our method</span><h2>How we rank programs</h2></div>
+  <div class="prose" style="max-width:820px"><p>Every program gets an editorial score out of 10, built from six weighted factors. We weight support and access most heavily, because they're what actually determine whether a program works over time. Commissions never influence a score.</p></div>
+  <ul class="check-grid" style="max-width:820px">{rank_factors}</ul>
+  <p><a class="btn btn-ghost" href="/methodology">Read our full methodology {icon('arrow', size=16)}</a></p>
+</div></section>
+
+<section class="section section-blue"><div class="wrap">
+  <div class="sec-head center" style="margin:0 auto"><span class="eyebrow-2">FAQ</span><h2>Frequently asked questions</h2></div>
+  <div class="faq" style="margin:22px auto 0">{faq_html}</div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <h2>Popular head-to-head comparisons</h2>
+  <p class="lead">Deciding between two? Each comparison ends in a clear verdict.</p>
+  <div class="post-grid">{vs_cards}</div>
+  <p><a class="btn btn-ghost" href="/vs">See all comparisons {icon('arrow', size=16)}</a></p>
+</div></section>
+
+<section class="section section-alt"><div class="wrap">
+  <h2>Articles &amp; guides</h2>
   <p class="lead">Plain-English answers to the questions people ask before they sign up.</p>
   <div class="post-grid">{guide_cards}</div>
-  <p><a class="btn btn-ghost" href="/guides">Browse all guides →</a></p>
+  <p><a class="btn btn-ghost" href="/guides">Browse all articles {icon('arrow', size=16)}</a></p>
 </div></section>
 
 <div class="wrap"><div class="cta-strip">
   <h2>Not sure where to start?</h2>
   <p>Our top overall pick balances real clinician support, flexible medication access and honest pricing.</p>
-  <a class="btn btn-primary" href="{review_url('embody')}">See our #1 pick: Embody →</a>
+  <a class="btn btn-primary btn-lg" href="{review_url(PROVIDER_ORDER[0])}">See our #1 pick: {PROVIDERS[PROVIDER_ORDER[0]]['name']} {icon('arrow', size=16)}</a>
 </div></div>
 """
     return base_page(
-        f"Best Online Weight-Loss Programs ({YEAR}), Ranked & Scored | {SITE['name']}",
-        f"We scored {len(PROVIDER_ORDER)} online weight-loss programs on clinician support, medication access, value and transparency. See the ranked comparison chart.",
-        "/", body, active="/", jsonld=ld_org())
+        f"Best Online Weight-Loss Programs ({YEAR}) — Ranked &amp; Scored | {SITE['name']}",
+        f"We independently scored {len(PROVIDER_ORDER)} online weight-loss programs on clinician support, medication access, value and transparency. Compare the ranked chart.",
+        "/", body, active="/", jsonld=[ld_org(), ld_faq()])
 
 # --------------------------------------------------------------------------
 # Page: Provider review
@@ -867,31 +1044,32 @@ def render_review(slug):
     body = f"""
 {crumbs([("Home","/"),("Reviews","/reviews"),(p["name"]+" Review", "")])}
 <section class="hero"><div class="wrap narrow">
-  <span class="eyebrow">{p['best_for']} · Ranked #{rank} of {len(PROVIDER_ORDER)}</span>
-  {f'<div style="margin:16px 0 8px"><img class="plogo" style="height:46px;max-width:220px" src="{logo_src(slug)}" alt="{p["name"]} logo"></div>' if logo_src(slug) else ''}
+  <span class="hero-flag"><span class="dot"></span> Ranked #{rank} of {len(PROVIDER_ORDER)} · {p['best_for']}</span>
+  {f'<div><span class="hero-logo"><img src="{logo_src(slug)}" alt="{p["name"]} logo"></span></div>' if logo_src(slug) else ''}
   <h1>{p['name']} Review ({YEAR})</h1>
-  <div class="meta-line"><span class="chip-score">{p['score']}<span style="font-weight:600;color:var(--muted)">/10</span></span>
-    <span class="stars" style="color:var(--accent)">{stars(p['score'])}</span>
+  <div class="meta-line"><span class="chip-score">{p['score']}<span style="font-weight:600">/10</span></span>
+    <span class="stars">{stars(p['score'])}</span>
+    <span class="tag">{score_word(p['score'])}</span>
     <span class="tag">{p['tier']} · {TIER_MEANING[p['tier']]}</span>
-    <span class="muted">Updated {UPDATED}</span></div>
+    <span>Updated {UPDATED}</span></div>
   <p class="lede">{p['summary']}</p>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">{cta(slug, cls='btn btn-primary')}
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">{cta(slug, label=f"View {p['name']} plans", cls='btn btn-primary')}
     <a class="btn btn-ghost" href="#scorecard">Jump to scorecard</a></div>
 </div></section>
 
-<div class="wrap narrow article-body">
-  <div class="disclosure-note">We may earn a commission if you sign up through our links — at no cost to you, and with no effect on this score. <a href="/disclosure">Details</a>.</div>
+<div class="wrap narrow article-body" style="padding-top:26px">
+  <div class="disclosure-note">{icon('badge', size=16)} <span>We may earn a commission if you sign up through our links — at no cost to you, and with no effect on this score. <a href="/disclosure">Details</a>.</span></div>
 
-  <div class="callout"><h3>Our verdict</h3><p>{p['verdict']}</p>
-    <p style="margin-bottom:0">{cta(slug, cls='btn btn-primary btn-sm')}</p></div>
+  <div class="callout"><h3>{icon('badge')} Our verdict</h3><p>{p['verdict']}</p>
+    <p style="margin-bottom:0">{cta(slug, label=f"View {p['name']} plans", cls='btn btn-primary btn-sm')}</p></div>
 
   <h2 id="scorecard">Scorecard</h2>
   <div class="scorecard">{sc_rows}</div>
 
   <h2>Pros &amp; cons</h2>
   <div class="proscons">
-    <div class="box"><h4>👍 What we liked</h4><ul class="pros">{pros}</ul></div>
-    <div class="box"><h4>👎 What to weigh</h4><ul class="cons">{cons}</ul></div>
+    <div class="box pros"><h4>{icon('check-c', size=20)} What we liked</h4><ul class="pros">{pros}</ul></div>
+    <div class="box cons"><h4>What to weigh</h4><ul class="cons">{cons}</ul></div>
   </div>
 
   <h2>Who it's for</h2>
@@ -905,7 +1083,7 @@ def render_review(slug):
   </div>
 </div>
 
-<section class="section-alt section-pad"><div class="wrap">
+<section class="section section-alt"><div class="wrap">
   <h2 style="margin-top:0">{p['name']} compared</h2>
   <div class="post-grid">{rel_cards}</div>
 </div></section>
@@ -925,63 +1103,68 @@ def render_versus(v):
     tag_a = '<span class="badge-best">Winner</span>' if v["winner"] == v["a"] else ""
     tag_b = '<span class="badge-best">Winner</span>' if v["winner"] == v["b"] else ""
 
+    winner = PROVIDERS[v["winner"]]["name"]
+    flag_a = f'<div class="win-flag">{icon("badge", size=13)} Winner</div>' if v["winner"] == v["a"] else ""
+    flag_b = f'<div class="win-flag">{icon("badge", size=13)} Winner</div>' if v["winner"] == v["b"] else ""
+
     trows = ""
-    trows += f'<tr><td class="attr">Editorial score</td><td><strong>{a["score"]}/10</strong></td><td><strong>{b["score"]}/10</strong></td></tr>'
+    trows += f'<tr><td class="attr">Editor rating</td><td><strong>{a["score"]}/10</strong> · {score_word(a["score"])}</td><td><strong>{b["score"]}/10</strong> · {score_word(b["score"])}</td></tr>'
     trows += f'<tr><td class="attr">Best for</td><td>{a["best_for"]}</td><td>{b["best_for"]}</td></tr>'
     for attr, va, vb in v["rows"]:
         trows += f'<tr><td class="attr">{attr}</td><td>{va}</td><td>{vb}</td></tr>'
 
     body = f"""
-{crumbs([("Home","/"),("Comparisons","/vs"),(f'{a["name"]} vs {b["name"]}', "")])}
-<section class="hero"><div class="wrap">
-  <div class="vs-head">
-    <span class="eyebrow">Head-to-head · Updated {UPDATED}</span>
-    <h1>{a['name']} vs {b['name']}</h1>
-    <p class="lede" style="margin:0 auto">{v['intro']}</p>
-  </div>
+<section class="vs-hero"><div class="wrap">
+  {crumbs([("Home","/"),("Comparisons","/vs"),(f'{a["name"]} vs {b["name"]}', "")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  <span class="flag">{icon('scale', size=15)} Head-to-head · Updated {UPDATED}</span>
+  <h1>{a['name']} vs {b['name']}</h1>
+  <p class="lede">{v['intro']}</p>
+</div></section>
+
+<div class="wrap">
   <div class="vs-matchup">
     <div class="vs-col{win_a}">
+      {flag_a}
       {logo_img(v['a'], cls='plogo plogo-block')}
-      <div class="provider-name" style="justify-content:center">{a['name']} {tag_a}</div>
+      <div class="provider-name" style="justify-content:center;font-size:1.15rem">{a['name']}</div>
       <div class="score-num">{a['score']}<span style="font-size:1rem;color:var(--muted)">/10</span></div>
       <div class="stars">{stars(a['score'])}</div>
-      <p class="muted" style="margin:.4em 0 1em">{a['best_for']} · {a['tier']}</p>
-      {cta(v['a'], cls='btn btn-primary btn-sm btn-block')}
+      <p class="muted" style="margin:.4em 0 1.1em;font-size:.9rem">{a['best_for']} · {a['tier']}</p>
+      {cta(v['a'], label='View Plans', cls='btn btn-primary btn-sm btn-block')}
       <a class="btn btn-ghost btn-sm btn-block" href="{review_url(v['a'])}" style="margin-top:8px">Full review</a>
     </div>
-    <div class="vs-mid">VS</div>
+    <div class="vs-mid"><span>VS</span></div>
     <div class="vs-col{win_b}">
+      {flag_b}
       {logo_img(v['b'], cls='plogo plogo-block')}
-      <div class="provider-name" style="justify-content:center">{b['name']} {tag_b}</div>
+      <div class="provider-name" style="justify-content:center;font-size:1.15rem">{b['name']}</div>
       <div class="score-num">{b['score']}<span style="font-size:1rem;color:var(--muted)">/10</span></div>
       <div class="stars">{stars(b['score'])}</div>
-      <p class="muted" style="margin:.4em 0 1em">{b['best_for']} · {b['tier']}</p>
-      {cta(v['b'], cls='btn btn-primary btn-sm btn-block')}
+      <p class="muted" style="margin:.4em 0 1.1em;font-size:.9rem">{b['best_for']} · {b['tier']}</p>
+      {cta(v['b'], label='View Plans', cls='btn btn-primary btn-sm btn-block')}
       <a class="btn btn-ghost btn-sm btn-block" href="{review_url(v['b'])}" style="margin-top:8px">Full review</a>
     </div>
   </div>
-</div></section>
+</div>
 
-<div class="wrap narrow article-body">
-  <div class="disclosure-note">We may earn a commission from links on this page. It never affects our verdict. <a href="/disclosure">More</a>.</div>
+<div class="wrap narrow article-body" style="padding-top:34px">
+  <div class="callout"><h3>{icon('badge')} The verdict: {winner} takes it</h3><p>{v['verdict']}</p></div>
 
-  <h2>Side-by-side</h2>
+  <h2>Side-by-side comparison</h2>
   <div class="table-scroll"><table class="cmp">
     <thead><tr><th>&nbsp;</th><th>{a['name']}</th><th>{b['name']}</th></tr></thead>
     <tbody>{trows}</tbody>
   </table></div>
 
-  <div class="callout"><h3>Our verdict</h3><p>{v['verdict']}</p></div>
-
   <h2>Which should you pick?</h2>
   <div class="proscons">
-    <div class="box"><h4>Choose {a['name']} if…</h4><p style="margin:0;color:var(--ink-soft)">{v['pick_a']}</p>
-      <p style="margin-top:14px">{cta(v['a'], cls='btn btn-primary btn-sm')}</p></div>
-    <div class="box"><h4>Choose {b['name']} if…</h4><p style="margin:0;color:var(--ink-soft)">{v['pick_b']}</p>
-      <p style="margin-top:14px">{cta(v['b'], cls='btn btn-primary btn-sm')}</p></div>
+    <div class="box pros"><h4>Choose {a['name']} if…</h4><p style="margin:0 0 14px;color:var(--ink-soft)">{v['pick_a']}</p>
+      {cta(v['a'], label=f"View {a['name']} plans", cls='btn btn-primary btn-sm')}</div>
+    <div class="box pros"><h4>Choose {b['name']} if…</h4><p style="margin:0 0 14px;color:var(--ink-soft)">{v['pick_b']}</p>
+      {cta(v['b'], label=f"View {b['name']} plans", cls='btn btn-primary btn-sm')}</div>
   </div>
 
-  <p class="muted">Both scores are our editorial ratings, based on the same <a href="/methodology">methodology</a>. Pricing tiers are relative — confirm current prices with each provider. Nothing here is medical advice.</p>
+  <div class="callout"><h3>{icon('shield')} Why you can trust this comparison</h3><p>Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider, and it changes nothing about the scores or the verdict. Pricing tiers are relative — confirm current prices with each provider. Nothing here is medical advice.</p></div>
 </div>
 """
     ttl = f"{a['name']} vs {b['name']} ({YEAR}): Which Is Better? | {SITE['name']}"
@@ -1034,13 +1217,13 @@ def render_reviews_index():
   <h3>{p['name']} <span style="color:var(--muted);font-weight:700">— {p['score']}/10</span></h3>
   <p>{p['highlight']}</p><span class="read">Read review →</span></div></a>"""
     body = f"""
-{crumbs([("Home","/"),("Reviews","")])}
 <section class="hero"><div class="wrap">
-  <span class="eyebrow">{len(PROVIDER_ORDER)} in-depth reviews</span>
+  {crumbs([("Home","/"),("Reviews","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  <span class="hero-flag">{len(PROVIDER_ORDER)} in-depth, independent reviews</span>
   <h1>Online weight-loss program reviews</h1>
-  <p class="lede">Independent, scored reviews of each program — the good, the trade-offs, and who it's really for.</p>
+  <p class="lede">Independently scored reviews of each program — the good, the trade-offs, and who it's really for.</p>
 </div></section>
-<div class="wrap"><div class="post-grid" style="margin-top:26px">{cards}</div></div>
+<section class="section"><div class="wrap"><div class="post-grid">{cards}</div></div></section>
 """
     return base_page(f"Online Weight-Loss Program Reviews ({YEAR}) | {SITE['name']}",
                      "In-depth, independently scored reviews of the top online weight-loss programs, including pros, cons and who each is best for.",
@@ -1055,13 +1238,13 @@ def render_versus_index():
   <p>{a['name']} ({a['score']}) vs {b['name']} ({b['score']}). {v['intro'][:90]}…</p>
   <span class="read">See the verdict →</span></div></a>"""
     body = f"""
-{crumbs([("Home","/"),("Comparisons","")])}
 <section class="hero"><div class="wrap">
-  <span class="eyebrow">{len(VERSUS)} head-to-head matchups</span>
+  {crumbs([("Home","/"),("Comparisons","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  <span class="hero-flag">{len(VERSUS)} head-to-head matchups</span>
   <h1>Weight-loss program comparisons</h1>
   <p class="lede">Deciding between two programs? Each comparison breaks the matchup down to a clear, honest verdict.</p>
 </div></section>
-<div class="wrap"><div class="post-grid" style="margin-top:26px">{cards}</div></div>
+<section class="section"><div class="wrap"><div class="post-grid">{cards}</div></div></section>
 """
     return base_page(f"Weight-Loss Program Comparisons: Head-to-Head ({YEAR}) | {SITE['name']}",
                      "Side-by-side comparisons of the top online weight-loss programs — scores, pricing tiers and a clear verdict on each matchup.",
@@ -1072,15 +1255,15 @@ def render_guides_index():
     for a in ARTICLES:
         cards += f"""<a class="post-card" href="{article_url(a)}"><div class="thumb"></div><div class="pc-body">
   <span class="tag">{a['tag']}</span><h3>{a['title']}</h3><p>{a['description']}</p>
-  <span class="read">Read guide →</span></div></a>"""
+  <span class="read">Read article →</span></div></a>"""
     body = f"""
-{crumbs([("Home","/"),("Guides","")])}
 <section class="hero"><div class="wrap">
-  <span class="eyebrow">{len(ARTICLES)} guides</span>
-  <h1>Weight-loss guides</h1>
+  {crumbs([("Home","/"),("Articles","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  <span class="hero-flag">{len(ARTICLES)} articles &amp; guides</span>
+  <h1>Weight-loss articles &amp; guides</h1>
   <p class="lede">Plain-English answers to the questions people actually ask before choosing a GLP-1 program.</p>
 </div></section>
-<div class="wrap"><div class="post-grid" style="margin-top:26px">{cards}</div></div>
+<section class="section"><div class="wrap"><div class="post-grid">{cards}</div></div></section>
 """
     return base_page(f"Weight-Loss Guides & Answers ({YEAR}) | {SITE['name']}",
                      "Clear, practical guides on GLP-1 programs, costs, prescriptions and how to choose a legitimate online weight-loss clinic.",
@@ -1100,14 +1283,14 @@ def render_methodology():
     ]
     rows = "".join(f'<tr><td class="attr">{n}</td><td>{d}</td></tr>' for n, d in weights)
     body = f"""
-{crumbs([("Home","/"),("How we score","")])}
 <section class="hero"><div class="wrap narrow">
-  <span class="eyebrow">Editorial standards</span>
+  {crumbs([("Home","/"),("How We Rank","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  <span class="hero-flag">Editorial standards</span>
   <h1>How we score weight-loss programs</h1>
   <p class="lede">Our rankings are opinions, but they're not arbitrary. Here's exactly what we measure and how we keep it honest.</p>
 </div></section>
-<div class="wrap narrow article-body">
-  <h2>What we score</h2>
+<div class="wrap narrow article-body" style="padding-top:26px">
+  <h2 style="margin-top:0">What we score</h2>
   <p>Every program gets an overall score out of 10, built from six sub-scores. We weight support and access most heavily, because they're what actually determine whether a program works for real people over time.</p>
   <div class="table-scroll"><table class="cmp"><thead><tr><th>Factor</th><th>What it captures</th></tr></thead><tbody>{rows}</tbody></table></div>
 
@@ -1133,13 +1316,13 @@ def render_methodology():
 
 def render_about():
     body = f"""
-{crumbs([("Home","/"),("About","")])}
 <section class="hero"><div class="wrap narrow">
-  <span class="eyebrow">About us</span>
+  {crumbs([("Home","/"),("About","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  <span class="hero-flag">About us</span>
   <h1>Why Weight Loss Reviewed exists</h1>
   <p class="lede">Choosing an online weight-loss program is confusing on purpose. We cut through it.</p>
 </div></section>
-<div class="wrap narrow article-body">
+<div class="wrap narrow article-body" style="padding-top:26px">
   <p>The online weight-loss market exploded, and the marketing got very good at making every program look identical and every promise look guaranteed. It's genuinely hard to tell a careful, clinician-led program from one that's just moving product.</p>
   <p>Weight Loss Reviewed is our attempt to fix that. We score programs on the things that actually matter — real clinical support, medication access, honest pricing and transparency — and we publish <a href="/methodology">exactly how we do it</a>. Our goal is simple: recommend what we'd tell a friend to use.</p>
   <h2>How we make money</h2>
@@ -1178,10 +1361,10 @@ def render_disclosure():
 
 def render_404():
     body = f"""<div class="wrap narrow" style="padding:80px 20px;text-align:center">
-  <span class="eyebrow">404</span>
-  <h1>Page not found</h1>
-  <p class="lead">That page moved or never existed. Try the <a href="/">rankings</a>, our <a href="/reviews">reviews</a>, or the <a href="/guides">guides</a>.</p>
-  <p><a class="btn btn-primary" href="/">Back to the rankings →</a></p>
+  <span class="eyebrow-2">Error 404</span>
+  <h1 style="margin-top:8px">Page not found</h1>
+  <p class="lead">That page moved or never existed. Try the <a href="/">rankings</a>, our <a href="/reviews">reviews</a>, or the <a href="/guides">articles</a>.</p>
+  <p><a class="btn btn-primary" href="/">Back to the rankings {icon('arrow', size=16)}</a></p>
 </div>"""
     return base_page(f"Page not found | {SITE['name']}", "Page not found.", "/404", body)
 
