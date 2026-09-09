@@ -826,6 +826,10 @@ FAQ = [
      "Neither is universally better; they work in related but different ways, and the right choice depends on your tolerance, health profile, availability and your clinician's judgment. Some programs specialize in one. If you're undecided, a broad program keeps both options open."),
     ("Will I regain weight if I stop?",
      "Because these medications work on appetite regulation, stopping without a plan can bring hunger — and weight — back. That's why we weight ongoing coaching and maintenance support heavily: the programs that help you build habits and taper carefully give you the best shot at keeping results."),
+    ("Can I use insurance for an online program?",
+     "Sometimes. Coverage for GLP-1 medications varies a lot by plan and by whether the drug is branded or compounded. Some programs help you check and navigate insurance; many members pay out of pocket, which is part of why compounded options are popular. Check current coverage with the provider and your insurer."),
+    ("How is this different from seeing my own doctor?",
+     "The medicine and the need for a prescription are the same — the difference is convenience and structure. Online programs handle the visit, prescription, pharmacy and follow-up in one place, often with coaching built in. If you have a complex medical history, a provider with deeper clinical oversight (or your own physician) may be the better route."),
 ]
 
 def ld_faq():
@@ -913,6 +917,27 @@ def render_home():
     article_links = "".join(
         f'<li><a href="{article_url(a)}">{a["title"]}</a></li>' for a in ARTICLES[:5])
 
+    # full comparison table (all providers)
+    trows = ""
+    for i, slug in enumerate(PROVIDER_ORDER, 1):
+        p = PROVIDERS[slug]
+        cls = ' class="row-top"' if i == 1 else ''
+        trows += (
+            f'<tr{cls}><td class="rk">{i}</td>'
+            f'<td class="attr"><a href="{review_url(slug)}">{p["name"]}</a></td>'
+            f'<td>{p["best_for"]}</td>'
+            f'<td class="hl">{p["highlight"]}</td>'
+            f'<td class="pr" title="{TIER_MEANING[p["tier"]]}">{p["tier"]}</td>'
+            f'<td class="sc"><strong>{p["score"]}</strong> <span class="muted">{score_word(p["score"])}</span></td>'
+            f'<td>{cta(slug, label="View", cls="btn btn-primary btn-sm")}</td></tr>'
+        )
+    comparison_table = (
+        '<table class="cmp cmp-full"><thead><tr>'
+        '<th>#</th><th>Program</th><th>Best for</th><th>Highlight</th>'
+        '<th>Price</th><th>Editor score</th><th></th></tr></thead>'
+        f'<tbody>{trows}</tbody></table>'
+    )
+
     body = f"""
 <section class="hero hero-home"><div class="wrap">
   <span class="hero-flag"><span class="dot"></span> Updated {UPDATED} · Independently reviewed</span>
@@ -930,29 +955,40 @@ def render_home():
   {sidebar()}
 </div>
 
-<section class="section"><div class="wrap"><div class="content">
-  <h2>How to choose a weight-loss program</h2>
-  <p>Most programs prescribe the same handful of GLP-1 medications, so the drug itself rarely sets them apart. What differs is the care around it. Four things decide whether a program works for you:</p>
-  <ul class="ticks">
-    <li><b>Clinician access</b> — real visits and follow-up, not just an intake form.</li>
-    <li><b>Medication options</b> — branded and compounded, with room to switch.</li>
-    <li><b>Total cost</b> — what you pay at your maintenance dose, not just to start.</li>
-    <li><b>Transparency</b> — pricing and terms clear before you commit.</li>
-  </ul>
+<section class="section"><div class="wrap">
+  <h2 style="margin-top:0">Compare all {len(PROVIDER_ORDER)} programs</h2>
+  <p class="muted" style="margin-bottom:18px">How every program scores side by side. Sorted by our editorial rating.</p>
+  <div class="table-scroll">{comparison_table}</div>
 
-  <h2>Who can use these programs</h2>
-  <p>GLP-1 medications are prescription treatments, so eligibility is decided by a licensed clinician — not a checklist. In practice they're usually considered for adults with a higher BMI, or a lower BMI alongside a weight-related condition. The clinician reviews your history, current medications and anything that would make the medication unsafe before prescribing.</p>
-  <p class="note"><strong>This is information, not medical advice.</strong> Whether a medication is right for you is a decision for you and your clinician. GLP-1 drugs carry real risks and aren't right for everyone.</p>
-
-  <h2>What it costs</h2>
-  <p>Pricing changes often and depends on the provider, the medication and your dose, so each review uses a simple $–$$$ tier instead of a number that goes stale. When you compare, look at the total monthly cost at your maintenance dose — including membership and shipping — not just the introductory price. Our <a href="/guides/compounded-semaglutide-cost">guide to compounded semaglutide costs</a> breaks it down.</p>
-
-  <h2>How we rank</h2>
-  <p>Every program is scored out of 10 across the same six factors — clinician support, medication access, value, transparency, onboarding and the app — with support and access weighted most. We're reader-supported and may earn a commission, but it never changes a score. <a href="/methodology">Read the full methodology</a>.</p>
+  <div class="content-grid">
+    <div>
+      <h3>How to choose a weight-loss program</h3>
+      <p>Most programs prescribe the same handful of GLP-1 medications, so the drug itself rarely sets them apart. What differs is the care around it — four things decide whether a program works for you:</p>
+      <ul class="ticks">
+        <li><b>Clinician access</b> — real visits and follow-up, not just an intake form.</li>
+        <li><b>Medication options</b> — branded and compounded, with room to switch.</li>
+        <li><b>Total cost</b> — what you pay at your maintenance dose, not just to start.</li>
+        <li><b>Transparency</b> — pricing and terms clear before you commit.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Who can use these programs</h3>
+      <p>GLP-1 medications are prescription treatments, so eligibility is decided by a licensed clinician — not a checklist. In practice they're usually considered for adults with a higher BMI, or a lower BMI alongside a weight-related condition. The clinician reviews your history, current medications and anything that would make the medication unsafe before prescribing.</p>
+      <p class="note"><strong>This is information, not medical advice.</strong> Whether a medication is right for you is a decision for you and your clinician. GLP-1 drugs carry real risks and aren't right for everyone.</p>
+    </div>
+    <div>
+      <h3>What it costs</h3>
+      <p>Pricing changes often and depends on the provider, the medication and your dose, so each review uses a simple $–$$$ tier instead of a number that goes stale. When you compare, look at the total monthly cost at your maintenance dose — including membership and shipping — not just the introductory price. Our <a href="/guides/compounded-semaglutide-cost">guide to compounded semaglutide costs</a> breaks it down.</p>
+    </div>
+    <div>
+      <h3>How we rank programs</h3>
+      <p>Every program is scored out of 10 across the same six factors — clinician support, medication access, value, transparency, onboarding and the app — with support and access weighted most. We're reader-supported and may earn a commission, but it never changes a score. <a href="/methodology">Read the full methodology</a>.</p>
+    </div>
+  </div>
 
   <h2 id="faq">Frequently asked questions</h2>
-  <div class="faq">{faq_html}</div>
-</div></div></section>
+  <div class="faq faq-grid">{faq_html}</div>
+</div></section>
 
 <section class="section section-soft"><div class="wrap">
   <div class="two-col-lists">
