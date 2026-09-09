@@ -64,11 +64,11 @@ PROVIDERS = {
         "score": 9.4,
         "tier": "$$",
         "best_for": "Best overall",
-        "highlight": "The most complete package: real clinician time, GLP-1 access, and coaching that doesn't quit after month one.",
+        "highlight": "Real clinician time, meds, and lasting coaching.",
         "bullets": [
-            "Video visits with prescribing clinicians, not just a questionnaire",
-            "Branded and compounded GLP-1 options under one plan",
-            "Habit coaching + progress tracking built into the app",
+            "Video visits with real prescribing clinicians",
+            "Branded + compounded GLP-1 options",
+            "Coaching and tracking built in",
         ],
         "subscores": {
             "Clinical support": 9.6, "Onboarding": 9.2, "Value": 9.0,
@@ -92,11 +92,11 @@ PROVIDERS = {
         "score": 9.1,
         "tier": "$$$",
         "best_for": "Most established brand",
-        "highlight": "A large, well-known telehealth platform with a polished experience and broad clinical infrastructure behind it.",
+        "highlight": "Established national brand, polished logistics.",
         "bullets": [
-            "Established national telehealth brand with wide clinician network",
-            "Structured GLP-1 program with insurance-navigation help",
-            "Slick app, pharmacy coordination, and reminders",
+            "Established national telehealth brand",
+            "Help navigating insurance",
+            "Slick app and pharmacy coordination",
         ],
         "subscores": {
             "Clinical support": 9.2, "Onboarding": 9.0, "Value": 8.4,
@@ -120,11 +120,11 @@ PROVIDERS = {
         "score": 8.6,
         "tier": "$",
         "best_for": "Best value",
-        "highlight": "The fastest, most affordable way in — compounded GLP-1 options and a lean, no-frills onboarding.",
+        "highlight": "The lowest entry price and the fastest start.",
         "bullets": [
-            "Lowest typical entry price of the programs we reviewed",
-            "Fast intake — many members start within a couple of days",
-            "Compounded GLP-1 focus keeps monthly cost down",
+            "Lowest typical entry price",
+            "Fast intake — start within days",
+            "Compounded GLP-1 keeps cost down",
         ],
         "subscores": {
             "Clinical support": 8.0, "Onboarding": 9.1, "Value": 9.5,
@@ -148,11 +148,11 @@ PROVIDERS = {
         "score": 8.4,
         "tier": "$$",
         "best_for": "Best for tirzepatide",
-        "highlight": "A program that leans into tirzepatide and flexible dosing plans for people who want that route specifically.",
+        "highlight": "A program built specifically around tirzepatide.",
         "bullets": [
-            "Strong focus on tirzepatide-based plans",
-            "Flexible dose scheduling and titration support",
-            "Middle-of-the-road pricing with frequent plan options",
+            "Strong tirzepatide focus",
+            "Flexible dosing and titration support",
+            "Reasonable mid-market pricing",
         ],
         "subscores": {
             "Clinical support": 8.4, "Onboarding": 8.5, "Value": 8.5,
@@ -176,11 +176,11 @@ PROVIDERS = {
         "score": 8.2,
         "tier": "$$$",
         "best_for": "Most medical-first",
-        "highlight": "A physician-led, medical-first approach for people with complex health needs who want a clinician steering the ship.",
+        "highlight": "Physician-led care for more complex health needs.",
         "bullets": [
-            "Physician-led model with a medical-first intake",
-            "Better suited to complex cases and comorbidities",
-            "Help coordinating labs and insurance where relevant",
+            "Physician-led, medical-first intake",
+            "Built for complex cases",
+            "Help with labs and insurance",
         ],
         "subscores": {
             "Clinical support": 9.0, "Onboarding": 7.8, "Value": 7.6,
@@ -204,11 +204,11 @@ PROVIDERS = {
         "score": 9.0,
         "tier": "$$",
         "best_for": "Best for coaching",
-        "highlight": "Treats the medication as only half the job — the coaching, community and app are genuinely best-in-class.",
+        "highlight": "The best coaching and app in the category.",
         "bullets": [
-            "Standout behavior-change coaching and community",
-            "GLP-1 medication where clinically appropriate",
-            "Whole-person plan: nutrition, movement, sleep",
+            "Standout coaching and community",
+            "GLP-1 meds where appropriate",
+            "Whole-person: food, movement, sleep",
         ],
         "subscores": {
             "Clinical support": 9.0, "Onboarding": 8.8, "Value": 8.6,
@@ -232,11 +232,11 @@ PROVIDERS = {
         "score": 8.5,
         "tier": "$$",
         "best_for": "Best for simple GLP-1 access",
-        "highlight": "A no-nonsense route to semaglutide or tirzepatide with a clean, quick process.",
+        "highlight": "Quick route to semaglutide or tirzepatide.",
         "bullets": [
-            "Both semaglutide and tirzepatide options",
+            "Both semaglutide and tirzepatide",
             "Straightforward, quick intake",
-            "Responsive support when you need it",
+            "Responsive support",
         ],
         "subscores": {
             "Clinical support": 8.4, "Onboarding": 8.8, "Value": 8.7,
@@ -260,10 +260,10 @@ PROVIDERS = {
         "score": 8.3,
         "tier": "$$",
         "best_for": "Best for Rx + pharmacy",
-        "highlight": "A prescription-forward program that handles the pharmacy coordination for you.",
+        "highlight": "Prescription-forward; pharmacy handled for you.",
         "bullets": [
-            "Prescription-forward model with multiple medication options",
-            "Pharmacy coordination handled on your behalf",
+            "Multiple medication options",
+            "Pharmacy coordination handled for you",
             "Clear, medication-first process",
         ],
         "subscores": {
@@ -288,11 +288,11 @@ PROVIDERS = {
         "score": 8.1,
         "tier": "$",
         "best_for": "Best for direct delivery",
-        "highlight": "Budget-friendly, direct-to-door simplicity with minimal friction.",
+        "highlight": "Budget-friendly, direct-to-door simplicity.",
         "bullets": [
-            "Simple direct-to-door medication delivery",
-            "Among the lowest entry prices we reviewed",
-            "Minimal friction — quick to get started",
+            "Simple direct-to-door delivery",
+            "Among the lowest entry prices",
+            "Minimal friction, quick start",
         ],
         "subscores": {
             "Clinical support": 7.9, "Onboarding": 8.9, "Value": 9.0,
@@ -316,11 +316,11 @@ PROVIDERS = {
         "score": 8.0,
         "tier": "$$",
         "best_for": "Best for whole-wellness",
-        "highlight": "A rounded, clinician-guided approach that looks at wellness beyond the medication.",
+        "highlight": "A rounded, clinician-guided whole-wellness plan.",
         "bullets": [
-            "Wellness-rounded plans that go beyond the injection",
+            "Wellness-rounded plans beyond the meds",
             "Clinician-guided throughout",
-            "Flexible options to suit different goals",
+            "Flexible options for your goals",
         ],
         "subscores": {
             "Clinical support": 8.2, "Onboarding": 8.1, "Value": 8.1,
@@ -854,16 +854,14 @@ def provider_card(slug, i):
   <div class="cell cell-main">
     <div class="provider-name"><a href="{review_url(slug)}">{p['name']}</a> <span class="best-tag">{p['best_for']}</span></div>
     <div class="trust-inline"><span class="verified">{icon('check-c', size=15)} Independently reviewed</span>
-      <span class="sep">•</span> <a href="{review_url(slug)}">Read our full review</a>
-      <span class="sep">•</span> {p['tier']} · {TIER_MEANING[p['tier']]}</div>
+      <span class="sep">•</span> <a href="{review_url(slug)}">Read our full review</a></div>
     <ul class="bullets">{bullets}</ul>
   </div>
   <div class="aside-cell">
     <div class="score-badge"><div class="score-num">{p['score']}<span>/10</span></div><div class="score-word">{score_word(p['score'])}</div></div>
     <div class="stars-row">{stars(p['score'])}</div>
-    {cta(slug, label='View Plans', cls='btn btn-primary btn-block')}
+    {cta(slug, label='View Plans', cls='btn btn-primary btn-sm btn-block')}
     <a class="btn btn-ghost btn-sm btn-block" href="{review_url(slug)}">Read review</a>
-    <div class="aside-note">Editor rating {p['score']}/10</div>
   </div>
 </article>"""
 
