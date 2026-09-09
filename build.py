@@ -26,11 +26,16 @@ YEAR = TODAY.year
 
 # >>> REPLACE THESE with your real affiliate/tracking links, then rebuild. <<<
 AFFILIATE_LINKS = {
-    "embody":   "#",
-    "ro":       "https://ro.co",
-    "altrx":  "#",
-    "trimrx": "#",
-    "bmimd":    "#",
+    "embody":     "#",
+    "ro":         "https://ro.co",
+    "found":      "#",
+    "altrx":      "#",
+    "medvi":      "#",
+    "trimrx":     "#",
+    "healthrx":   "#",
+    "bmimd":      "#",
+    "directmeds": "#",
+    "wellmedr":   "#",
 }
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -39,7 +44,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 # Providers  (ranking = list order in PROVIDER_ORDER)
 # scores are editorial (our rating, 0-10). price_tier is a relative indicator.
 # --------------------------------------------------------------------------
-PROVIDER_ORDER = ["embody", "ro", "altrx", "trimrx", "bmimd"]
+PROVIDER_ORDER = ["embody", "ro", "found", "altrx", "medvi",
+                  "trimrx", "healthrx", "bmimd", "directmeds", "wellmedr"]
 
 PROVIDERS = {
     "embody": {
@@ -180,7 +186,147 @@ PROVIDERS = {
             "Premium pricing and less of a consumer-app feel",
         ],
         "verdict": "BMIMD is the choice when the medicine matters more than the app. If you have health complexity — or you just want a physician clearly in charge — its thoroughness is reassuring. If you want fast and cheap, look elsewhere; that's not what this program is for.",
-        "summary": "BMIMD takes a physician-led, medical-first approach to weight management. It's the most clinically thorough program we reviewed, which makes it a strong fit for people with complex health needs — at the cost of speed and a higher price point.",
+        "summary": "BMIMD takes a physician-led, medical-first approach to weight management. It's one of the most clinically thorough programs we reviewed, which makes it a strong fit for people with complex health needs — at the cost of speed and a higher price point.",
+    },
+    "found": {
+        "name": "Found",
+        "score": 9.0,
+        "tier": "$$",
+        "best_for": "Best for coaching",
+        "highlight": "Treats the medication as only half the job — the coaching, community and app are genuinely best-in-class.",
+        "bullets": [
+            "Standout behavior-change coaching and community",
+            "GLP-1 medication where clinically appropriate",
+            "Whole-person plan: nutrition, movement, sleep",
+        ],
+        "subscores": {
+            "Clinical support": 9.0, "Onboarding": 8.8, "Value": 8.6,
+            "Medication access": 8.8, "App & tracking": 9.4, "Transparency": 8.9,
+        },
+        "pros": [
+            "The strongest coaching and behavior-change program in our lineup",
+            "Polished app and an active member community",
+            "Whole-person approach that looks past the injection",
+            "Well-established brand with a real track record",
+        ],
+        "cons": [
+            "The coaching-heavy model is overkill if you only want a prescription",
+            "Leans toward the premium end on total cost",
+        ],
+        "verdict": "Found is the pick if you believe losing weight is about more than the medication. Its coaching and app are the best part of the experience, not an afterthought. If you want a program that helps you build habits — not just hand you a script — it's excellent. If you just want the script, you're paying for things you won't use.",
+        "summary": "Found pairs GLP-1 medication (where appropriate) with a genuine behavior-change program — coaching, an active community, and one of the best apps we tested. It's built for people who want support changing habits, not just a prescription.",
+    },
+    "medvi": {
+        "name": "Medvi",
+        "score": 8.5,
+        "tier": "$$",
+        "best_for": "Best for simple GLP-1 access",
+        "highlight": "A no-nonsense route to semaglutide or tirzepatide with a clean, quick process.",
+        "bullets": [
+            "Both semaglutide and tirzepatide options",
+            "Straightforward, quick intake",
+            "Responsive support when you need it",
+        ],
+        "subscores": {
+            "Clinical support": 8.4, "Onboarding": 8.8, "Value": 8.7,
+            "Medication access": 8.9, "App & tracking": 8.0, "Transparency": 8.4,
+        },
+        "pros": [
+            "Clear choice between semaglutide and tirzepatide",
+            "Quick, uncomplicated onboarding",
+            "Sensible mid-market pricing",
+            "Support is responsive and easy to reach",
+        ],
+        "cons": [
+            "Lighter coaching than the premium, support-led programs",
+            "App and tracking tools are basic",
+        ],
+        "verdict": "Medvi does the fundamentals well without dressing them up. If you know what you want and value a clean, quick path to a GLP-1 over heavy coaching, it's a solid, fairly priced choice. Just don't expect the hand-holding of the top-scoring programs.",
+        "summary": "Medvi is a straightforward telehealth program offering both semaglutide and tirzepatide with a quick, uncomplicated process. It's a sensible middle-ground pick for people who want efficient GLP-1 access without a lot of extras.",
+    },
+    "healthrx": {
+        "name": "HealthRx",
+        "score": 8.3,
+        "tier": "$$",
+        "best_for": "Best for Rx + pharmacy",
+        "highlight": "A prescription-forward program that handles the pharmacy coordination for you.",
+        "bullets": [
+            "Prescription-forward model with multiple medication options",
+            "Pharmacy coordination handled on your behalf",
+            "Clear, medication-first process",
+        ],
+        "subscores": {
+            "Clinical support": 8.3, "Onboarding": 8.4, "Value": 8.4,
+            "Medication access": 8.7, "App & tracking": 7.8, "Transparency": 8.2,
+        },
+        "pros": [
+            "Smooth pharmacy coordination and refills",
+            "Several medication options rather than one lane",
+            "Efficient, medication-first experience",
+            "Reasonable mid-market pricing",
+        ],
+        "cons": [
+            "Coaching and lifestyle support are minimal",
+            "Tracking tools are functional but plain",
+        ],
+        "verdict": "HealthRx is a good fit if the medication and getting it to your door reliably are what you care about most. It's efficient and the pharmacy side is smooth. If you want coaching or a whole-person plan, a support-led program will serve you better.",
+        "summary": "HealthRx is a prescription-forward telehealth program that emphasizes reliable medication access and pharmacy coordination. It's a practical choice for people who want the meds handled cleanly, with less focus on coaching.",
+    },
+    "directmeds": {
+        "name": "DirectMeds",
+        "score": 8.1,
+        "tier": "$",
+        "best_for": "Best for direct delivery",
+        "highlight": "Budget-friendly, direct-to-door simplicity with minimal friction.",
+        "bullets": [
+            "Simple direct-to-door medication delivery",
+            "Among the lowest entry prices we reviewed",
+            "Minimal friction — quick to get started",
+        ],
+        "subscores": {
+            "Clinical support": 7.9, "Onboarding": 8.9, "Value": 9.0,
+            "Medication access": 8.4, "App & tracking": 7.6, "Transparency": 8.0,
+        },
+        "pros": [
+            "Very competitive pricing",
+            "Fast, low-friction signup and delivery",
+            "Good option if you just want the medication shipped",
+            "No unnecessary extras to pay for",
+        ],
+        "cons": [
+            "Little in the way of coaching or ongoing support",
+            "Basic app and tracking",
+        ],
+        "verdict": "DirectMeds keeps it simple: get approved, get the medication delivered, done. For a budget-conscious, self-directed member that's exactly right. If you want support beyond the delivery, look higher up our rankings.",
+        "summary": "DirectMeds is a value-focused program built around simple, direct-to-door medication delivery and a fast signup. It trades coaching and extras for a low price and minimal friction.",
+    },
+    "wellmedr": {
+        "name": "WellMedr",
+        "score": 8.0,
+        "tier": "$$",
+        "best_for": "Best for whole-wellness",
+        "highlight": "A rounded, clinician-guided approach that looks at wellness beyond the medication.",
+        "bullets": [
+            "Wellness-rounded plans that go beyond the injection",
+            "Clinician-guided throughout",
+            "Flexible options to suit different goals",
+        ],
+        "subscores": {
+            "Clinical support": 8.2, "Onboarding": 8.1, "Value": 8.1,
+            "Medication access": 8.2, "App & tracking": 7.9, "Transparency": 8.0,
+        },
+        "pros": [
+            "Broader wellness focus, not medication-only",
+            "Clinician guidance across the plan",
+            "Flexible plans for different goals",
+            "Balanced, middle-of-the-market pricing",
+        ],
+        "cons": [
+            "Doesn't lead any single category the way top picks do",
+            "App and tracking are average",
+        ],
+        "verdict": "WellMedr is a well-rounded generalist. It won't top any single category, but its whole-wellness angle and clinician guidance make it a dependable all-rounder for people who want a balanced plan rather than a specialist one.",
+        "summary": "WellMedr takes a rounded, clinician-guided approach to weight management that considers wellness beyond the medication itself. It's a balanced all-rounder rather than a category leader.",
     },
 }
 
