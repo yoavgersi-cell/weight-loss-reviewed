@@ -866,39 +866,26 @@ def provider_card(slug, i):
 </article>"""
 
 def sidebar():
-    top = PROVIDER_ORDER[0]; p = PROVIDERS[top]
     mini = "".join(
-        f'<li><span class="mr-num">{i}</span><span class="mr-name">{PROVIDERS[s]["name"]}</span>'
+        f'<li><span class="mr-num">{i}</span><a class="mr-name" href="{review_url(s)}">{PROVIDERS[s]["name"]}</a>'
         f'<span class="mr-score">{PROVIDERS[s]["score"]}</span></li>'
         for i, s in enumerate(PROVIDER_ORDER[:5], 1))
     return f"""<aside class="sidebar">
-  <div class="widget widget-choice">
-    <div class="wc-head">{icon('badge', size=16)} Editor's Choice</div>
-    <div class="wc-body">
-      {logo_img(top, cls='plogo plogo-block')}
-      <div class="score-num">{p['score']}<span>/10</span></div>
-      <div class="stars-row">{stars(p['score'])}</div>
-      <p class="muted" style="font-size:.87rem;margin:.5em 0 1.1em">{p['best_for']} — our top pick for {YEAR}.</p>
-      {cta(top, label='View Plans', cls='btn btn-primary btn-block')}
-      <a class="btn btn-ghost btn-sm btn-block" href="{review_url(top)}" style="margin-top:9px">Read review</a>
-    </div>
+  <div class="widget widget-pad">
+    <h4>Top rated</h4>
+    <ul class="mini-rank">{mini}</ul>
   </div>
   <div class="widget widget-pad">
     <h4>Why trust us</h4>
     <ul class="trust-list">
-      <li>{icon('shield')}<span><b>Independent</b>We rank on merit — commissions never move a score.</span></li>
-      <li>{icon('user-check')}<span><b>Clinician-informed</b>Scored on real clinical support, not just price.</span></li>
-      <li>{icon('scale')}<span><b>Transparent</b>See exactly <a href="/methodology">how we score</a>.</span></li>
+      <li>{icon('shield')}<span><b>Independent</b>Commissions never change a score.</span></li>
+      <li>{icon('user-check')}<span><b>Clinician-informed</b>Scored on real clinical support.</span></li>
+      <li>{icon('scale')}<span><b>Transparent</b><a href="/methodology">See how we rank</a>.</span></li>
     </ul>
   </div>
-  <div class="widget widget-pad">
-    <h4>Top 5 right now</h4>
-    <ul class="mini-rank">{mini}</ul>
+  <div class="widget widget-pad widget-note">
+    <p>Reader-supported. We may earn a commission from some links, at no cost to you — it never affects our rankings. <a href="/disclosure">Full disclosure</a>.</p>
   </div>
-  <div class="widget widget-secure widget-pad">
-    <div class="ws-row">{icon('lock')}<div><b>Secure &amp; private</b><p>Encrypted HTTPS throughout. We never sell your personal information.</p></div></div>
-  </div>
-  <!-- PROMO IMAGE SLOT: drop a provider banner <img> here when ready -->
 </aside>"""
 
 def render_home():
@@ -920,10 +907,11 @@ def render_home():
         f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>'
         for q, a in FAQ
     )
-    rank_factors = "".join(
-        f'<li>{icon("check", size=20)}<div><b>{n}</b></div></li>'
-        for n in SUBSCORE_ORDER
-    )
+    vs_links = "".join(
+        f'<li><a href="{versus_url(v)}">{PROVIDERS[v["a"]]["name"]} vs {PROVIDERS[v["b"]]["name"]}</a></li>'
+        for v in VERSUS[:5])
+    article_links = "".join(
+        f'<li><a href="{article_url(a)}">{a["title"]}</a></li>' for a in ARTICLES[:5])
 
     body = f"""
 <section class="hero hero-home"><div class="wrap">
@@ -942,82 +930,44 @@ def render_home():
   {sidebar()}
 </div>
 
-<section class="section section-blue"><div class="wrap">
-  <div class="sec-head center" style="margin:0 auto 8px"><span class="eyebrow-2">Start here</span><h2>How to choose an online weight-loss program</h2></div>
-  <p class="lead center" style="max-width:680px;margin:0 auto">The medication is often the same from program to program. What actually decides your results — and your bill — is everything around it. Here's what matters most.</p>
-  <div class="info-grid">
-    <div class="info-card"><div class="ic-ico">{icon('heart')}</div><h3>Why consider one?</h3>
-      <p>Modern GLP-1 medications, paired with coaching, have made real weight loss achievable for many people who struggled with diet and exercise alone. A good program combines the medication with the support to make it stick.</p></div>
-    <div class="info-card"><div class="ic-ico">{icon('user-check')}</div><h3>Who is it for?</h3>
-      <p>Generally, adults with a higher BMI — or a slightly lower BMI plus a weight-related condition. Eligibility is always a clinical decision made by a licensed prescriber based on your full health picture.</p></div>
-    <div class="info-card"><div class="ic-ico">{icon('dollar')}</div><h3>What does it cost?</h3>
-      <p>It depends on the provider, whether the medication is branded or compounded, and your dose. Compare the <em>total</em> monthly cost at your maintenance dose — not just the intro price — and check what's included.</p></div>
+<section class="section"><div class="wrap"><div class="content">
+  <h2>How to choose a weight-loss program</h2>
+  <p>Most programs prescribe the same handful of GLP-1 medications, so the drug itself rarely sets them apart. What differs is the care around it. Four things decide whether a program works for you:</p>
+  <ul class="ticks">
+    <li><b>Clinician access</b> — real visits and follow-up, not just an intake form.</li>
+    <li><b>Medication options</b> — branded and compounded, with room to switch.</li>
+    <li><b>Total cost</b> — what you pay at your maintenance dose, not just to start.</li>
+    <li><b>Transparency</b> — pricing and terms clear before you commit.</li>
+  </ul>
+
+  <h2>Who can use these programs</h2>
+  <p>GLP-1 medications are prescription treatments, so eligibility is decided by a licensed clinician — not a checklist. In practice they're usually considered for adults with a higher BMI, or a lower BMI alongside a weight-related condition. The clinician reviews your history, current medications and anything that would make the medication unsafe before prescribing.</p>
+  <p class="note"><strong>This is information, not medical advice.</strong> Whether a medication is right for you is a decision for you and your clinician. GLP-1 drugs carry real risks and aren't right for everyone.</p>
+
+  <h2>What it costs</h2>
+  <p>Pricing changes often and depends on the provider, the medication and your dose, so each review uses a simple $–$$$ tier instead of a number that goes stale. When you compare, look at the total monthly cost at your maintenance dose — including membership and shipping — not just the introductory price. Our <a href="/guides/compounded-semaglutide-cost">guide to compounded semaglutide costs</a> breaks it down.</p>
+
+  <h2>How we rank</h2>
+  <p>Every program is scored out of 10 across the same six factors — clinician support, medication access, value, transparency, onboarding and the app — with support and access weighted most. We're reader-supported and may earn a commission, but it never changes a score. <a href="/methodology">Read the full methodology</a>.</p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <div class="faq">{faq_html}</div>
+</div></div></section>
+
+<section class="section section-soft"><div class="wrap">
+  <div class="two-col-lists">
+    <div>
+      <h3>Compare programs</h3>
+      <ul class="link-list">{vs_links}</ul>
+      <a class="more" href="/vs">All comparisons →</a>
+    </div>
+    <div>
+      <h3>Articles</h3>
+      <ul class="link-list">{article_links}</ul>
+      <a class="more" href="/guides">All articles →</a>
+    </div>
   </div>
 </div></section>
-
-<section class="section"><div class="wrap">
-  <div class="prose" style="max-width:820px">
-    <span class="eyebrow-2">Eligibility</span>
-    <h2>Who qualifies for a GLP-1 weight-loss program?</h2>
-    <p>There's no self-serve checklist that makes you eligible — a licensed clinician decides. That said, these are the factors that typically come into the conversation:</p>
-    <ul class="check-grid">
-      <li>{icon('check-c', size=20)} A body-mass index in the range clinicians treat for weight</li>
-      <li>{icon('check-c', size=20)} Or a lower BMI with a weight-related condition</li>
-      <li>{icon('check-c', size=20)} No contraindication to the specific medication</li>
-      <li>{icon('check-c', size=20)} A full review of your medical history and current meds</li>
-      <li>{icon('check-c', size=20)} Being an adult (programs set their own minimum age)</li>
-      <li>{icon('check-c', size=20)} Willingness to follow up and adjust with your clinician</li>
-    </ul>
-    <div class="callout warn"><h3>{icon('shield')} This is not medical advice</h3><p>Whether a weight-loss medication is right and safe for you is a decision for you and a licensed clinician — not an article. GLP-1 medications are prescription drugs with real risks and aren't appropriate for everyone. Use our rankings to choose <em>where</em> to get evaluated, not <em>whether</em> to take a medication.</p></div>
-  </div>
-</div></section>
-
-<section class="section section-alt"><div class="wrap">
-  <div class="sec-head"><span class="eyebrow-2">Pricing</span><h2>How much do online weight-loss programs cost?</h2></div>
-  <div class="prose" style="max-width:820px">
-    <p>Prices move constantly and vary by provider, medication and dose, so we show a relative tier rather than a number that's wrong within weeks. Here's what actually drives the total:</p>
-  </div>
-  <div class="stat-strip">
-    <div class="stat"><div class="big">$</div><div class="lbl">Budget — leanest plans, mostly compounded, less coaching</div></div>
-    <div class="stat"><div class="big">$$</div><div class="lbl">Mid-range — balanced medication access and support</div></div>
-    <div class="stat"><div class="big">$$$</div><div class="lbl">Premium — brand-led or physician-heavy, more hand-holding</div></div>
-  </div>
-  <div class="prose" style="max-width:820px">
-    <p>When comparing, put every offer in the same shape: total monthly cost at your expected <strong>maintenance</strong> dose, including membership, visits and shipping. A cheap intro price can balloon at higher doses. We break the numbers down in <a href="/guides/compounded-semaglutide-cost">how much compounded semaglutide costs</a>.</p>
-  </div>
-</div></section>
-
-<section class="section"><div class="wrap">
-  <div class="sec-head"><span class="eyebrow-2">Our method</span><h2>How we rank programs</h2></div>
-  <div class="prose" style="max-width:820px"><p>Every program gets an editorial score out of 10, built from six weighted factors. We weight support and access most heavily, because they're what actually determine whether a program works over time. Commissions never influence a score.</p></div>
-  <ul class="check-grid" style="max-width:820px">{rank_factors}</ul>
-  <p><a class="btn btn-ghost" href="/methodology">Read our full methodology {icon('arrow', size=16)}</a></p>
-</div></section>
-
-<section class="section section-blue"><div class="wrap">
-  <div class="sec-head center" style="margin:0 auto"><span class="eyebrow-2">FAQ</span><h2>Frequently asked questions</h2></div>
-  <div class="faq" style="margin:22px auto 0">{faq_html}</div>
-</div></section>
-
-<section class="section"><div class="wrap">
-  <h2>Popular head-to-head comparisons</h2>
-  <p class="lead">Deciding between two? Each comparison ends in a clear verdict.</p>
-  <div class="post-grid">{vs_cards}</div>
-  <p><a class="btn btn-ghost" href="/vs">See all comparisons {icon('arrow', size=16)}</a></p>
-</div></section>
-
-<section class="section section-alt"><div class="wrap">
-  <h2>Articles &amp; guides</h2>
-  <p class="lead">Plain-English answers to the questions people ask before they sign up.</p>
-  <div class="post-grid">{guide_cards}</div>
-  <p><a class="btn btn-ghost" href="/guides">Browse all articles {icon('arrow', size=16)}</a></p>
-</div></section>
-
-<div class="wrap"><div class="cta-strip">
-  <h2>Not sure where to start?</h2>
-  <p>Our top overall pick balances real clinician support, flexible medication access and honest pricing.</p>
-  <a class="btn btn-primary btn-lg" href="{review_url(PROVIDER_ORDER[0])}">See our #1 pick: {PROVIDERS[PROVIDER_ORDER[0]]['name']} {icon('arrow', size=16)}</a>
-</div></div>
 """
     return base_page(
         f"Best Online Weight-Loss Programs ({YEAR}) — Ranked &amp; Scored | {SITE['name']}",
