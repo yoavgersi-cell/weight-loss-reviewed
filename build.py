@@ -782,6 +782,12 @@ def cta(slug, label=None, cls="btn btn-primary btn-sm btn-block"):
     rel = ' rel="sponsored nofollow" target="_blank"' if url != "#" else ""
     return f'<a class="{cls}" href="{html.escape(url, quote=True)}"{rel}>{label} →</a>'
 
+def cta_attrs(slug):
+    """Just the href + rel/target attributes, for when the <a> is built inline."""
+    url = AFFILIATE_LINKS.get(slug, "#")
+    rel = ' rel="sponsored nofollow" target="_blank"' if url != "#" else ""
+    return f'href="{html.escape(url, quote=True)}"{rel}'
+
 def stars(score):
     filled = round(score / 2)  # 0-10 -> 0-5
     return "★" * filled + "☆" * (5 - filled)
@@ -857,6 +863,22 @@ def sentence1(s):
 # "Alternatives to X" money pages — built for the most-searched brands.
 ALT_TARGETS = ["ro", "found", "embody", "medvi", "altrx"]
 
+# Short, qualitative medication descriptor per provider (safe editorial altitude).
+MEDS = {
+    "embody": "Branded + compounded", "ro": "Branded + compounded", "found": "Branded + compounded",
+    "altrx": "Compounded GLP-1", "medvi": "Semaglutide & tirzepatide", "trimrx": "Tirzepatide-focused",
+    "healthrx": "Multiple GLP-1 options", "bmimd": "Compounded GLP-1", "directmeds": "Compounded GLP-1",
+    "wellmedr": "GLP-1 options", "shed": "Compounded GLP-1", "sprout": "GLP-1 + lifestyle",
+}
+def meds(slug):
+    return MEDS.get(slug, "GLP-1 options")
+
+def tier_len(tier):     # "$"=1, "$$"=2, "$$$"=3 — a numeric price proxy for sorting
+    return len(tier)
+
+def tier_class(tier):
+    return {"$": "budget", "$$": "mid", "$$$": "premium"}[tier]
+
 def alt_url(slug):
     return f"/{slug}-alternatives"
 
@@ -918,7 +940,7 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Lora:ital,wght@1,500;1,600&display=swap">
 <link rel="stylesheet" href="/assets/style.css?v={ASSET_VER}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Ctext x='16' y='22' font-size='15' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EWR%3C/text%3E%3C/svg%3E">
 {ld}
@@ -1006,172 +1028,280 @@ def ld_faq_custom(pairs):
 # --------------------------------------------------------------------------
 # Page: Home (comparison chart)
 # --------------------------------------------------------------------------
-def provider_card(slug, i):
-    p = PROVIDERS[slug]
-    top = " top" if i == 1 else ""
-    ribbon = f'<div class="ribbon">{icon("badge", size=15)} Editor\'s Choice</div>' if i == 1 else ""
-    logo = logo_img(slug) or f'<span style="font-weight:800;color:var(--ink)">{p["name"]}</span>'
-    lis = [f'<li class="offer">{icon("spark", size=16)}{p["highlight"]}</li>']
-    lis += [f'<li>{icon("check", size=16)}{b}</li>' for b in p["bullets"]]
-    bullets = "".join(lis)
-    return f"""<article class="rowcard{top}" id="{slug}">
-  {ribbon}
-  <div class="rank">{i}</div>
-  <div class="logo-cell">{logo}</div>
-  <div class="cell cell-main">
-    <div class="provider-name"><a href="{review_url(slug)}">{p['name']}</a> <span class="best-tag">{p['best_for']}</span></div>
-    <div class="trust-inline"><span class="verified">{icon('check-c', size=15)} Independently reviewed</span>
-      <span class="sep">•</span> <a href="{review_url(slug)}">Read our full review</a></div>
-    <ul class="bullets">{bullets}</ul>
-  </div>
-  <div class="aside-cell">
-    <div class="score-badge"><div class="score-num">{p['score']}<span>/10</span></div><div class="score-word">{score_word(p['score'])}</div></div>
-    <div class="stars-row">{stars(p['score'])}</div>
-    {cta(slug, label='View Plans', cls='btn btn-primary btn-sm btn-block')}
-    <a class="btn btn-ghost btn-sm btn-block" href="{review_url(slug)}">Read review</a>
-  </div>
-</article>"""
 
-def sidebar():
-    mini = "".join(
-        f'<li><span class="mr-num">{i}</span><a class="mr-name" href="{review_url(s)}">{PROVIDERS[s]["name"]}</a>'
-        f'<span class="mr-score">{PROVIDERS[s]["score"]}</span></li>'
-        for i, s in enumerate(PROVIDER_ORDER[:5], 1))
-    return f"""<aside class="sidebar">
-  <div class="widget widget-pad">
-    <h4>Top rated</h4>
-    <ul class="mini-rank">{mini}</ul>
-  </div>
-  <div class="widget widget-pad">
-    <h4>Why trust us</h4>
-    <ul class="trust-list">
-      <li>{icon('shield')}<span><b>Independent</b>Commissions never change a score.</span></li>
-      <li>{icon('user-check')}<span><b>Clinician-informed</b>Scored on real clinical support.</span></li>
-      <li>{icon('scale')}<span><b>Transparent</b><a href="/methodology">See how we rank</a>.</span></li>
-    </ul>
-  </div>
-  <div class="widget widget-pad widget-note">
-    <p>Reader-supported. We may earn a commission from some links, at no cost to you — it never affects our rankings. <a href="/disclosure">Full disclosure</a>.</p>
-  </div>
-</aside>"""
+WLR_HOME_JS = """
+<script>
+(function(){
+  function $all(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));}
+
+  // expandable "the rest" rows
+  window.wlrToggle = function(btn){
+    var body = btn.parentNode.querySelector('.restrow-body');
+    var open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+    if (body) body.hidden = open;
+  };
+
+  // provider-watch mailto handoff (no backend; opens the user's mail client)
+  window.wlrWatch = function(form){
+    var email = (form.email && form.email.value || '').trim();
+    if(!email) return false;
+    var subject = encodeURIComponent('Provider Watch signup');
+    var body = encodeURIComponent('Please add ' + email + ' to Provider Watch price alerts.');
+    window.location.href = 'mailto:hello@weightlossreviewed.com?subject=' + subject + '&body=' + body;
+    var wrap = form.parentNode;
+    if(wrap){ form.hidden = true; var ok = document.createElement('p'); ok.className='watch-ok';
+      ok.textContent = 'Thanks — your mail app should open to confirm.'; wrap.appendChild(ok); }
+    return false;
+  };
+
+  // sort + filter for the comparison table
+  var table = document.getElementById('ctable');
+  if(!table) return;
+  var rows = $all('.ctrow', table);
+  var curFilter = 'all', curSort = 'rating';
+
+  function apply(){
+    var vis = rows.filter(function(r){
+      if(curFilter === 'all') return true;
+      var tags = (r.getAttribute('data-tags')||'');
+      return tags.indexOf(curFilter) !== -1;
+    });
+    vis.sort(function(a,b){
+      if(curSort === 'rating') return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+      if(curSort === 'price-asc') return parseInt(a.dataset.price) - parseInt(b.dataset.price) || parseFloat(b.dataset.score)-parseFloat(a.dataset.score);
+      if(curSort === 'price-desc') return parseInt(b.dataset.price) - parseInt(a.dataset.price) || parseFloat(b.dataset.score)-parseFloat(a.dataset.score);
+      return 0;
+    });
+    rows.forEach(function(r){ r.style.display = 'none'; });
+    vis.forEach(function(r){ r.style.display = ''; table.appendChild(r); });
+  }
+
+  $all('.cmp-sort button').forEach(function(b){
+    b.addEventListener('click', function(){
+      $all('.cmp-sort button').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); curSort = b.getAttribute('data-sort'); apply();
+    });
+  });
+  $all('#cmpFilters button').forEach(function(b){
+    b.addEventListener('click', function(){
+      $all('#cmpFilters button').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); curFilter = b.getAttribute('data-filter'); apply();
+    });
+  });
+  apply();
+})();
+</script>
+"""
+
 
 def render_home():
-    cards = "\n".join(provider_card(s, i) for i, s in enumerate(PROVIDER_ORDER, 1))
-    vs_cards = "".join(
-        f'<a class="post-card" href="{versus_url(v)}"><div class="thumb"></div><div class="pc-body">'
-        f'<span class="tag">Comparison</span><h3>{PROVIDERS[v["a"]]["name"]} vs {PROVIDERS[v["b"]]["name"]}</h3>'
-        f'<p>Scores {PROVIDERS[v["a"]]["score"]} vs {PROVIDERS[v["b"]]["score"]} — see who wins and why.</p>'
-        f'<span class="read">Compare →</span></div></a>'
-        for v in VERSUS[:3]
-    )
-    guide_cards = "".join(
-        f'<a class="post-card" href="{article_url(a)}"><div class="thumb"></div><div class="pc-body">'
-        f'<span class="tag">{a["tag"]}</span><h3>{a["title"]}</h3><p>{a["description"]}</p>'
-        f'<span class="read">Read article →</span></div></a>'
-        for a in ARTICLES[:3]
-    )
-    faq_html = "".join(
-        f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>'
-        for q, a in FAQ
-    )
-    vs_links = "".join(
-        f'<li><a href="{versus_url(v)}">{PROVIDERS[v["a"]]["name"]} vs {PROVIDERS[v["b"]]["name"]}</a></li>'
-        for v in VERSUS[:5])
-    article_links = "".join(
-        f'<li><a href="{article_url(a)}">{a["title"]}</a></li>' for a in ARTICLES[:5])
+    N = len(PROVIDER_ORDER)
+    top = PROVIDER_ORDER[0]
+    TIERLABEL = {"$": "Budget", "$$": "Mid-range", "$$$": "Premium"}
 
-    # full comparison table (all providers)
-    trows = ""
+    def qual(x):
+        return ("Extensive" if x >= 9.2 else "Strong" if x >= 8.7 else "Solid" if x >= 8.2
+                else "Good" if x >= 7.8 else "Basic")
+
+    def ring(score):
+        return (f'<span class="ring" style="--p:{round(score*10)}">'
+                f'<span class="ring-num">{score}</span></span>')
+
+    n_budget = sum(1 for s in PROVIDER_ORDER if PROVIDERS[s]["tier"] == "$")
+    n_mid = sum(1 for s in PROVIDER_ORDER if PROVIDERS[s]["tier"] == "$$")
+    n_prem = sum(1 for s in PROVIDER_ORDER if PROVIDERS[s]["tier"] == "$$$")
+    n_tirz = sum(1 for s in PROVIDER_ORDER if "tirzepatide" in meds(s).lower())
+
+    # ---- comparison table rows ----
+    ctrows = ""
     for i, slug in enumerate(PROVIDER_ORDER, 1):
         p = PROVIDERS[slug]
-        cls = ' class="row-top"' if i == 1 else ''
-        trows += (
-            f'<tr{cls}><td class="rk">{i}</td>'
-            f'<td class="attr"><a href="{review_url(slug)}">{p["name"]}</a></td>'
-            f'<td>{p["best_for"]}</td>'
-            f'<td class="hl">{p["highlight"]}</td>'
-            f'<td class="pr" title="{TIER_MEANING[p["tier"]]}">{p["tier"]}</td>'
-            f'<td class="sc"><strong>{p["score"]}</strong> <span class="muted">{score_word(p["score"])}</span></td>'
-            f'<td>{cta(slug, label="View", cls="btn btn-primary btn-sm")}</td></tr>'
-        )
-    comparison_table = (
-        '<table class="cmp cmp-full"><thead><tr>'
-        '<th>#</th><th>Program</th><th>Best for</th><th>Highlight</th>'
-        '<th>Price</th><th>Editor score</th><th></th></tr></thead>'
-        f'<tbody>{trows}</tbody></table>'
-    )
+        tags = f"{tier_class(p['tier'])} {meds(slug).lower()}"
+        logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
+        ctrows += f"""<div class="ctrow" data-score="{p['score']}" data-price="{tier_len(p['tier'])}" data-tags="{tags}">
+      <div class="ct-prov"><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a><span class="ct-tag">{p['highlight']}</span></span></div>
+      <div class="ct-meds"><span class="pill">{meds(slug)}</span></div>
+      <div class="ct-price"><b>{p['tier']}</b> <span>{TIERLABEL[p['tier']]}</span></div>
+      <div class="ct-rate">{ring(p['score'])}<span class="ct-word">{score_word(p['score'])}</span></div>
+      <div class="ct-act">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}</div>
+    </div>"""
+
+    # ---- top 3 detailed cards ----
+    t3 = ""
+    for i, slug in enumerate(PROVIDER_ORDER[:3], 1):
+        p = PROVIDERS[slug]
+        win = " t3-win" if i == 1 else ""
+        pick = '<span class="t3-pick">Editor\'s pick</span>' if i == 1 else ""
+        rankcls = " r-coral" if i == 1 else ""
+        logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
+        liked = "".join(f"<li>{icon('check', size=16)}{x}</li>" for x in p["pros"][:3])
+        ctacls = "btn btn-coral btn-block" if i == 1 else "btn btn-primary btn-block"
+        t3 += f"""<article class="t3card{win}">
+      <div class="t3rank{rankcls}">#{i}</div>
+      <div class="t3head"><span class="t3logo">{logo}</span><div class="t3id"><span class="t3name">{p['name']}</span>{pick}</div></div>
+      <div class="t3score">{p['score']}<span>/10</span><em>Editorial score</em></div>
+      <p class="t3tag">{p['highlight']}</p>
+      <div class="t3tiles">
+        <div><span>Price</span><b>{p['tier']} · {TIERLABEL[p['tier']]}</b></div>
+        <div><span>Medications</span><b>{meds(slug)}</b></div>
+        <div><span>Best for</span><b>{p['best_for']}</b></div>
+        <div><span>Support</span><b>{qual(p['subscores']['Clinical support'])}</b></div>
+      </div>
+      <div class="t3liked"><span class="eyebrow-2">What we liked</span><ul>{liked}</ul></div>
+      <a class="{ctacls}" {cta_attrs(slug)}>See {p['name']} pricing →</a>
+      <a class="btn btn-ghost btn-block" href="{review_url(slug)}" style="margin-top:8px">Read full review</a>
+    </article>"""
+
+    # ---- the rest (expandable rows) ----
+    rest = ""
+    for slug in PROVIDER_ORDER[3:]:
+        p = PROVIDERS[slug]
+        pros = "".join(f"<li>{x}</li>" for x in p["pros"])
+        cons = "".join(f"<li>{x}</li>" for x in p["cons"])
+        rest += f"""<div class="restrow">
+      <button class="restrow-top" aria-expanded="false" onclick="wlrToggle(this)">
+        <span class="rr-score">{p['score']}</span>
+        <span class="rr-main"><span class="rr-name">{p['name']}</span><span class="rr-tag">{p['highlight']}</span></span>
+        <span class="rr-col"><em>Price</em>{p['tier']} · {TIERLABEL[p['tier']]}</span>
+        <span class="rr-col rr-meds"><em>Medications</em>{meds(slug)}</span>
+        <span class="rr-chev">{icon('arrow', size=18)}</span>
+      </button>
+      <div class="restrow-body" hidden>
+        <p>{p['summary']}</p>
+        <div class="proscons">
+          <div class="box pros"><h4>Pros</h4><ul class="pros">{pros}</ul></div>
+          <div class="box cons"><h4>Watchouts</h4><ul class="cons">{cons}</ul></div>
+        </div>
+        <p style="margin:0;display:flex;gap:10px;flex-wrap:wrap">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}
+          <a class="btn btn-ghost btn-sm" href="{review_url(slug)}">Read full review</a></p>
+      </div>
+    </div>"""
+
+    # ---- framework accordion ----
+    fw = [
+        ("01", "Budget", "dollar", "How much can you spend, monthly?",
+         f"Compounded semaglutide and tirzepatide run roughly half the price of branded. If cost is your main constraint, our budget picks (the $ tier) start lowest — {PROVIDERS[PROVIDER_ORDER[3]]['name'] if N>3 else 'the value programs'} and AltRx are good places to look."),
+        ("02", "Insurance", "shield", "Does your plan cover GLP-1s?",
+         "Coverage varies widely by plan and by whether the drug is branded or compounded. If you want to try to use insurance, favor programs that help you navigate it; many members pay out of pocket, which is why compounded options are popular."),
+        ("03", "Medication", "pill", "Branded or compounded?",
+         "Branded (Wegovy, Zepbound) is consistent but pricier; compounded is cheaper but availability and rules shift. Some programs specialize — TrimRx leans tirzepatide, Medvi offers both. Decide this before you compare prices."),
+        ("04", "Support level", "clipboard", "How much guidance do you want?",
+         "If you want coaching and real clinician time, weight support heavily (Embody and Found score highest here). If you just want the medication handled, a leaner program will cost less and move faster."),
+        ("05", "Visit style", "clock", "Video visit or async messaging?",
+         "Async (questionnaire + messaging) is fastest and cheapest; a live video visit gives you face time with a clinician. Most programs offer async; fewer offer video. Pick the one you'll actually use."),
+    ]
+    fw_html = ""
+    for j, (num, kicker, ic, q, ans) in enumerate(fw):
+        op = " open" if j == 0 else ""
+        fw_html += f"""<details class="fw-item"{op}><summary><span class="fw-ico">{icon(ic, size=20)}</span><span class="fw-q"><span class="fw-kick">{num} · {kicker}</span>{q}</span><span class="fw-chev">{icon('arrow', size=18)}</span></summary><div class="fw-a"><p>{ans}</p></div></details>"""
+
+    faq_html = "".join(
+        f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>'
+        for q, a in FAQ)
+
+    hero_logo = logo_img(top) or f'<b>{PROVIDERS[top]["name"]}</b>'
 
     body = f"""
-<section class="hero hero-home"><div class="wrap">
-  <span class="hero-flag"><span class="dot"></span> Updated {UPDATED} · Independently reviewed</span>
-  <h1>The best online weight-loss programs</h1>
-  <p class="lede">We score every GLP-1 program the same way — so you can compare the top online providers and find your fit in minutes.</p>
-</div></section>
-
-<div class="layout">
-  <main class="main-col">
-    <div class="chart-head"><h2>Top {len(PROVIDER_ORDER)} programs, ranked</h2><span class="muted" style="font-size:.9rem">Editor-scored · {UPDATED}</span></div>
-    <div class="disclosure-note">{icon('badge', size=16)} <span>We may earn a commission when you sign up through our links — at no cost to you, and with no effect on our scores. <a href="/disclosure">How this works</a>.</span></div>
-    <div class="chart">{cards}</div>
-    <p class="muted" style="font-size:.85rem;margin-top:16px">Scores are our independent editorial rating out of 10. Price tiers ($–$$$) are relative indicators — always confirm current pricing with the provider.</p>
-  </main>
-  {sidebar()}
-</div>
-
-<section class="section"><div class="wrap">
-  <h2 style="margin-top:0">Compare all {len(PROVIDER_ORDER)} programs</h2>
-  <p class="muted" style="margin-bottom:18px">How every program scores side by side. Sorted by our editorial rating.</p>
-  <div class="table-scroll">{comparison_table}</div>
-
-  <div class="content-grid">
-    <div>
-      <h3>How to choose a weight-loss program</h3>
-      <p>Most programs prescribe the same handful of GLP-1 medications, so the drug itself rarely sets them apart. What differs is the care around it — four things decide whether a program works for you:</p>
-      <ul class="ticks">
-        <li><b>Clinician access</b> — real visits and follow-up, not just an intake form.</li>
-        <li><b>Medication options</b> — branded and compounded, with room to switch.</li>
-        <li><b>Total cost</b> — what you pay at your maintenance dose, not just to start.</li>
-        <li><b>Transparency</b> — pricing and terms clear before you commit.</li>
-      </ul>
+<section class="dhero"><div class="wrap dhero-grid">
+  <div class="dhero-copy">
+    <span class="hero-flag"><span class="dot"></span> Updated {UPDATED} · {N} providers compared</span>
+    <h1>The honest guide to <span class="serif-accent hl-underline">online GLP-1</span> providers.</h1>
+    <p class="lede">We compared {N} telehealth programs prescribing semaglutide and tirzepatide across price, medications, support and visit type — so you can find the right fit in minutes.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-k">Independent</div><div class="hstat-v">Payment never affects rankings</div></div>
+      <div class="hstat"><div class="hstat-k">{N} providers scored</div><div class="hstat-v">On 6 factors · {UPDATED}</div></div>
     </div>
-    <div>
-      <h3>Who can use these programs</h3>
-      <p>GLP-1 medications are prescription treatments, so eligibility is decided by a licensed clinician — not a checklist. In practice they're usually considered for adults with a higher BMI, or a lower BMI alongside a weight-related condition. The clinician reviews your history, current medications and anything that would make the medication unsafe before prescribing.</p>
-      <p class="note"><strong>This is information, not medical advice.</strong> Whether a medication is right for you is a decision for you and your clinician. GLP-1 drugs carry real risks and aren't right for everyone.</p>
-    </div>
-    <div>
-      <h3>What it costs</h3>
-      <p>Pricing changes often and depends on the provider, the medication and your dose, so each review uses a simple $–$$$ tier instead of a number that goes stale. When you compare, look at the total monthly cost at your maintenance dose — including membership and shipping — not just the introductory price. Our <a href="/guides/compounded-semaglutide-cost">guide to compounded semaglutide costs</a> breaks it down.</p>
-    </div>
-    <div>
-      <h3>How we rank programs</h3>
-      <p>Every program is scored out of 10 across the same six factors — clinician support, medication access, value, transparency, onboarding and the app — with support and access weighted most. We're reader-supported and may earn a commission, but it never changes a score. <a href="/methodology">Read the full methodology</a>.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary btn-lg" href="#compare">Compare all {N} providers →</a>
+      <a class="btn btn-ghost btn-lg" href="/methodology">How we score</a>
     </div>
   </div>
-
-  <h2 id="faq">Frequently asked questions</h2>
-  <div class="faq faq-grid">{faq_html}</div>
+  <div class="dhero-media">
+    <div class="dhero-panel" role="img" aria-label="Online GLP-1 care">{icon('heart', size=40)}</div>
+    <div class="float-card fc-a">{icon('check-c', size=20)}<div><b>Independently reviewed</b><span>No pay-to-rank</span></div></div>
+    <div class="float-card fc-b"><div class="fc-k">Top editorial score</div><div class="fc-score">{PROVIDERS[top]['score']}<em>/10</em></div><div class="fc-sub">{hero_logo} · our #1</div></div>
+    <div class="float-card fc-c">{icon('scale', size=20)}<div><b>Scored on 6 factors</b><span>clinical · meds · value</span></div></div>
+  </div>
 </div></section>
+
+<div class="trustbar"><div class="wrap">
+  <span><b>{N} providers rated</b></span><span class="tb-sep">·</span>
+  <span>Scored on our <a href="/methodology">editorial methodology</a></span><span class="tb-sep">·</span>
+  <span>Payment never affects rankings</span><span class="tb-sep">·</span>
+  <span>Updated {UPDATED}</span>
+</div></div>
+
+<section class="section" id="compare"><div class="wrap">
+  <span class="eyebrow-2">The shortlist</span>
+  <div class="cmp-head">
+    <h2>All {N} providers, side by side</h2>
+    <div class="cmp-sort"><span>Sort</span>
+      <button data-sort="rating" class="on">Rating</button>
+      <button data-sort="price-asc">Price ↑</button>
+      <button data-sort="price-desc">Price ↓</button></div>
+  </div>
+  <p class="lead" style="max-width:640px">Sort and filter to find your fit. Ratings reflect our editorial review across price, medications, clinical support and more.</p>
+  <div class="disclosure-note">{icon('badge', size=16)} <span>Some "See pricing" buttons are affiliate links; we may earn a commission if you start treatment, but rankings stay editorially independent. <a href="/disclosure">How this works</a>.</span></div>
+  <div class="cmp-filters" id="cmpFilters">
+    <button data-filter="all" class="on">All providers <em>{N}</em></button>
+    <button data-filter="budget">Budget $ <em>{n_budget}</em></button>
+    <button data-filter="mid">Mid $$ <em>{n_mid}</em></button>
+    <button data-filter="premium">Premium $$$ <em>{n_prem}</em></button>
+    <button data-filter="tirzepatide">Tirzepatide <em>{n_tirz}</em></button>
+  </div>
+  <div class="ctable">
+    <div class="ctrow ct-header"><div>Provider</div><div>Medications</div><div>Price</div><div>Editor rating</div><div></div></div>
+    <div id="ctable">{ctrows}</div>
+  </div>
+  <p class="cmp-foot muted">Want the deep dives? Browse all <a href="/comparisons">head-to-head comparisons</a> or read the <a href="/reviews">full reviews</a>.</p>
+</div></section>
+
+<section class="section"><div class="wrap"><div class="watch">
+  <div class="watch-ico">{icon('badge', size=22)}</div>
+  <div class="watch-copy"><span class="eyebrow-2">Provider watch</span><h3>Track GLP-1 pricing</h3>
+    <p>One short email when major providers change prices, add states, or update medication options.</p></div>
+  <form class="watch-form" onsubmit="return wlrWatch(this)">
+    <input type="email" name="email" required placeholder="your@email.com" aria-label="Email">
+    <button class="btn btn-primary" type="submit">Track providers →</button>
+  </form>
+</div></div></section>
 
 <section class="section section-soft"><div class="wrap">
-  <div class="two-col-lists">
-    <div>
-      <h3>Compare programs</h3>
-      <ul class="link-list">{vs_links}</ul>
-      <a class="more" href="/comparisons">All comparisons →</a>
-    </div>
-    <div>
-      <h3>Articles</h3>
-      <ul class="link-list">{article_links}</ul>
-      <a class="more" href="/guides">All articles →</a>
-    </div>
+  <span class="eyebrow-2">Detailed reviews</span>
+  <h2 style="margin-top:6px">What we found, <span class="serif-accent">provider by provider</span></h2>
+  <p class="lead" style="max-width:660px">We rate every provider across pricing, medication selection, clinical support, visit options and patient experience. Here are the top three.</p>
+  <div class="top3">{t3}</div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="rest-head"><span class="eyebrow-2">The rest</span><span class="muted">{N-3} more providers</span></div>
+  <div class="restlist">{rest}</div>
+</div></section>
+
+<section class="section section-soft"><div class="wrap"><div class="framework-grid">
+  <div class="fw-intro">
+    <span class="eyebrow-2">The framework</span>
+    <h2 style="margin-top:6px">How to choose <span class="serif-accent">your</span> GLP-1 provider</h2>
+    <p class="lead">Five questions, in order. Answer them and you'll narrow the field down to two or three providers.</p>
+    <div class="skip-card"><span class="eyebrow-2">Skip the framework</span>
+      <p>Jump straight to the ranked comparison of all {N} providers.</p>
+      <a class="btn btn-primary" href="#compare">See the comparison →</a></div>
   </div>
+  <div class="fw-acc">{fw_html}</div>
+</div></div></section>
+
+<section class="section"><div class="wrap narrow">
+  <h2 class="center">Frequently asked questions</h2>
+  <div class="faq" style="margin-top:24px">{faq_html}</div>
 </div></section>
 """
+    body += WLR_HOME_JS
     return base_page(
-        f"Best Online Weight-Loss Programs ({YEAR}) — Ranked &amp; Scored | {SITE['name']}",
-        f"We independently scored {len(PROVIDER_ORDER)} online weight-loss programs on clinician support, medication access, value and transparency. Compare the ranked chart.",
+        f"The Honest Guide to Online GLP-1 Providers ({YEAR}) | {SITE['name']}",
+        f"We independently compared {len(PROVIDER_ORDER)} online GLP-1 weight-loss providers on price, medications, clinical support and visit type. Sort, filter and find your fit.",
         "/", body, active="/", jsonld=[ld_website(), ld_org(), ld_faq()])
+
 
 # --------------------------------------------------------------------------
 # Page: Provider review
