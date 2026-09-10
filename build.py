@@ -737,13 +737,13 @@ def logo_img(slug, cls="plogo"):
 TIER_MEANING = {"$": "Budget", "$$": "Mid-range", "$$$": "Premium"}
 
 def review_url(slug):  return f"/reviews/{slug}"
-def versus_url(v):     return f"/vs/{v['a']}-vs-{v['b']}"
+def versus_url(v):     return f"/{v['a']}-vs-{v['b']}"
 def article_url(a):    return f"/guides/{a['slug']}"
 
 NAV = [
     ("Compare", "/"),
     ("Reviews", "/reviews"),
-    ("Comparisons", "/vs"),
+    ("Comparisons", "/comparisons"),
     ("Articles", "/guides"),
     ("How We Rank", "/methodology"),
 ]
@@ -911,6 +911,13 @@ def ld_faq():
     )
     return '{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[%s]}' % items
 
+def ld_faq_custom(pairs):
+    items = ",".join(
+        '{"@type":"Question","name":"%s","acceptedAnswer":{"@type":"Answer","text":"%s"}}'
+        % (q.replace('"', "'"), re.sub("<[^>]+>", "", ans).replace('"', "'"))
+        for q, ans in pairs)
+    return '{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[%s]}' % items
+
 # --------------------------------------------------------------------------
 # Page: Home (comparison chart)
 # --------------------------------------------------------------------------
@@ -1066,7 +1073,7 @@ def render_home():
     <div>
       <h3>Compare programs</h3>
       <ul class="link-list">{vs_links}</ul>
-      <a class="more" href="/vs">All comparisons →</a>
+      <a class="more" href="/comparisons">All comparisons →</a>
     </div>
     <div>
       <h3>Articles</h3>
@@ -1159,15 +1166,23 @@ def render_review(slug):
 # --------------------------------------------------------------------------
 def render_versus(v):
     a, b = PROVIDERS[v["a"]], PROVIDERS[v["b"]]
+    An, Bn = a["name"], b["name"]
     win_a = " win" if v["winner"] == v["a"] else ""
     win_b = " win" if v["winner"] == v["b"] else ""
-    tag_a = '<span class="badge-best">Winner</span>' if v["winner"] == v["a"] else ""
-    tag_b = '<span class="badge-best">Winner</span>' if v["winner"] == v["b"] else ""
-
     winner = PROVIDERS[v["winner"]]["name"]
     flag_a = f'<div class="win-flag">{icon("badge", size=13)} Winner</div>' if v["winner"] == v["a"] else ""
     flag_b = f'<div class="win-flag">{icon("badge", size=13)} Winner</div>' if v["winner"] == v["b"] else ""
 
+    def first_sentence(s):
+        return re.split(r'(?<=[.!?])\s+', s.strip())[0]
+
+    def human_list(items):
+        items = [i.lower() for i in items]
+        if len(items) == 1: return items[0]
+        if len(items) == 2: return f"{items[0]} and {items[1]}"
+        return ", ".join(items[:-1]) + f", and {items[-1]}"
+
+    # specs table
     trows = ""
     trows += f'<tr><td class="attr">Editor rating</td><td><strong>{a["score"]}/10</strong> · {score_word(a["score"])}</td><td><strong>{b["score"]}/10</strong> · {score_word(b["score"])}</td></tr>'
     trows += f'<tr><td class="attr">Best for</td><td>{a["best_for"]}</td><td>{b["best_for"]}</td></tr>'
@@ -1180,85 +1195,142 @@ def render_versus(v):
         sa, sb = a["subscores"][cat], b["subscores"][cat]
         diff = round(sa - sb, 1)
         if abs(diff) < 0.15:
-            win_name, deg = None, None
-            sent = f"{a['name']} and {b['name']} are evenly matched."
+            win_name = None; sent = f"{An} and {Bn} are evenly matched."
         elif diff > 0:
-            wins_a += 1; win_name = a['name']
+            wins_a += 1; win_name = An
             deg = "clearly ahead" if diff >= 0.6 else ("a step ahead" if diff >= 0.3 else "just ahead")
-            sent = f"{a['name']} is {deg}."
+            sent = f"{An} scores {sa} to {sb} — {deg}."
         else:
-            wins_b += 1; win_name = b['name']
+            wins_b += 1; win_name = Bn
             deg = "clearly ahead" if -diff >= 0.6 else ("a step ahead" if -diff >= 0.3 else "just ahead")
-            sent = f"{b['name']} is {deg}."
+            sent = f"{Bn} scores {sb} to {sa} — {deg}."
         win_tag = (f'<span class="win">Winner: {win_name}</span>' if win_name
                    else '<span class="win" style="color:var(--muted);background:var(--surface-2)">Even</span>')
         rounds_html += (f'<div class="vs-round"><h3>{cat}</h3>'
                         f'<p>{CATEGORY_FRAMES[cat]} {sent}</p>'
-                        f'<div class="rd-scores">{a["name"]} <b>{sa}</b> · {b["name"]} <b>{sb}</b>{win_tag}</div></div>')
-    tally = (f"{a['name']} wins {wins_a}, {b['name']} wins {wins_b}"
-             + (f", {6 - wins_a - wins_b} even" if (6 - wins_a - wins_b) else "") + ".")
+                        f'<div class="rd-scores">{An} <b>{sa}</b> · {Bn} <b>{sb}</b>{win_tag}</div></div>')
+    even = 6 - wins_a - wins_b
+    tally = f"{An} takes {wins_a}, {Bn} takes {wins_b}" + (f", with {even} even" if even else "") + "."
+
+    # where they differ / agree
+    gaps = sorted(((c, a["subscores"][c], b["subscores"][c]) for c in ROUND_ORDER),
+                  key=lambda x: abs(x[1] - x[2]), reverse=True)
+    big = [(c, sa, sb) for c, sa, sb in gaps if abs(sa - sb) >= 0.3][:2]
+    if big:
+        parts = []
+        for c, sa, sb in big:
+            w = An if sa > sb else Bn
+            parts.append(f"<strong>{c.lower()}</strong>, where {w} leads {max(sa,sb)} to {min(sa,sb)}")
+        differ = "The clearest daylight between them shows up in " + " and ".join(parts) + ". "
+    else:
+        differ = "No single category blows the other away — the gaps are incremental rather than dramatic. "
+    differ += f"Zoom out and the split is simple: {An} is our pick for {a['best_for'].lower()}, while {Bn} earns {Bn}'s place as {b['best_for'].lower()}."
+    close = [c for c, sa, sb in gaps if abs(sa - sb) <= 0.2]
+    similar = (f"On {human_list(close)}, there's little to separate them — both land within a couple of tenths, so those categories won't decide your choice."
+               if close else "")
+
+    # pricing
+    ta, tb = a["tier"], b["tier"]
+    if ta == tb:
+        pricing = f"{An} and {Bn} both sit in the {TIER_MEANING[ta].lower()} range ({ta}), so price isn't the deciding factor between them."
+        cheaper_note = "Neither is dramatically cheaper than the other"
+    else:
+        if len(ta) < len(tb):
+            pricing = f"{An} is the more budget-friendly of the two ({ta}, {TIER_MEANING[ta].lower()}), while {Bn} sits higher ({tb}, {TIER_MEANING[tb].lower()})."
+            cheaper_note = f"{An} is the cheaper option"
+        else:
+            pricing = f"{Bn} is the more budget-friendly of the two ({tb}, {TIER_MEANING[tb].lower()}), while {An} sits higher ({ta}, {TIER_MEANING[ta].lower()})."
+            cheaper_note = f"{Bn} is the cheaper option"
+
+    # matchup FAQ
+    if v["winner"] == v["a"]:
+        wname, lname, ws, ls, wcount, loser_pick = An, Bn, a["score"], b["score"], wins_a, v["pick_b"]
+    else:
+        wname, lname, ws, ls, wcount, loser_pick = Bn, An, b["score"], a["score"], wins_b, v["pick_a"]
+    lp = loser_pick[0].lower() + loser_pick[1:]
+    vfaq = [
+        (f"Is {An} better than {Bn}?",
+         f"In our scoring, {wname} comes out ahead — {ws}/10 to {ls}/10, winning {wcount} of the six categories we rate. That makes it our pick for most people. {lname} is still the better choice if {lp}"),
+        (f"Which is cheaper, {An} or {Bn}?",
+         f"{cheaper_note}. {pricing} Whichever you lean toward, compare the total cost at your maintenance dose — not just the introductory price."),
+        (f"Can I switch between {An} and {Bn}?",
+         f"Generally, yes. Neither program locks you into a long contract, so if you start with one and it isn't the right fit you can move to the other. Just never stop or change a GLP-1 medication without talking to your clinician first."),
+    ]
+    vfaq_html = "".join(f'<details><summary>{q}</summary><div class="faq-a"><p>{ans}</p></div></details>' for q, ans in vfaq)
+
+    intro = (f"{An} and {Bn} both rank among the {len(PROVIDER_ORDER)} online weight-loss programs we've scored, and they draw from the same pool of GLP-1 medications — so on the surface they can look interchangeable. They aren't. {first_sentence(a['summary'])}. {first_sentence(b['summary'])}. Below we break the matchup down category by category, then tell you which one fits which kind of person.")
+
+    def side(slug, p, wincls, flag):
+        return f"""<div class="vs-side{wincls}">
+      {flag}
+      {logo_img(slug, cls='plogo plogo-block')}
+      <div class="vs-name">{p['name']}</div>
+      <div class="score-num">{p['score']}<span>/10</span></div>
+      <div class="stars">{stars(p['score'])}</div>
+      <div class="vs-meta">{p['best_for']} · {p['tier']} · {TIER_MEANING[p['tier']]}</div>
+      {cta(slug, label='View Plans', cls='btn btn-primary btn-block')}
+      <a class="btn btn-ghost btn-sm btn-block" href="{review_url(slug)}" style="margin-top:8px">Read full review</a>
+    </div>"""
 
     body = f"""
 <section class="vs-hero"><div class="wrap">
-  {crumbs([("Home","/"),("Comparisons","/vs"),(f'{a["name"]} vs {b["name"]}', "")])}
+  {crumbs([("Home","/"),("Comparisons","/comparisons"),(f'{An} vs {Bn}', "")])}
   <span class="flag">{icon('scale', size=15)} Head-to-head · Updated {UPDATED}</span>
-  <h1>{a['name']} vs {b['name']}</h1>
+  <h1>{An} vs {Bn}</h1>
   <p class="lede">{v['intro']}</p>
 </div></section>
 
-<div class="wrap">
-  <div class="vs-matchup">
-    <div class="vs-col{win_a}">
-      {flag_a}
-      {logo_img(v['a'], cls='plogo plogo-block')}
-      <div class="provider-name" style="justify-content:center;font-size:1.15rem">{a['name']}</div>
-      <div class="score-num">{a['score']}<span style="font-size:1rem;color:var(--muted)">/10</span></div>
-      <div class="stars">{stars(a['score'])}</div>
-      <p class="muted" style="margin:.4em 0 1.1em;font-size:.9rem">{a['best_for']} · {a['tier']}</p>
-      {cta(v['a'], label='View Plans', cls='btn btn-primary btn-sm btn-block')}
-      <a class="btn btn-ghost btn-sm btn-block" href="{review_url(v['a'])}" style="margin-top:8px">Full review</a>
-    </div>
-    <div class="vs-mid"><span>VS</span></div>
-    <div class="vs-col{win_b}">
-      {flag_b}
-      {logo_img(v['b'], cls='plogo plogo-block')}
-      <div class="provider-name" style="justify-content:center;font-size:1.15rem">{b['name']}</div>
-      <div class="score-num">{b['score']}<span style="font-size:1rem;color:var(--muted)">/10</span></div>
-      <div class="stars">{stars(b['score'])}</div>
-      <p class="muted" style="margin:.4em 0 1.1em;font-size:.9rem">{b['best_for']} · {b['tier']}</p>
-      {cta(v['b'], label='View Plans', cls='btn btn-primary btn-sm btn-block')}
-      <a class="btn btn-ghost btn-sm btn-block" href="{review_url(v['b'])}" style="margin-top:8px">Full review</a>
-    </div>
-  </div>
-</div>
+<div class="wrap"><div class="vs-panel">
+  {side(v['a'], a, win_a, flag_a)}
+  <div class="vs-split"><span>VS</span></div>
+  {side(v['b'], b, win_b, flag_b)}
+</div></div>
 
-<div class="wrap narrow article-body" style="padding-top:38px">
+<div class="wrap wide article-body" style="padding-top:34px">
+  <p class="lede" style="margin-bottom:1.4em">{intro}</p>
+
   <div class="callout"><h3>Bottom line: {winner} wins</h3><p>{v['verdict']}</p></div>
 
   <h2>Round by round</h2>
-  <p>We scored both programs on the six things that actually decide a weight-loss plan. {tally}</p>
+  <p>We scored both programs on the six things that actually decide a weight-loss plan. {tally} Here's how each category shook out.</p>
   <div class="vs-rounds">{rounds_html}</div>
+
+  <h2>Where they differ most</h2>
+  <p>{differ}</p>
+  {f'<p>{similar}</p>' if similar else ''}
+
+  <h2>Pricing: {An} vs {Bn}</h2>
+  <p>{pricing} Remember that prices move constantly and depend on your dose, so treat the tiers as a guide and confirm the current number with each provider. The figure that matters is the total monthly cost once you reach your maintenance dose — a cheap starter price can climb. We unpack this in <a href="/guides/compounded-semaglutide-cost">how much compounded semaglutide costs</a>.</p>
 
   <h2>The specs, side by side</h2>
   <div class="table-scroll"><table class="cmp">
-    <thead><tr><th>&nbsp;</th><th>{a['name']}</th><th>{b['name']}</th></tr></thead>
+    <thead><tr><th>&nbsp;</th><th>{An}</th><th>{Bn}</th></tr></thead>
     <tbody>{trows}</tbody>
   </table></div>
 
   <h2>Which should you pick?</h2>
   <div class="proscons">
-    <div class="box pros"><h4>Choose {a['name']} if…</h4><p style="margin:0 0 14px;color:var(--ink-soft)">{v['pick_a']}</p>
-      {cta(v['a'], label=f"View {a['name']} plans", cls='btn btn-primary btn-sm')}</div>
-    <div class="box pros"><h4>Choose {b['name']} if…</h4><p style="margin:0 0 14px;color:var(--ink-soft)">{v['pick_b']}</p>
-      {cta(v['b'], label=f"View {b['name']} plans", cls='btn btn-primary btn-sm')}</div>
+    <div class="box pros"><h4>Choose {An} if…</h4><p style="margin:0 0 14px;color:var(--ink-soft)">{v['pick_a']}</p>
+      {cta(v['a'], label=f"View {An} plans", cls='btn btn-primary btn-sm')}</div>
+    <div class="box pros"><h4>Choose {Bn} if…</h4><p style="margin:0 0 14px;color:var(--ink-soft)">{v['pick_b']}</p>
+      {cta(v['b'], label=f"View {Bn} plans", cls='btn btn-primary btn-sm')}</div>
   </div>
 
-  <p class="muted" style="font-size:.9rem;margin-top:26px">Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider — it changes nothing about the scores or the verdict. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
+  <h2>Common questions</h2>
+  <div class="faq">{vfaq_html}</div>
+
+  <div class="cta-strip">
+    <h2>Our pick: {winner}</h2>
+    <p>{winner} came out ahead across our scoring. Check its current plans and offer directly with the provider.</p>
+    {cta(v['winner'], label=f"View {winner} plans", cls='btn btn-primary btn-lg')}
+  </div>
+
+  <p class="muted" style="font-size:.88rem">Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider — it changes nothing about the scores or the verdict. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
 </div>
 """
-    ttl = f"{a['name']} vs {b['name']} ({YEAR}): Which Is Better? | {SITE['name']}"
-    desc = f"{a['name']} vs {b['name']} compared: scores, pricing tiers, support and our verdict on which online weight-loss program wins for you."
-    return base_page(ttl, desc, versus_url(v), body, active="/vs")
+    ttl = f"{An} vs {Bn} ({YEAR}): Which Is Better? | {SITE['name']}"
+    desc = f"{An} vs {Bn} compared across six categories — clinician support, medications, cost, onboarding and more — with a clear verdict on which wins."
+    return base_page(ttl, desc, versus_url(v), body, active="/comparisons", jsonld=ld_faq_custom(vfaq))
 
 # --------------------------------------------------------------------------
 # Page: Article
@@ -1337,7 +1409,7 @@ def render_versus_index():
 """
     return base_page(f"Weight-Loss Program Comparisons: Head-to-Head ({YEAR}) | {SITE['name']}",
                      "Side-by-side comparisons of the top online weight-loss programs — scores, pricing tiers and a clear verdict on each matchup.",
-                     "/vs", body, active="/vs", jsonld=ld_org())
+                     "/comparisons", body, active="/comparisons", jsonld=ld_org())
 
 def render_guides_index():
     cards = ""
@@ -1489,9 +1561,9 @@ def main():
     for slug in PROVIDER_ORDER:
         written.append((write(f"reviews/{slug}.html", render_review(slug)), review_url(slug)))
     # versus
-    written.append((write("vs/index.html", render_versus_index()), "/vs"))
+    written.append((write("comparisons.html", render_versus_index()), "/comparisons"))
     for v in VERSUS:
-        written.append((write(f"vs/{v['a']}-vs-{v['b']}.html", render_versus(v)), versus_url(v)))
+        written.append((write(f"{v['a']}-vs-{v['b']}.html", render_versus(v)), versus_url(v)))
     # guides
     written.append((write("guides/index.html", render_guides_index()), "/guides"))
     for a in ARTICLES:

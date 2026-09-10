@@ -241,7 +241,32 @@ p { margin: 0 0 1em; }
 
 /* ---------- versus ---------- */
 .vs-hero { background: var(--paper); border-bottom: 1px solid var(--line); }
-.vs-hero .wrap { padding: 40px 24px 70px; text-align: center; }
+.vs-hero .wrap { padding: 38px 24px 32px; text-align: center; }
+.vs-hero .crumbs { text-align: left; }
+
+/* wide editorial container */
+.wide { max-width: 1000px; margin: 0 auto; }
+
+/* redesigned matchup panel (symmetric, no overlap) */
+.vs-panel { position: relative; display: grid; grid-template-columns: 1fr 1fr; max-width: 860px; margin: 26px auto 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.vs-side { padding: 30px 26px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.vs-side:first-child { border-right: 1px solid var(--line); }
+.vs-side.win { background: var(--accent-tint); }
+.vs-side .plogo-block { margin: 0 auto 8px; }
+.vs-side .vs-name { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; }
+.vs-side .score-num { font-size: 2.6rem; }
+.vs-side .vs-meta { color: var(--muted); font-size: .87rem; margin: 2px 0 14px; }
+.vs-side .btn { max-width: 250px; margin-left: auto; margin-right: auto; }
+.vs-side .win-flag { margin-bottom: 2px; }
+.vs-split { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 46px; height: 46px;
+  border-radius: 50%; background: var(--paper); border: 1px solid var(--line); display: grid; place-items: center;
+  font-family: var(--serif); font-weight: 600; color: var(--muted); font-size: .9rem; z-index: 2; }
+@media (max-width: 560px){
+  .vs-panel { grid-template-columns: 1fr; }
+  .vs-side:first-child { border-right: none; border-bottom: 1px solid var(--line); }
+  .vs-split { display: none; }
+}
 .vs-hero h1 { margin-bottom: .3em; }
 .vs-hero .lede { color: var(--ink-soft); max-width: 62ch; margin: 0 auto; }
 .vs-hero .flag { display: inline-flex; gap: 8px; background: var(--surface); border: 1px solid var(--line); color: var(--muted);
