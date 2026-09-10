@@ -26,16 +26,16 @@ YEAR = TODAY.year
 
 # >>> REPLACE THESE with your real affiliate/tracking links, then rebuild. <<<
 AFFILIATE_LINKS = {
-    "embody":     "#",
-    "ro":         "https://ro.co",
-    "found":      "#",
-    "altrx":      "#",
-    "medvi":      "#",
-    "trimrx":     "#",
-    "healthrx":   "#",
-    "bmimd":      "#",
-    "directmeds": "#",
-    "wellmedr":   "#",
+    "embody":     "https://track.revoffers.com/aff_c?offer_id=1548&aff_id=12905",
+    "ro":         "https://ro.co",  # no affiliate link supplied — homepage placeholder
+    "found":      "https://track.revoffers.com/aff_c?offer_id=1162&aff_id=12905",
+    "altrx":      "https://altrx.com/glp1/offer-v9?sub1=&sub2=&sub3=&sub4=&sub5=&_ef_transaction_id=&utm_source=partners&utm_campaign=id_21&utm_affiliate=21&ef=n&ef_oid=108&ef_aid=21&uid=95&oid=108&affid=21&uid=1910&oid2=5043&affid2=1952",
+    "medvi":      "https://glp1.medvi.org/rx?page=multi4&uid=105&oid=5&affid=2&pub=1952&sub1=1952&uid=1946&oid2=5665&affid2=1952",
+    "trimrx":     "https://trimrx.com/glp1/offer-v4-meta?catalog=winter&discount=winter140&offer_url_id=29&oid=1&affid=40&oid2=4461&affid2=1952",
+    "healthrx":   "https://track.revoffers.com/aff_c?offer_id=1630&aff_id=12905&url_id=12442",
+    "bmimd":      "#",  # no affiliate link supplied yet
+    "directmeds": "https://track.revoffers.com/aff_c?offer_id=1304&aff_id=12904",
+    "wellmedr":   "https://track.revoffers.com/aff_c?offer_id=1593&aff_id=12905",
 }
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -638,8 +638,8 @@ def cta(slug, label=None, cls="btn btn-primary btn-sm btn-block"):
     p = PROVIDERS[slug]
     label = label or f"Check {p['name']}"
     url = AFFILIATE_LINKS.get(slug, "#")
-    rel = ' rel="sponsored nofollow"' if url != "#" else ""
-    return f'<a class="{cls}" href="{url}"{rel}>{label} →</a>'
+    rel = ' rel="sponsored nofollow" target="_blank"' if url != "#" else ""
+    return f'<a class="{cls}" href="{html.escape(url, quote=True)}"{rel}>{label} →</a>'
 
 def stars(score):
     filled = round(score / 2)  # 0-10 -> 0-5
