@@ -947,6 +947,12 @@ def ld_org():
             '"url":"%s","description":"Editorial reviews and rankings of online weight-loss programs."}'
             % (SITE["name"], SITE["domain"]))
 
+def ld_website():
+    # Helps Google/social show the site name as "Weight Loss Reviewed".
+    return ('{"@context":"https://schema.org","@type":"WebSite","name":"%s",'
+            '"alternateName":"weightlossreviewed.com","url":"%s"}'
+            % (SITE["name"], SITE["domain"]))
+
 def ld_product(p, slug):
     return ('{"@context":"https://schema.org","@type":"Product","name":"%s",'
             '"description":"%s","review":{"@type":"Review","reviewRating":'
@@ -1165,7 +1171,7 @@ def render_home():
     return base_page(
         f"Best Online Weight-Loss Programs ({YEAR}) — Ranked &amp; Scored | {SITE['name']}",
         f"We independently scored {len(PROVIDER_ORDER)} online weight-loss programs on clinician support, medication access, value and transparency. Compare the ranked chart.",
-        "/", body, active="/", jsonld=[ld_org(), ld_faq()])
+        "/", body, active="/", jsonld=[ld_website(), ld_org(), ld_faq()])
 
 # --------------------------------------------------------------------------
 # Page: Provider review
@@ -1339,17 +1345,40 @@ def render_versus(v):
     else:
         wname, lname, ws, ls, wcount, loser_pick = Bn, An, b["score"], a["score"], wins_b, v["pick_a"]
     lp = loser_pick[0].lower() + loser_pick[1:]
+    med_better = An if a["subscores"]["Medication access"] >= b["subscores"]["Medication access"] else Bn
+    clin_better = An if a["subscores"]["Clinical support"] >= b["subscores"]["Clinical support"] else Bn
+    app_better = An if a["subscores"]["App & tracking"] >= b["subscores"]["App & tracking"] else Bn
     vfaq = [
         (f"Is {An} better than {Bn}?",
          f"In our scoring, {wname} comes out ahead — {ws}/10 to {ls}/10, winning {wcount} of the six categories we rate. That makes it our pick for most people. {lname} is still the better choice if {lp}"),
         (f"Which is cheaper, {An} or {Bn}?",
          f"{cheaper_note}. {pricing} Whichever you lean toward, compare the total cost at your maintenance dose — not just the introductory price."),
+        (f"Do {An} and {Bn} prescribe the same medications?",
+         f"Both work from the same GLP-1 toolkit — semaglutide and/or tirzepatide, branded or compounded depending on the plan. On medication access and flexibility, {med_better} scores a little higher in our review. Availability of any specific product shifts over time, so confirm current options with each provider."),
+        (f"Which has better clinician support, {An} or {Bn}?",
+         f"{clin_better} edges ahead on clinical support in our scoring — that's the depth of real clinician time and follow-up you get. Both include a genuine medical review; the difference is how much ongoing access comes with it."),
+        (f"Are {An} and {Bn} legit?",
+         f"Both meet the bar we score for: a real evaluation by a licensed clinician before any prescription, clear medication information, and a way to reach someone with questions. Neither should issue a GLP-1 without a proper review."),
+        (f"Which has the better app, {An} or {Bn}?",
+         f"{app_better} has the edge on day-to-day tools and tracking in our scoring. If living in an app and logging progress matters to you, that's worth weighing; if you mostly want the medication handled, it matters less."),
         (f"Can I switch between {An} and {Bn}?",
          f"Generally, yes. Neither program locks you into a long contract, so if you start with one and it isn't the right fit you can move to the other. Just never stop or change a GLP-1 medication without talking to your clinician first."),
     ]
     vfaq_html = "".join(f'<details><summary>{q}</summary><div class="faq-a"><p>{ans}</p></div></details>' for q, ans in vfaq)
 
-    intro = (f"{An} and {Bn} both rank among the {len(PROVIDER_ORDER)} online weight-loss programs we've scored, and they draw from the same pool of GLP-1 medications — so on the surface they can look interchangeable. They aren't. {first_sentence(a['summary'])}. {first_sentence(b['summary'])}. Below we break the matchup down category by category, then tell you which one fits which kind of person.")
+    intro = (f"<strong>{An} and {Bn} prescribe the same GLP-1 medications — so what really separates them is the care around the prescription.</strong> "
+             f"{An} is our pick for {a['best_for'].lower()}; {Bn}, for {b['best_for'].lower()}. Here's how they stack up, category by category.")
+    # bold the actual verdict (first sentence), keep the rest lighter
+    vparts = re.split(r'(?<=[.!?])\s+', v['verdict'].strip(), maxsplit=1)
+    verdict_html = f"<strong>{vparts[0]}</strong>" + (f" {vparts[1]}" if len(vparts) > 1 else "")
+    # sticky mobile CTA bar — winner on the left, more prominent
+    w_slug = v["winner"]; l_slug = v["b"] if w_slug == v["a"] else v["a"]
+    def visit_btn(slug, cls):
+        url = AFFILIATE_LINKS.get(slug, "#")
+        rel = ' rel="sponsored nofollow" target="_blank"' if url != "#" else ""
+        return f'<a class="{cls}" href="{html.escape(url, quote=True)}"{rel}>Visit {PROVIDERS[slug]["name"]}</a>'
+    sticky = (f'<div class="vs-sticky">{visit_btn(w_slug, "vs-sticky-btn win")}'
+              f'{visit_btn(l_slug, "vs-sticky-btn")}</div><div class="vs-sticky-spacer"></div>')
 
     def mast_logo(slug):
         src = logo_src(slug)
@@ -1366,9 +1395,9 @@ def render_versus(v):
 </div></section>
 
 <div class="wrap wide article-body" style="padding-top:36px">
-  <p class="lede" style="margin-bottom:1.4em">{intro}</p>
+  <p style="font-size:1.1rem;margin-bottom:1.4em">{intro}</p>
 
-  <div class="callout"><h3>Bottom line: {winner} wins</h3><p>{v['verdict']}</p>
+  <div class="callout"><h3>Bottom line: {winner} wins</h3><p>{verdict_html}</p>
     <p style="margin:16px 0 0">{cta(v['winner'], label=f"View {winner} plans", cls='btn btn-primary btn-sm')}</p></div>
 
   <h2>Round by round</h2>
@@ -1407,6 +1436,7 @@ def render_versus(v):
 
   <p class="muted" style="font-size:.88rem">Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider — it changes nothing about the scores or the verdict. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
 </div>
+{sticky}
 """
     ttl = f"{An} vs {Bn} ({YEAR}): Which Is Better? | {SITE['name']}"
     desc = f"{An} vs {Bn} compared across six categories — clinician support, medications, cost, onboarding and more — with a clear verdict on which wins."

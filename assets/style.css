@@ -281,6 +281,19 @@ p { margin: 0 0 1em; }
 .vs-round .rd-scores b { color: var(--ink); }
 @media (max-width: 620px){ .vs-round { grid-template-columns: 1fr; } .vs-round .rd-scores { grid-column: 1; grid-row: auto; text-align: left; } }
 
+/* sticky mobile CTA bar (comparison pages) — winner on the left, highlighted */
+.vs-sticky, .vs-sticky-spacer { display: none; }
+@media (max-width: 720px) {
+  .vs-sticky { display: flex; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 70;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(250,248,244,.97);
+    backdrop-filter: blur(8px); border-top: 1px solid var(--line); box-shadow: 0 -4px 16px -8px rgba(26,26,26,.22); }
+  .vs-sticky-btn { flex: 1; min-width: 0; text-align: center; padding: 13px 8px; border-radius: 9px; font-family: var(--sans);
+    font-weight: 700; font-size: .92rem; border: 1.5px solid var(--accent); background: var(--surface); color: var(--accent);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vs-sticky-btn.win { background: var(--accent); color: #f7f4ec; flex: 1.25; box-shadow: 0 4px 14px -5px rgba(31,92,61,.55); }
+  .vs-sticky-spacer { display: block; height: 66px; }
+}
+
 /* alternatives list */
 .alt-list { display: flex; flex-direction: column; gap: 14px; margin: 22px 0 30px; }
 .alt-item { display: grid; grid-template-columns: 40px minmax(0,1fr) 190px; gap: 18px; align-items: center;
