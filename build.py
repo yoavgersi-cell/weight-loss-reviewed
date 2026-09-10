@@ -517,6 +517,76 @@ VERSUS = [
             ("Best suited to", "Brand + convenience", "Budget-first"),
         ],
     },
+    {
+        "a": "embody", "b": "found", "winner": "embody",
+        "intro": "Two support-heavy programs that both go well beyond the prescription. Embody leans on live clinician access and flexibility; Found is built around coaching and its app.",
+        "verdict": "Embody edges it as the more complete package — real clinician time plus flexible medication access. But Found is arguably the best in the category at coaching and habit change, so if that's specifically what you need, it's a genuinely close call.",
+        "pick_a": "You want the most complete mix of clinician access, medication flexibility and coaching.",
+        "pick_b": "Behavior change and a great app matter to you more than anything else.",
+    },
+    {
+        "a": "ro", "b": "found", "winner": "ro",
+        "intro": "An established national brand versus the category's best coaching experience. Both are polished; they emphasize different things.",
+        "verdict": "Ro takes it narrowly on the strength of its scale, logistics and brand trust. Found is right behind and wins outright if coaching and its app are your priority — this one comes down to whether you value infrastructure or behavior support more.",
+        "pick_a": "Brand trust and smooth, proven logistics matter most.",
+        "pick_b": "You want the strongest coaching and app, and will trade a little brand scale for it.",
+    },
+    {
+        "a": "embody", "b": "medvi", "winner": "embody",
+        "intro": "The most complete full-service program versus a lean, no-nonsense route to a GLP-1. Support and flexibility against speed and simplicity.",
+        "verdict": "Embody is the better program for most people — more clinician time, coaching and medication flexibility. Medvi is the pick if you already know what you want and would rather skip the extras for a faster, simpler start.",
+        "pick_a": "You want ongoing support and a plan that adapts over time.",
+        "pick_b": "You want a quick, straightforward path to semaglutide or tirzepatide.",
+    },
+    {
+        "a": "found", "b": "altrx", "winner": "found",
+        "intro": "Coaching-first versus budget-first. Found invests in support and its app; AltRx keeps things cheap and fast.",
+        "verdict": "Found is the stronger program if you value coaching and a polished experience, and it wins here. AltRx counters on price and speed — if the lowest entry cost is the deciding factor and you're happy to self-manage, it's the better fit.",
+        "pick_a": "You want coaching and a great app, and will pay a bit more.",
+        "pick_b": "You want the lowest entry price and a fast start.",
+    },
+    {
+        "a": "found", "b": "medvi", "winner": "found",
+        "intro": "A coaching-led program versus a simple GLP-1 access play. Both are mid-priced; the difference is how much hand-holding you get.",
+        "verdict": "Found wins for anyone who wants support built in — coaching, community and a strong app. Medvi is the leaner choice for people who just want the medication handled without the extras.",
+        "pick_a": "You want coaching and structure, not just a prescription.",
+        "pick_b": "You want a clean, quick GLP-1 start and minimal fuss.",
+    },
+    {
+        "a": "ro", "b": "medvi", "winner": "ro",
+        "intro": "A big, established telehealth brand versus a simple, focused GLP-1 program. Trust and polish against speed and price.",
+        "verdict": "Ro takes it on scale, logistics and brand reassurance. Medvi is the value-minded alternative if you don't need the brand name and want a quicker, lighter experience.",
+        "pick_a": "Brand trust and mature logistics are worth a higher price to you.",
+        "pick_b": "You want a simpler, faster route and care less about the brand.",
+    },
+    {
+        "a": "altrx", "b": "medvi", "winner": "altrx",
+        "intro": "Two value-minded programs, nearly neck and neck. AltRx leads on price; Medvi leans on a clean, flexible GLP-1 process.",
+        "verdict": "AltRx edges it on cost and speed, making it our pick for the tightest budgets. Medvi is just behind and worth it if you want a slightly more guided choice between semaglutide and tirzepatide. Genuinely close.",
+        "pick_a": "The lowest possible entry price is your priority.",
+        "pick_b": "You want a clean, guided choice between semaglutide and tirzepatide.",
+    },
+    {
+        "a": "found", "b": "trimrx", "winner": "found",
+        "intro": "The category's best coaching versus a tirzepatide specialist. Broad support against focused medication expertise.",
+        "verdict": "Found is the better all-round program and wins for most people. TrimRx is the smarter pick if you've specifically decided on tirzepatide and want a program built around it.",
+        "pick_a": "You want strong coaching and flexibility across options.",
+        "pick_b": "You've already committed to tirzepatide.",
+    },
+    {
+        "a": "ro", "b": "trimrx", "winner": "ro",
+        "intro": "An established generalist versus a tirzepatide specialist. Brand and breadth against focus.",
+        "verdict": "Ro wins for most people on scale, logistics and trust. TrimRx is the better choice specifically if tirzepatide is your route and you want a program that specializes in it.",
+        "pick_a": "You want a broad, established program with smooth logistics.",
+        "pick_b": "Tirzepatide specifically is your plan.",
+    },
+    {
+        "a": "embody", "b": "healthrx", "winner": "embody",
+        "intro": "A full-service, coaching-led program versus a prescription-forward one that nails pharmacy logistics.",
+        "verdict": "Embody is the more complete, better-supported program and our pick for most people. HealthRx is a solid, efficient choice if what you mainly want is reliable medication access with the pharmacy side handled for you.",
+        "pick_a": "You want clinician time and coaching, not just the medication.",
+        "pick_b": "You mainly want reliable meds and smooth pharmacy handling.",
+    },
 ]
 
 # --------------------------------------------------------------------------
@@ -781,13 +851,22 @@ def score_word(score):
     if score >= 8.0: return "Very good"
     return "Good"
 
+def sentence1(s):
+    return re.split(r'(?<=[.!?])\s+', s.strip())[0]
+
+# "Alternatives to X" money pages — built for the most-searched brands.
+ALT_TARGETS = ["ro", "found", "embody", "medvi", "altrx"]
+
+def alt_url(slug):
+    return f"/{slug}-alternatives"
+
 def header(active=""):
     def link(name, href):
         cur = ' aria-current="page"' if href == active else ""
         return f'<a href="{href}"{cur}>{name}</a>'
     links = "".join(link(name, href) for name, href in NAV)
     return f"""<header class="site-header"><div class="wrap">
-  <a class="brand" href="/"><span class="mark">WR</span>Weight&nbsp;Loss&nbsp;<em>Reviewed</em></a>
+  <a class="brand" href="/"><span class="brand-name">Weight&nbsp;Loss&nbsp;<em>Reviewed</em></span><span class="brand-tag">Compare the best GLP-1 weight-loss programs</span></a>
   <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
   <nav class="nav" id="nav">{links}</nav>
 </div></header>"""
@@ -798,7 +877,7 @@ def footer():
     return f"""<footer class="site-footer"><div class="wrap">
   <div class="foot-grid">
     <div>
-      <a class="brand" href="/"><span class="mark">WR</span>Weight&nbsp;Loss&nbsp;<em>Reviewed</em></a>
+      <a class="brand" href="/"><span class="brand-name">Weight&nbsp;Loss&nbsp;<em>Reviewed</em></span><span class="brand-tag">Compare the best GLP-1 weight-loss programs</span></a>
       <p>Independent, editorial scoring of online weight-loss programs. We rank what we'd actually recommend to a friend — and we tell you exactly how we score.</p>
       <p><a href="/methodology">Our scoring methodology →</a></p>
       <div class="foot-badges">
@@ -1182,11 +1261,23 @@ def render_versus(v):
         if len(items) == 2: return f"{items[0]} and {items[1]}"
         return ", ".join(items[:-1]) + f", and {items[-1]}"
 
-    # specs table
+    # specs table — use hand-written rows if present, else auto from sub-scores
+    def qual(x):
+        return ("Extensive" if x >= 9.2 else "Strong" if x >= 8.7 else "Solid" if x >= 8.2
+                else "Good" if x >= 7.8 else "Basic")
+    rows = v.get("rows")
+    if not rows:
+        rows = [
+            ("Clinician support", qual(a["subscores"]["Clinical support"]), qual(b["subscores"]["Clinical support"])),
+            ("Medication access", qual(a["subscores"]["Medication access"]), qual(b["subscores"]["Medication access"])),
+            ("Ease of starting", qual(a["subscores"]["Onboarding"]), qual(b["subscores"]["Onboarding"])),
+            ("Value for money", qual(a["subscores"]["Value"]), qual(b["subscores"]["Value"])),
+            ("Typical price", f"{a['tier']} · {TIER_MEANING[a['tier']]}", f"{b['tier']} · {TIER_MEANING[b['tier']]}"),
+        ]
     trows = ""
     trows += f'<tr><td class="attr">Editor rating</td><td><strong>{a["score"]}/10</strong> · {score_word(a["score"])}</td><td><strong>{b["score"]}/10</strong> · {score_word(b["score"])}</td></tr>'
     trows += f'<tr><td class="attr">Best for</td><td>{a["best_for"]}</td><td>{b["best_for"]}</td></tr>'
-    for attr, va, vb in v["rows"]:
+    for attr, va, vb in rows:
         trows += f'<tr><td class="attr">{attr}</td><td>{va}</td><td>{vb}</td></tr>'
 
     # round-by-round breakdown, driven by the sub-scores
@@ -1322,6 +1413,60 @@ def render_versus(v):
     return base_page(ttl, desc, versus_url(v), body, active="/comparisons", jsonld=ld_faq_custom(vfaq))
 
 # --------------------------------------------------------------------------
+# Page: Alternatives to <brand>
+# --------------------------------------------------------------------------
+def render_alternatives(target):
+    t = PROVIDERS[target]
+    Tn = t["name"]
+    alts = [s for s in PROVIDER_ORDER if s != target][:6]
+
+    items = ""
+    for i, slug in enumerate(alts, 1):
+        p = PROVIDERS[slug]
+        # is there a direct comparison page for this pair?
+        vpair = next((vv for vv in VERSUS if {vv["a"], vv["b"]} == {target, slug}), None)
+        vlink = f' · <a href="{versus_url(vpair)}">{Tn} vs {p["name"]}</a>' if vpair else ""
+        why = f"{p['highlight']} We score it {p['score']}/10 — our pick for {p['best_for'].lower()}."
+        items += f"""<div class="alt-item">
+  <div class="alt-rank">{i}</div>
+  <div class="alt-main">
+    <div class="alt-name"><a href="{review_url(slug)}">{p['name']}</a> <span class="best-tag">{p['best_for']}</span></div>
+    <p>{why}</p>
+    <div class="alt-links"><a href="{review_url(slug)}">Read review</a>{vlink}</div>
+  </div>
+  <div class="alt-side">
+    <div class="score-num">{p['score']}<span>/10</span></div>
+    <div class="score-word">{score_word(p['score'])}</div>
+    {cta(slug, label='View Plans', cls='btn btn-primary btn-sm btn-block')}
+  </div>
+</div>"""
+
+    top = alts[0]
+    body = f"""
+<section class="hero"><div class="wrap narrow">
+  {crumbs([("Home","/"),("Comparisons","/comparisons"),(f'{Tn} alternatives', "")])}
+  <span class="hero-flag"><span class="dot"></span> {len(alts)} alternatives · Updated {UPDATED}</span>
+  <h1>The best {Tn} alternatives</h1>
+  <p class="lede">{Tn} is a strong program — {sentence1(t['summary']).rstrip('.')} — but it isn't the right fit for everyone. Here are the {Tn} alternatives we rate most highly, scored on the same <a href="/methodology">methodology</a>.</p>
+</div></section>
+
+<div class="wrap wide article-body" style="padding-top:32px">
+  <p>Maybe you want a lower price, more coaching, a different medication, or simply a second opinion before you commit. Whatever the reason, these programs are the closest {Tn} competitors worth your time — ranked by our editorial score. Still weighing {Tn} itself? Read our <a href="{review_url(target)}">full {Tn} review</a>.</p>
+
+  <div class="alt-list">{items}</div>
+
+  <div class="callout"><h3>{icon('badge')} Our top {Tn} alternative: {PROVIDERS[top]['name']}</h3>
+    <p>{PROVIDERS[top]['summary']}</p>
+    <p style="margin:14px 0 0">{cta(top, label=f"View {PROVIDERS[top]['name']} plans", cls='btn btn-primary btn-sm')}</p></div>
+
+  <p class="muted" style="font-size:.88rem">Rankings are our independent editorial scores, built on the same <a href="/methodology">methodology</a>. We may earn a commission from links here — it never affects our scoring. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
+</div>
+"""
+    ttl = f"{len(alts)} Best {Tn} Alternatives ({YEAR}) — Compared &amp; Ranked | {SITE['name']}"
+    desc = f"Looking for a {Tn} alternative? We ranked the {len(alts)} best competitors on clinician support, medication access, value and transparency."
+    return base_page(ttl, desc, alt_url(target), body, active="/comparisons", jsonld=ld_org())
+
+# --------------------------------------------------------------------------
 # Page: Article
 # --------------------------------------------------------------------------
 def render_article(a):
@@ -1387,6 +1532,12 @@ def render_versus_index():
   <h3>{a['name']} vs {b['name']}</h3>
   <p>{a['name']} ({a['score']}) vs {b['name']} ({b['score']}). {v['intro'][:90]}…</p>
   <span class="read">See the verdict →</span></div></a>"""
+    alt_cards = "".join(
+        f'<a class="post-card" href="{alt_url(s)}"><div class="thumb"></div><div class="pc-body">'
+        f'<span class="tag">Alternatives</span><h3>{PROVIDERS[s]["name"]} alternatives</h3>'
+        f'<p>The best {PROVIDERS[s]["name"]} competitors, ranked and compared.</p>'
+        f'<span class="read">See alternatives →</span></div></a>'
+        for s in ALT_TARGETS)
     body = f"""
 <section class="hero"><div class="wrap">
   {crumbs([("Home","/"),("Comparisons","")])}
@@ -1395,6 +1546,11 @@ def render_versus_index():
   <p class="lede">Deciding between two programs? Each comparison breaks the matchup down to a clear, honest verdict.</p>
 </div></section>
 <section class="section"><div class="wrap"><div class="post-grid">{cards}</div></div></section>
+<section class="section section-soft"><div class="wrap">
+  <h2 style="margin-top:0">Looking for alternatives?</h2>
+  <p class="lead">Shopping away from a specific brand? These round up the best competitors, ranked.</p>
+  <div class="post-grid">{alt_cards}</div>
+</div></section>
 """
     return base_page(f"Weight-Loss Program Comparisons: Head-to-Head ({YEAR}) | {SITE['name']}",
                      "Side-by-side comparisons of the top online weight-loss programs — scores, pricing tiers and a clear verdict on each matchup.",
@@ -1553,6 +1709,8 @@ def main():
     written.append((write("comparisons.html", render_versus_index()), "/comparisons"))
     for v in VERSUS:
         written.append((write(f"{v['a']}-vs-{v['b']}.html", render_versus(v)), versus_url(v)))
+    for tslug in ALT_TARGETS:
+        written.append((write(f"{tslug}-alternatives.html", render_alternatives(tslug)), alt_url(tslug)))
     # guides
     written.append((write("guides/index.html", render_guides_index()), "/guides"))
     for a in ARTICLES:

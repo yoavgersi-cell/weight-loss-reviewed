@@ -54,11 +54,11 @@ p { margin: 0 0 1em; }
 .site-header { position: sticky; top: 0; z-index: 60; background: rgba(250,248,244,.92);
   backdrop-filter: saturate(160%) blur(10px); border-bottom: 1px solid var(--line); }
 .site-header .wrap { display: flex; align-items: center; gap: 20px; height: 68px; }
-.brand { display: flex; align-items: center; gap: 10px; font-family: var(--serif); font-weight: 600; font-size: 1.22rem; color: var(--ink); letter-spacing: -0.01em; }
-.brand:hover { color: var(--ink); }
-.brand .mark { width: 32px; height: 32px; border-radius: 7px; flex: none; background: var(--accent);
-  display: grid; place-items: center; color: #f7f4ec; font-family: var(--serif); font-weight: 700; font-size: .82rem; }
-.brand em { color: var(--accent); font-style: italic; }
+.brand { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 0; line-height: 1.12; text-decoration: none; }
+.brand:hover { text-decoration: none; }
+.brand-name { font-family: var(--serif); font-weight: 600; font-size: 1.24rem; color: var(--ink); letter-spacing: -0.01em; }
+.brand-name em { color: var(--accent); font-style: italic; }
+.brand-tag { font-family: var(--sans); font-size: .66rem; font-weight: 500; color: var(--muted); letter-spacing: .04em; margin-top: 2px; text-transform: uppercase; }
 .nav { margin-left: auto; display: flex; gap: 26px; align-items: center; }
 .nav a { color: var(--ink-soft); font-weight: 500; font-size: .93rem; }
 .nav a:hover, .nav a[aria-current="page"] { color: var(--accent); }
@@ -281,6 +281,25 @@ p { margin: 0 0 1em; }
 .vs-round .rd-scores b { color: var(--ink); }
 @media (max-width: 620px){ .vs-round { grid-template-columns: 1fr; } .vs-round .rd-scores { grid-column: 1; grid-row: auto; text-align: left; } }
 
+/* alternatives list */
+.alt-list { display: flex; flex-direction: column; gap: 14px; margin: 22px 0 30px; }
+.alt-item { display: grid; grid-template-columns: 40px minmax(0,1fr) 190px; gap: 18px; align-items: center;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; }
+.alt-rank { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; color: var(--muted); text-align: center; }
+.alt-main .alt-name { font-family: var(--serif); font-weight: 600; font-size: 1.24rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.alt-main .alt-name a { color: var(--ink); }
+.alt-main .alt-name a:hover { color: var(--accent); }
+.alt-main p { margin: 7px 0 8px; color: var(--ink-soft); font-size: .96rem; }
+.alt-main .alt-links { font-size: .86rem; color: var(--muted); }
+.alt-main .alt-links a { color: var(--accent); }
+.alt-side { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.alt-side .btn { margin-top: 6px; }
+@media (max-width: 620px){
+  .alt-item { grid-template-columns: 34px minmax(0,1fr); }
+  .alt-side { grid-column: 2; align-items: stretch; text-align: left; flex-direction: row; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .alt-side .btn { margin-top: 0; width: 100%; }
+}
+
 /* comparison table */
 .table-scroll { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: var(--radius); }
 table.cmp { border-collapse: collapse; width: 100%; min-width: 540px; font-size: .96rem; }
@@ -373,9 +392,10 @@ table.cmp tbody tr:hover td.attr { background: #dbe6dd; }
 .site-footer h4 { font-family: var(--sans); color: #f2ede2; font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 15px; }
 .site-footer a { color: #b3ada0; display: block; margin-bottom: 10px; }
 .site-footer a:hover { color: #f2ede2; }
-.site-footer .brand { color: #f2ede2; margin-bottom: 13px; }
-.site-footer .brand .mark { background: #f2ede2; color: var(--accent); }
-.site-footer .brand em { color: #9ec3a9; }
+.site-footer .brand { margin-bottom: 13px; }
+.site-footer .brand-name { color: #f2ede2; }
+.site-footer .brand-name em { color: #9ec3a9; }
+.site-footer .brand-tag { color: #8f897c; }
 .foot-badges { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
 .foot-badges span { display: inline-flex; align-items: center; gap: 7px; font-size: .8rem; color: #8f897c; }
 .foot-badges svg { width: 16px; height: 16px; }
