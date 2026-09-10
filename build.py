@@ -1270,11 +1270,6 @@ def render_versus(v):
 <section class="vs-hero"><div class="wrap">
   {crumbs([("Home","/"),("Comparisons","/comparisons"),(f'{An} vs {Bn}', "")])}
   <span class="flag">{icon('scale', size=15)} Head-to-head comparison · Updated {UPDATED}</span>
-  <div class="vs-mast">
-    {mast_logo(v['a'])}
-    <div class="vs-mast-x">vs</div>
-    {mast_logo(v['b'])}
-  </div>
   <h1>{An} vs {Bn}</h1>
   <p class="lede">{v['intro']}</p>
 </div></section>
