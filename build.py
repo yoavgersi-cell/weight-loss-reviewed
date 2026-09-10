@@ -402,6 +402,18 @@ PROVIDERS = {
 
 SUBSCORE_ORDER = ["Clinical support", "Onboarding", "Value", "Medication access", "App & tracking", "Transparency"]
 
+# For the head-to-head "round by round" breakdown on versus pages.
+CATEGORY_FRAMES = {
+    "Clinical support": "How much real clinician time, messaging and follow-up you get.",
+    "Onboarding": "How quickly and painlessly you can get started.",
+    "Value": "What you get for the money, judged against comparable programs.",
+    "Medication access": "The range of GLP-1 options and how easily the plan adapts.",
+    "App & tracking": "The quality of the day-to-day tools.",
+    "Transparency": "How clearly pricing and terms are laid out up front.",
+}
+# Order the rounds by what matters most.
+ROUND_ORDER = ["Clinical support", "Medication access", "Value", "Onboarding", "App & tracking", "Transparency"]
+
 # --------------------------------------------------------------------------
 # Versus / battle pages. Each has a unique, hand-written verdict + attribute
 # grid. "winner" just controls which column gets the highlight ring.
@@ -827,7 +839,7 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap">
 <link rel="stylesheet" href="/assets/style.css?v={ASSET_VER}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Ctext x='16' y='22' font-size='15' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EWR%3C/text%3E%3C/svg%3E">
 {ld}
@@ -1162,9 +1174,33 @@ def render_versus(v):
     for attr, va, vb in v["rows"]:
         trows += f'<tr><td class="attr">{attr}</td><td>{va}</td><td>{vb}</td></tr>'
 
+    # round-by-round breakdown, driven by the sub-scores
+    rounds_html = ""; wins_a = wins_b = 0
+    for cat in ROUND_ORDER:
+        sa, sb = a["subscores"][cat], b["subscores"][cat]
+        diff = round(sa - sb, 1)
+        if abs(diff) < 0.15:
+            win_name, deg = None, None
+            sent = f"{a['name']} and {b['name']} are evenly matched."
+        elif diff > 0:
+            wins_a += 1; win_name = a['name']
+            deg = "clearly ahead" if diff >= 0.6 else ("a step ahead" if diff >= 0.3 else "just ahead")
+            sent = f"{a['name']} is {deg}."
+        else:
+            wins_b += 1; win_name = b['name']
+            deg = "clearly ahead" if -diff >= 0.6 else ("a step ahead" if -diff >= 0.3 else "just ahead")
+            sent = f"{b['name']} is {deg}."
+        win_tag = (f'<span class="win">Winner: {win_name}</span>' if win_name
+                   else '<span class="win" style="color:var(--muted);background:var(--surface-2)">Even</span>')
+        rounds_html += (f'<div class="vs-round"><h3>{cat}</h3>'
+                        f'<p>{CATEGORY_FRAMES[cat]} {sent}</p>'
+                        f'<div class="rd-scores">{a["name"]} <b>{sa}</b> · {b["name"]} <b>{sb}</b>{win_tag}</div></div>')
+    tally = (f"{a['name']} wins {wins_a}, {b['name']} wins {wins_b}"
+             + (f", {6 - wins_a - wins_b} even" if (6 - wins_a - wins_b) else "") + ".")
+
     body = f"""
 <section class="vs-hero"><div class="wrap">
-  {crumbs([("Home","/"),("Comparisons","/vs"),(f'{a["name"]} vs {b["name"]}', "")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  {crumbs([("Home","/"),("Comparisons","/vs"),(f'{a["name"]} vs {b["name"]}', "")])}
   <span class="flag">{icon('scale', size=15)} Head-to-head · Updated {UPDATED}</span>
   <h1>{a['name']} vs {b['name']}</h1>
   <p class="lede">{v['intro']}</p>
@@ -1196,10 +1232,14 @@ def render_versus(v):
   </div>
 </div>
 
-<div class="wrap narrow article-body" style="padding-top:34px">
-  <div class="callout"><h3>{icon('badge')} The verdict: {winner} takes it</h3><p>{v['verdict']}</p></div>
+<div class="wrap narrow article-body" style="padding-top:38px">
+  <div class="callout"><h3>Bottom line: {winner} wins</h3><p>{v['verdict']}</p></div>
 
-  <h2>Side-by-side comparison</h2>
+  <h2>Round by round</h2>
+  <p>We scored both programs on the six things that actually decide a weight-loss plan. {tally}</p>
+  <div class="vs-rounds">{rounds_html}</div>
+
+  <h2>The specs, side by side</h2>
   <div class="table-scroll"><table class="cmp">
     <thead><tr><th>&nbsp;</th><th>{a['name']}</th><th>{b['name']}</th></tr></thead>
     <tbody>{trows}</tbody>
@@ -1213,7 +1253,7 @@ def render_versus(v):
       {cta(v['b'], label=f"View {b['name']} plans", cls='btn btn-primary btn-sm')}</div>
   </div>
 
-  <div class="callout"><h3>{icon('shield')} Why you can trust this comparison</h3><p>Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider, and it changes nothing about the scores or the verdict. Pricing tiers are relative — confirm current prices with each provider. Nothing here is medical advice.</p></div>
+  <p class="muted" style="font-size:.9rem;margin-top:26px">Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider — it changes nothing about the scores or the verdict. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
 </div>
 """
     ttl = f"{a['name']} vs {b['name']} ({YEAR}): Which Is Better? | {SITE['name']}"
@@ -1267,7 +1307,7 @@ def render_reviews_index():
   <p>{p['highlight']}</p><span class="read">Read review →</span></div></a>"""
     body = f"""
 <section class="hero"><div class="wrap">
-  {crumbs([("Home","/"),("Reviews","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  {crumbs([("Home","/"),("Reviews","")])}
   <span class="hero-flag">{len(PROVIDER_ORDER)} in-depth, independent reviews</span>
   <h1>Online weight-loss program reviews</h1>
   <p class="lede">Independently scored reviews of each program — the good, the trade-offs, and who it's really for.</p>
@@ -1288,7 +1328,7 @@ def render_versus_index():
   <span class="read">See the verdict →</span></div></a>"""
     body = f"""
 <section class="hero"><div class="wrap">
-  {crumbs([("Home","/"),("Comparisons","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  {crumbs([("Home","/"),("Comparisons","")])}
   <span class="hero-flag">{len(VERSUS)} head-to-head matchups</span>
   <h1>Weight-loss program comparisons</h1>
   <p class="lede">Deciding between two programs? Each comparison breaks the matchup down to a clear, honest verdict.</p>
@@ -1307,7 +1347,7 @@ def render_guides_index():
   <span class="read">Read article →</span></div></a>"""
     body = f"""
 <section class="hero"><div class="wrap">
-  {crumbs([("Home","/"),("Articles","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  {crumbs([("Home","/"),("Articles","")])}
   <span class="hero-flag">{len(ARTICLES)} articles &amp; guides</span>
   <h1>Weight-loss articles &amp; guides</h1>
   <p class="lede">Plain-English answers to the questions people actually ask before choosing a GLP-1 program.</p>
@@ -1333,7 +1373,7 @@ def render_methodology():
     rows = "".join(f'<tr><td class="attr">{n}</td><td>{d}</td></tr>' for n, d in weights)
     body = f"""
 <section class="hero"><div class="wrap narrow">
-  {crumbs([("Home","/"),("How We Rank","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  {crumbs([("Home","/"),("How We Rank","")])}
   <span class="hero-flag">Editorial standards</span>
   <h1>How we score weight-loss programs</h1>
   <p class="lede">Our rankings are opinions, but they're not arbitrary. Here's exactly what we measure and how we keep it honest.</p>
@@ -1366,7 +1406,7 @@ def render_methodology():
 def render_about():
     body = f"""
 <section class="hero"><div class="wrap narrow">
-  {crumbs([("Home","/"),("About","")]).replace('class="crumbs"', 'class="crumbs" style="color:rgba(255,255,255,.7)"')}
+  {crumbs([("Home","/"),("About","")])}
   <span class="hero-flag">About us</span>
   <h1>Why Weight Loss Reviewed exists</h1>
   <p class="lede">Choosing an online weight-loss program is confusing on purpose. We cut through it.</p>
