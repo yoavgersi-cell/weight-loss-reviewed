@@ -33,7 +33,7 @@ AFFILIATE_LINKS = {
     "medvi":      "https://glp1.medvi.org/rx?page=multi4&uid=105&oid=5&affid=2&pub=1952&sub1=1952&uid=1946&oid2=5665&affid2=1952",
     "trimrx":     "https://trimrx.com/glp1/offer-v4-meta?catalog=winter&discount=winter140&offer_url_id=29&oid=1&affid=40&oid2=4461&affid2=1952",
     "healthrx":   "https://track.revoffers.com/aff_c?offer_id=1630&aff_id=12905&url_id=12442",
-    "bmimd":      "#",  # no affiliate link supplied yet
+    "bmimd":      "https://track.revoffers.com/aff_c?offer_id=1332&aff_id=12904",
     "directmeds": "https://track.revoffers.com/aff_c?offer_id=1304&aff_id=12904",
     "wellmedr":   "https://track.revoffers.com/aff_c?offer_id=1593&aff_id=12905",
 }
