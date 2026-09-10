@@ -36,6 +36,8 @@ AFFILIATE_LINKS = {
     "bmimd":      "https://track.revoffers.com/aff_c?offer_id=1332&aff_id=12904",
     "directmeds": "https://track.revoffers.com/aff_c?offer_id=1304&aff_id=12904",
     "wellmedr":   "https://track.revoffers.com/aff_c?offer_id=1593&aff_id=12905",
+    "shed":       "https://track.revoffers.com/aff_c?offer_id=1516&aff_id=12904",
+    "sprout":     "https://track.revoffers.com/aff_c?offer_id=1286&aff_id=12904",
 }
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -56,7 +58,8 @@ ASSET_VER = _asset_ver()
 # scores are editorial (our rating, 0-10). price_tier is a relative indicator.
 # --------------------------------------------------------------------------
 PROVIDER_ORDER = ["embody", "ro", "found", "altrx", "medvi",
-                  "trimrx", "healthrx", "bmimd", "directmeds", "wellmedr"]
+                  "trimrx", "healthrx", "bmimd", "directmeds", "wellmedr",
+                  "shed", "sprout"]
 
 PROVIDERS = {
     "embody": {
@@ -338,6 +341,62 @@ PROVIDERS = {
         ],
         "verdict": "WellMedr is a well-rounded generalist. It won't top any single category, but its whole-wellness angle and clinician guidance make it a dependable all-rounder for people who want a balanced plan rather than a specialist one.",
         "summary": "WellMedr takes a rounded, clinician-guided approach to weight management that considers wellness beyond the medication itself. It's a balanced all-rounder rather than a category leader.",
+    },
+    "shed": {
+        "name": "Shed",
+        "score": 7.9,
+        "tier": "$$",
+        "best_for": "Best for a simple start",
+        "highlight": "A simple, goal-focused way to get started.",
+        "bullets": [
+            "Straightforward GLP-1 onboarding",
+            "Goal-focused, motivating check-ins",
+            "No-frills and easy to follow",
+        ],
+        "subscores": {
+            "Clinical support": 7.8, "Onboarding": 8.4, "Value": 8.2,
+            "Medication access": 8.0, "App & tracking": 7.6, "Transparency": 7.9,
+        },
+        "pros": [
+            "Quick, uncomplicated signup",
+            "A clear focus on getting you started",
+            "Reasonable, middle-of-the-road pricing",
+            "Good fit for first-timers who want simplicity",
+        ],
+        "cons": [
+            "Lighter clinical and coaching depth",
+            "Fewer features than the premium programs",
+        ],
+        "verdict": "Shed keeps things simple: a clean path to a GLP-1 without a lot of extras. If you want to get started quickly and don't need heavy coaching, it does the job. For deeper support or complex needs, look higher up our list.",
+        "summary": "Shed is a straightforward telehealth weight-loss program focused on a simple, quick start with GLP-1 medication. It trades depth for ease, which makes it a reasonable pick for first-timers who value simplicity.",
+    },
+    "sprout": {
+        "name": "Sprout",
+        "score": 7.8,
+        "tier": "$$",
+        "best_for": "Best for a gentle start",
+        "highlight": "A gentle, beginner-friendly place to begin.",
+        "bullets": [
+            "Beginner-friendly onboarding",
+            "Lifestyle guidance alongside medication",
+            "Supportive, low-pressure approach",
+        ],
+        "subscores": {
+            "Clinical support": 7.9, "Onboarding": 8.2, "Value": 8.0,
+            "Medication access": 7.9, "App & tracking": 7.7, "Transparency": 7.9,
+        },
+        "pros": [
+            "Approachable for people new to GLP-1s",
+            "Emphasis on lifestyle, not just the medication",
+            "Low-pressure, supportive tone",
+            "Sensible mid-market pricing",
+        ],
+        "cons": [
+            "Not built for fast, aggressive plans",
+            "Lighter on advanced clinical features",
+        ],
+        "verdict": "Sprout is a gentle on-ramp — a good fit if you're new to GLP-1 medications and want a supportive, lifestyle-minded start rather than a clinical-heavy program. If you want maximum medical oversight or the lowest price, other picks fit better.",
+        "summary": "Sprout is a beginner-friendly telehealth weight-loss program that pairs GLP-1 medication with lifestyle guidance and a supportive, low-pressure approach. It's aimed at people easing into treatment for the first time.",
     },
 }
 
