@@ -155,12 +155,14 @@ p { margin: 0 0 1em; }
 .aside-note { font-size: .76rem; color: var(--muted); }
 
 @media (max-width: 720px) {
-  .rowcard { grid-template-columns: 40px 1fr; }
+  .rowcard { grid-template-columns: 40px minmax(0,1fr); }
   .logo-cell { border-right: none; border-bottom: 1px solid var(--line-soft); justify-content: flex-start; padding: 16px 20px 8px; }
   .rank { grid-row: 1 / 3; border-radius: var(--radius) 0 0 0; }
-  .cell-main { grid-column: 2; }
+  .cell-main { grid-column: 2; min-width: 0; }
+  /* let bullets wrap on mobile instead of clipping */
+  .bullets li { white-space: normal; overflow: visible; text-overflow: clip; }
   .aside-cell { grid-column: 1 / -1; border-left: none; border-top: 1px solid var(--line-soft); border-radius: 0 0 var(--radius) var(--radius);
-    display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; align-items: center; text-align: left; }
+    display: grid; grid-template-columns: auto minmax(0,1fr); gap: 8px 16px; align-items: center; text-align: left; }
   .aside-cell .score-badge { flex-direction: row; align-items: baseline; gap: 8px; }
   .aside-cell .btn-primary { grid-column: 1 / -1; }
   .aside-note { display: none; }
