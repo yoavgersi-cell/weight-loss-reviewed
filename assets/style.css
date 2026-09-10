@@ -249,48 +249,24 @@ p { margin: 0 0 1em; }
 /* wide editorial container */
 .wide { max-width: 1000px; margin: 0 auto; }
 
-/* redesigned matchup panel (symmetric, no overlap) */
-.vs-panel { position: relative; display: grid; grid-template-columns: 1fr 1fr; max-width: 860px; margin: 26px auto 0;
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-.vs-side { padding: 30px 26px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.vs-side:first-child { border-right: 1px solid var(--line); }
-.vs-side.win { background: var(--accent-tint); }
-.vs-side .plogo-block { margin: 0 auto 8px; }
-.vs-side .vs-name { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; }
-.vs-side .score-num { font-size: 2.6rem; }
-.vs-side .vs-meta { color: var(--muted); font-size: .87rem; margin: 2px 0 14px; }
-.vs-side .btn { max-width: 250px; margin-left: auto; margin-right: auto; }
-.vs-side .win-flag { margin-bottom: 2px; }
-.vs-split { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 46px; height: 46px;
-  border-radius: 50%; background: var(--paper); border: 1px solid var(--line); display: grid; place-items: center;
-  font-family: var(--serif); font-weight: 600; color: var(--muted); font-size: .9rem; z-index: 2; }
-@media (max-width: 560px){
-  .vs-panel { grid-template-columns: 1fr; }
-  .vs-side:first-child { border-right: none; border-bottom: 1px solid var(--line); }
-  .vs-split { display: none; }
-}
-.vs-hero h1 { margin-bottom: .3em; }
-.vs-hero .lede { color: var(--ink-soft); max-width: 62ch; margin: 0 auto; }
+.vs-hero h1 { margin-bottom: .3em; font-size: clamp(2rem, 4vw, 3.1rem); }
+.vs-hero .lede { color: var(--ink-soft); max-width: 60ch; margin: 0 auto; }
 .vs-hero .flag { display: inline-flex; gap: 8px; background: var(--surface); border: 1px solid var(--line); color: var(--muted);
-  padding: 5px 13px; border-radius: 999px; font-family: var(--sans); font-size: .76rem; font-weight: 600; margin-bottom: 16px; }
-.vs-matchup { display: grid; grid-template-columns: 1fr 60px 1fr; align-items: stretch; gap: 0;
-  max-width: 720px; margin: -46px auto 0; position: relative; z-index: 3; }
-.vs-col { background: var(--surface); border: 1px solid var(--line); padding: 26px 22px 24px; text-align: center; }
-.vs-col:first-child { border-radius: var(--radius) 0 0 var(--radius); }
-.vs-col:last-child { border-radius: 0 var(--radius) var(--radius) 0; border-left: none; }
-.vs-col.win { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); z-index: 2; }
-.vs-col .plogo { max-height: 40px; margin: 0 auto 12px; }
-.vs-col .score-num { font-size: 2.7rem; }
-.vs-col .win-flag { display: inline-flex; align-items: center; gap: 5px; background: var(--accent); color: #f7f4ec; font-family: var(--sans);
-  font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 3px 10px; border-radius: 999px; margin-bottom: 10px; }
-.vs-mid { display: grid; place-items: center; z-index: 4; }
-.vs-mid span { width: 48px; height: 48px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line);
-  display: grid; place-items: center; font-family: var(--serif); font-weight: 600; color: var(--muted); font-size: .92rem; }
-@media (max-width: 620px){
-  .vs-matchup { grid-template-columns: 1fr; margin-top: -30px; }
-  .vs-col:first-child { border-radius: var(--radius) var(--radius) 0 0; }
-  .vs-col:last-child { border-radius: 0 0 var(--radius) var(--radius); border-left: 1px solid var(--line); }
-  .vs-mid span { margin: -12px auto; }
+  padding: 5px 13px; border-radius: 999px; font-family: var(--sans); font-size: .76rem; font-weight: 600; margin-bottom: 22px; }
+
+/* creative versus masthead — two logos flanking a VS medallion */
+.vs-mast { display: flex; align-items: center; justify-content: center; gap: 26px; margin: 4px 0 24px; }
+.vs-mast-logo { flex: 0 0 auto; width: 208px; height: 116px; display: grid; place-items: center; padding: 22px 26px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-xs); }
+.vs-mast-logo img { max-height: 58px; max-width: 156px; width: auto; }
+.vs-mast-logo span { font-family: var(--serif); font-weight: 600; font-size: 1.5rem; color: var(--ink); text-align: center; }
+.vs-mast-x { flex: 0 0 auto; width: 54px; height: 54px; border-radius: 50%; background: var(--accent); color: #f7f4ec;
+  display: grid; place-items: center; font-family: var(--serif); font-style: italic; font-size: 1.25rem;
+  box-shadow: 0 5px 16px -5px rgba(31,92,61,.55); }
+@media (max-width: 540px){
+  .vs-mast { flex-direction: column; gap: 12px; }
+  .vs-mast-logo { width: 100%; max-width: 280px; height: 104px; }
+  .vs-mast-x { width: 46px; height: 46px; font-size: 1.05rem; }
 }
 
 /* versus category breakdown (rich content) */

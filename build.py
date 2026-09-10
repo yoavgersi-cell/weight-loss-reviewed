@@ -1260,36 +1260,30 @@ def render_versus(v):
 
     intro = (f"{An} and {Bn} both rank among the {len(PROVIDER_ORDER)} online weight-loss programs we've scored, and they draw from the same pool of GLP-1 medications — so on the surface they can look interchangeable. They aren't. {first_sentence(a['summary'])}. {first_sentence(b['summary'])}. Below we break the matchup down category by category, then tell you which one fits which kind of person.")
 
-    def side(slug, p, wincls, flag):
-        return f"""<div class="vs-side{wincls}">
-      {flag}
-      {logo_img(slug, cls='plogo plogo-block')}
-      <div class="vs-name">{p['name']}</div>
-      <div class="score-num">{p['score']}<span>/10</span></div>
-      <div class="stars">{stars(p['score'])}</div>
-      <div class="vs-meta">{p['best_for']} · {p['tier']} · {TIER_MEANING[p['tier']]}</div>
-      {cta(slug, label='View Plans', cls='btn btn-primary btn-block')}
-      <a class="btn btn-ghost btn-sm btn-block" href="{review_url(slug)}" style="margin-top:8px">Read full review</a>
-    </div>"""
+    def mast_logo(slug):
+        src = logo_src(slug)
+        inner = (f'<img src="{src}" alt="{PROVIDERS[slug]["name"]} logo">' if src
+                 else f'<span>{PROVIDERS[slug]["name"]}</span>')
+        return f'<div class="vs-mast-logo">{inner}</div>'
 
     body = f"""
 <section class="vs-hero"><div class="wrap">
   {crumbs([("Home","/"),("Comparisons","/comparisons"),(f'{An} vs {Bn}', "")])}
-  <span class="flag">{icon('scale', size=15)} Head-to-head · Updated {UPDATED}</span>
+  <span class="flag">{icon('scale', size=15)} Head-to-head comparison · Updated {UPDATED}</span>
+  <div class="vs-mast">
+    {mast_logo(v['a'])}
+    <div class="vs-mast-x">vs</div>
+    {mast_logo(v['b'])}
+  </div>
   <h1>{An} vs {Bn}</h1>
   <p class="lede">{v['intro']}</p>
 </div></section>
 
-<div class="wrap"><div class="vs-panel">
-  {side(v['a'], a, win_a, flag_a)}
-  <div class="vs-split"><span>VS</span></div>
-  {side(v['b'], b, win_b, flag_b)}
-</div></div>
-
-<div class="wrap wide article-body" style="padding-top:34px">
+<div class="wrap wide article-body" style="padding-top:36px">
   <p class="lede" style="margin-bottom:1.4em">{intro}</p>
 
-  <div class="callout"><h3>Bottom line: {winner} wins</h3><p>{v['verdict']}</p></div>
+  <div class="callout"><h3>Bottom line: {winner} wins</h3><p>{v['verdict']}</p>
+    <p style="margin:16px 0 0">{cta(v['winner'], label=f"View {winner} plans", cls='btn btn-primary btn-sm')}</p></div>
 
   <h2>Round by round</h2>
   <p>We scored both programs on the six things that actually decide a weight-loss plan. {tally} Here's how each category shook out.</p>
