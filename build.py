@@ -1229,11 +1229,8 @@ def render_review(slug):
   <p>{p['name']} is our pick for <strong>{p['best_for'].lower()}</strong>. {p['highlight']}</p>
   <p>As with any GLP-1 program, whether it's right for you depends on your health profile and goals — and ultimately on a conversation with a licensed clinician. Use our score as a starting point, not a prescription.</p>
 
-  <div class="cta-strip">
-    <h2>Ready to look at {p['name']}?</h2>
-    <p>Check current plans and pricing directly with the provider.</p>
-    {cta(slug, label=f"Visit {p['name']}", cls='btn btn-primary')}
-  </div>
+  <p style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap">{cta(slug, label=f"Visit {p['name']}", cls='btn btn-primary')}
+    <a class="btn btn-ghost" href="/comparisons">Compare with others</a></p>
 </div>
 
 <section class="section section-alt"><div class="wrap">
@@ -1428,13 +1425,7 @@ def render_versus(v):
   <h2>Common questions</h2>
   <div class="faq">{vfaq_html}</div>
 
-  <div class="cta-strip">
-    <h2>Our pick: {winner}</h2>
-    <p>{winner} came out ahead across our scoring. Check its current plans and offer directly with the provider.</p>
-    {cta(v['winner'], label=f"View {winner} plans", cls='btn btn-primary btn-lg')}
-  </div>
-
-  <p class="muted" style="font-size:.88rem">Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider — it changes nothing about the scores or the verdict. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
+  <p class="muted" style="font-size:.88rem;margin-top:28px">Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider — it changes nothing about the scores or the verdict. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
 </div>
 {sticky}
 """
@@ -1519,11 +1510,8 @@ def render_article(a):
   {toc}
   <div class="article-body">{a['body']}</div>
 
-  <div class="cta-strip">
-    <h2>Compare the top-rated programs</h2>
-    <p>See how the leading online weight-loss programs score head to head.</p>
-    <a class="btn btn-primary" href="/">See the rankings →</a>
-  </div>
+  <p style="border-top:1px solid var(--line);margin-top:36px;padding-top:22px;color:var(--ink-soft)">
+    See how the leading programs stack up in our <a href="/">ranked comparison</a>, or browse all <a href="/comparisons">head-to-head comparisons</a>.</p>
 </div>
 """
     return base_page(f"{a['title']} | {SITE['name']}", a["description"],
