@@ -66,7 +66,7 @@ PROVIDERS = {
         "name": "Embody",
         "score": 9.4,
         "tier": "$$",
-        "best_for": "Best overall",
+        "best_for": "Best for an oral option",
         "highlight": "Real clinician time, meds, and lasting coaching.",
         "bullets": [
             "Video visits with real prescribing clinicians",
@@ -122,7 +122,7 @@ PROVIDERS = {
         "name": "AltRx",
         "score": 8.6,
         "tier": "$",
-        "best_for": "Best value",
+        "best_for": "Low-cost compounded",
         "highlight": "The lowest entry price and the fastest start.",
         "bullets": [
             "Lowest typical entry price",
@@ -399,6 +399,172 @@ PROVIDERS = {
         "summary": "Sprout is a beginner-friendly telehealth weight-loss program that pairs GLP-1 medication with lifestyle guidance and a supportive, low-pressure approach. It's aimed at people easing into treatment for the first time.",
     },
 }
+
+# ==========================================================================
+# REAL provider data (researched Sep 2026). Prices are the LOWEST ADVERTISED
+# starting rates and, for most compounded programs, require a prepaid multi-
+# month plan or are promotional — per-dose and month-to-month prices run
+# higher. Membership programs (Ro, Found) bill medication separately, so the
+# "from" figure is membership + the cheapest medication. Always confirm at the
+# provider's checkout. Every figure is sourced; see `src`/`src_url`.
+# ==========================================================================
+PRICE_FOOTNOTE = ("Prices are the lowest advertised starting rates as of September 2026. "
+    "Most compounded programs quote these on a prepaid multi-month or promotional plan; "
+    "month-to-month and higher-dose prices run higher, and membership programs bill "
+    "medication separately. Always confirm current pricing at the provider before you buy.")
+
+# Scoring rubric — four factors, each 0–10, weighted. Overall = weighted mean.
+SCORE_WEIGHTS = {"Value": 0.25, "Support": 0.30, "Medications": 0.20, "Transparency": 0.25}
+RUBRIC = {
+    "Value": "Starting price vs. what comparable programs charge for the same medication.",
+    "Support": "Real clinician access, coaching and follow-up — video and a care team score higher than async-only.",
+    "Medications": "Breadth of GLP-1 options (compounded, branded, oral) and how easily the plan adapts.",
+    "Transparency": "How clearly pricing, terms and availability are stated up front — and any regulatory red flags.",
+}
+
+PDATA = {
+    "embody": {
+        "price": 79, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "Promo starting rate; ~$299/mo at standard/maintenance dosing",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection or daily oral",
+        "visit": "Clinician-reviewed telehealth", "insurance": "Cash-pay (HSA/FSA)",
+        "avail": "Not stated", "included": "Medication, clinician review; rate locks per plan",
+        "tagline": "Compounded GLP-1 as an injection or a daily oral — from a promo $79/mo.",
+        "as_of": "Jul 2026", "src": "exploretreatments.com", "src_url": "https://www.exploretreatments.com/embody-glp1-weight-loss-review/",
+        "scores": {"Value": 9.4, "Support": 8.0, "Medications": 9.0, "Transparency": 7.0},
+    },
+    "ro": {
+        "price": 298, "unit": "/mo", "struct": "Membership + medication (billed separately)",
+        "price_note": "$149/mo membership ($39 first month) + branded med from $149/mo; all-in ~$298–$598/mo",
+        "meds": "Branded Wegovy & Zepbound", "form": "Oral pill or injection pen",
+        "visit": "Async + optional video", "insurance": "Insurance concierge + cash-pay",
+        "avail": "Nationwide", "included": "Insurance help, labs when indicated, provider messaging, shipping",
+        "tagline": "The established name: branded Wegovy and Zepbound with insurance help — at a branded price.",
+        "as_of": "Sep 2026", "src": "ro.co", "src_url": "https://ro.co/weight-loss/pricing/",
+        "scores": {"Value": 6.6, "Support": 8.8, "Medications": 8.8, "Transparency": 9.2},
+    },
+    "found": {
+        "price": 198, "unit": "/mo", "struct": "Membership + medication (billed separately)",
+        "price_note": "$99–$149/mo Rx membership + compounded from $99/mo (or $49/mo coaching-only, no Rx)",
+        "meds": "Compounded + branded (Wegovy, Zepbound)", "form": "Injection or oral",
+        "visit": "Video (insurance) or async (self-pay)", "insurance": "Uses insurance + navigation",
+        "avail": "Nationwide", "included": "Clinician care, behavioral coaching, app, insurance navigation",
+        "tagline": "Keeps both paths — compounded and branded — with real coaching and insurance navigation.",
+        "as_of": "Sep 2026", "src": "joinfound.com", "src_url": "https://joinfound.com/program",
+        "scores": {"Value": 7.8, "Support": 9.2, "Medications": 9.4, "Transparency": 8.4},
+    },
+    "altrx": {
+        "price": 89, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "Promo starting rate (semaglutide); tirzepatide from $149/mo; post-promo pricing undisclosed",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
+        "visit": "Async, video when needed", "insurance": "Cash-pay",
+        "avail": "Not stated", "included": "Consult, medication, tracking app, free shipping",
+        "tagline": "Low bundled starting price — but its parent drew an FDA warning letter over misleading claims.",
+        "as_of": "Sep 2026", "src": "altrx.com", "src_url": "https://www.altrx.com/products/compounded-semaglutide",
+        "scores": {"Value": 9.0, "Support": 7.8, "Medications": 8.4, "Transparency": 5.5},
+        "flag": ("FDA warning letter", "AltRx's parent (Trinity HealthCare Supply, LLC) received an FDA warning "
+                 "letter dated June 8, 2026 over false or misleading claims about its compounded semaglutide and "
+                 "tirzepatide, including labeling that implied FDA approval.",
+                 "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/warning-letters/trinity-healthcare-supply-llc-dba-altrx-728236-06082026"),
+    },
+    "medvi": {
+        "price": 179, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "On 12-month prepay; month-to-month is $299/mo; tirzepatide higher",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
+        "visit": "Async, ~24h provider review", "insurance": "Cash-pay (HSA/FSA)",
+        "avail": "All 50 states", "included": "Medication, free shipping, unlimited telehealth support",
+        "tagline": "Flat cash pricing across all 50 states, cheapest on a 12-month prepay.",
+        "as_of": "2026", "src": "health.usnews.com", "src_url": "https://health.usnews.com/best-diet/medication/medvi",
+        "scores": {"Value": 7.8, "Support": 8.0, "Medications": 8.4, "Transparency": 8.4},
+    },
+    "trimrx": {
+        "price": 179, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "Advertised 'from $179/mo'; semaglutide ~$199–$349/mo by plan length; branded far higher",
+        "meds": "Compounded + branded options", "form": "Weekly injection",
+        "visit": "Async questionnaire (limited coaching)", "insurance": "Cash-pay (HSA/FSA)",
+        "avail": "Most US states", "included": "Medication, consult, supplies, shipping, monitoring",
+        "tagline": "No-appointment async program spanning compounded and branded — light on coaching.",
+        "as_of": "Aug 2026", "src": "health.usnews.com", "src_url": "https://health.usnews.com/best-diet/medication/trimrx",
+        "scores": {"Value": 7.8, "Support": 6.8, "Medications": 9.0, "Transparency": 7.0},
+    },
+    "healthrx": {
+        "price": 99, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "On 12-month plan; $133/mo (3-month) to $189/mo month-to-month; same price at every dose",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
+        "visit": "Async health assessment", "insurance": "Cash-pay",
+        "avail": "Not clearly stated", "included": "Medication, overnight shipping, money-back guarantee",
+        "tagline": "Same price at every dose, with a weight-loss money-back guarantee.",
+        "as_of": "2026", "src": "matchglp1.com", "src_url": "https://matchglp1.com/providers/healthrx/",
+        "scores": {"Value": 9.0, "Support": 7.0, "Medications": 8.4, "Transparency": 8.2},
+    },
+    "bmimd": {
+        "price": 99, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "On 12-month plan; $109 (6-mo) / $119 (3-mo) / $129–$159 month-to-month",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
+        "visit": "Telehealth consult + unlimited messaging", "insurance": "Cash-pay",
+        "avail": "48 states (excl. LA, MS)", "included": "Medication, supplies, temp-controlled shipping, physician monitoring",
+        "tagline": "Consistent low tiers plus unlimited provider messaging and physician monitoring.",
+        "as_of": "2026", "src": "glp1picks.com", "src_url": "https://www.glp1picks.com/pricing/bmimd",
+        "scores": {"Value": 9.0, "Support": 8.2, "Medications": 8.4, "Transparency": 8.4},
+    },
+    "directmeds": {
+        "price": 179, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "Sublingual/oral semaglutide; injectable semaglutide ~$297/mo, tirzepatide ~$399/mo",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Injection or sublingual",
+        "visit": "Async, reviewed within ~6h", "insurance": "Cash-pay (HSA/FSA)",
+        "avail": "~45 states", "included": "Telehealth visit, medication, 1-day shipping, injection supplies",
+        "tagline": "LegitScript-certified, with a sublingual option and next-day shipping.",
+        "as_of": "Sep 2026", "src": "clearmetabolic.com", "src_url": "https://clearmetabolic.com/reviews/directmeds-review/",
+        "scores": {"Value": 7.8, "Support": 7.2, "Medications": 9.0, "Transparency": 8.0},
+    },
+    "wellmedr": {
+        "price": 49, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "Lowest rate on 12-month prepay; month-to-month advertised at $88/mo; tirzepatide from ~$89/mo",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
+        "visit": "Async intake + video/messaging", "insurance": "Cash-pay",
+        "avail": "All 50 states", "included": "Medication, provider review, home delivery, 90-day guarantee",
+        "tagline": "Among the lowest advertised rates — but the $49 figure needs a long prepay to reach.",
+        "as_of": "Sep 2026", "src": "exploretreatments.com", "src_url": "https://www.exploretreatments.com/wellmedr-glp1-weight-loss-review/",
+        "scores": {"Value": 9.4, "Support": 7.8, "Medications": 8.4, "Transparency": 6.8},
+    },
+    "shed": {
+        "price": 149, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "Intro/platform rate; semaglutide injection commonly from $199/mo, dose-tiered; ~2-month minimum",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Injection, drops or lozenge",
+        "visit": "Async questionnaire", "insurance": "Cash-pay",
+        "avail": "All 50 states", "included": "Full care team (MD/RN/dietitian/coach), unlimited visits, app, free shipping",
+        "tagline": "A full care team — MD, dietitian and coach — behind a dose-tiered compounded plan.",
+        "as_of": "Sep 2026", "src": "glpchart.com", "src_url": "https://glpchart.com/program/shed/",
+        "scores": {"Value": 7.8, "Support": 9.0, "Medications": 9.0, "Transparency": 7.8},
+    },
+    "sprout": {
+        "price": 149, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "Intro starting rate; ongoing ~$249/mo (semaglutide) / ~$299/mo (tirzepatide)",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
+        "visit": "Async questionnaire + monthly check-ins", "insurance": "Cash-pay",
+        "avail": "Nationwide (excl. AL, AR, CA, LA, MS, ND)", "included": "Consults, monthly check-ins, pharmacy + home delivery",
+        "tagline": "Simple intro pricing with monthly check-ins; maintenance dosing costs more.",
+        "as_of": "Sep 2026", "src": "health.usnews.com", "src_url": "https://health.usnews.com/best-diet/medication/sprout-health",
+        "scores": {"Value": 7.8, "Support": 7.4, "Medications": 8.4, "Transparency": 7.4},
+    },
+}
+
+def score_overall(slug):
+    s = PDATA[slug]["scores"]
+    return round(sum(s[k] * w for k, w in SCORE_WEIGHTS.items()), 1)
+
+def price_display(slug):
+    d = PDATA[slug]
+    return f"${d['price']}{d['unit']}"
+
+# Apply real scores back onto PROVIDERS and rank the directory by them.
+for _slug, _d in PDATA.items():
+    if _slug in PROVIDERS:
+        PROVIDERS[_slug]["score"] = score_overall(_slug)
+        PROVIDERS[_slug]["highlight"] = _d["tagline"]
+PROVIDER_ORDER = sorted(PROVIDER_ORDER,
+                        key=lambda s: (score_overall(s), PDATA[s]["scores"]["Value"]),
+                        reverse=True)
 
 SUBSCORE_ORDER = ["Clinical support", "Onboarding", "Value", "Medication access", "App & tracking", "Transparency"]
 
@@ -863,21 +1029,16 @@ def sentence1(s):
 # "Alternatives to X" money pages — built for the most-searched brands.
 ALT_TARGETS = ["ro", "found", "embody", "medvi", "altrx"]
 
-# Short, qualitative medication descriptor per provider (safe editorial altitude).
-MEDS = {
-    "embody": "Branded + compounded", "ro": "Branded + compounded", "found": "Branded + compounded",
-    "altrx": "Compounded GLP-1", "medvi": "Semaglutide & tirzepatide", "trimrx": "Tirzepatide-focused",
-    "healthrx": "Multiple GLP-1 options", "bmimd": "Compounded GLP-1", "directmeds": "Compounded GLP-1",
-    "wellmedr": "GLP-1 options", "shed": "Compounded GLP-1", "sprout": "GLP-1 + lifestyle",
-}
 def meds(slug):
-    return MEDS.get(slug, "GLP-1 options")
+    return PDATA[slug]["meds"] if slug in PDATA else "GLP-1 options"
 
-def tier_len(tier):     # "$"=1, "$$"=2, "$$$"=3 — a numeric price proxy for sorting
-    return len(tier)
+def price_band(slug):
+    """Real price band for filtering: under $100, $100–$199, $200+."""
+    p = PDATA[slug]["price"]
+    return "under100" if p < 100 else "mid" if p < 200 else "premium"
 
-def tier_class(tier):
-    return {"$": "budget", "$$": "mid", "$$$": "premium"}[tier]
+def has_branded(slug):
+    return "branded" in PDATA[slug]["meds"].lower() or "wegovy" in PDATA[slug]["meds"].lower()
 
 def alt_url(slug):
     return f"/{slug}-alternatives"
@@ -1059,7 +1220,7 @@ WLR_HOME_JS = """
   var table = document.getElementById('ctable');
   if(!table) return;
   var rows = $all('.ctrow', table);
-  var curFilter = 'all', curSort = 'rating';
+  var curFilter = 'all', curSort = 'price-asc';
 
   function apply(){
     var vis = rows.filter(function(r){
@@ -1095,34 +1256,38 @@ WLR_HOME_JS = """
 """
 
 
+def ring(score):
+    return (f'<span class="ring" style="--p:{round(score*10)}">'
+            f'<span class="ring-num">{score}</span></span>')
+
+def price_struct_short(slug):
+    return "+ medication" if "Membership" in PDATA[slug]["struct"] else "all-in"
+
 def render_home():
     N = len(PROVIDER_ORDER)
     top = PROVIDER_ORDER[0]
-    TIERLABEL = {"$": "Budget", "$$": "Mid-range", "$$$": "Premium"}
 
-    def qual(x):
-        return ("Extensive" if x >= 9.2 else "Strong" if x >= 8.7 else "Solid" if x >= 8.2
-                else "Good" if x >= 7.8 else "Basic")
+    n_u100 = sum(1 for s in PROVIDER_ORDER if PDATA[s]["price"] < 100)
+    n_mid = sum(1 for s in PROVIDER_ORDER if 100 <= PDATA[s]["price"] < 200)
+    n_prem = sum(1 for s in PROVIDER_ORDER if PDATA[s]["price"] >= 200)
+    n_branded = sum(1 for s in PROVIDER_ORDER if has_branded(s))
+    cheapest = sorted(PROVIDER_ORDER, key=lambda s: PDATA[s]["price"])[:2]
+    cheap_names = " and ".join(PROVIDERS[s]["name"] for s in cheapest)
+    # providers with a genuine live/video option and coaching, for the support question
+    support_names = " and ".join(PROVIDERS[s]["name"] for s in
+                                 sorted(PROVIDER_ORDER, key=lambda s: PDATA[s]["scores"]["Support"], reverse=True)[:2])
 
-    def ring(score):
-        return (f'<span class="ring" style="--p:{round(score*10)}">'
-                f'<span class="ring-num">{score}</span></span>')
-
-    n_budget = sum(1 for s in PROVIDER_ORDER if PROVIDERS[s]["tier"] == "$")
-    n_mid = sum(1 for s in PROVIDER_ORDER if PROVIDERS[s]["tier"] == "$$")
-    n_prem = sum(1 for s in PROVIDER_ORDER if PROVIDERS[s]["tier"] == "$$$")
-    n_tirz = sum(1 for s in PROVIDER_ORDER if "tirzepatide" in meds(s).lower())
-
-    # ---- comparison table rows ----
+    # ---- comparison table rows (price leads) ----
     ctrows = ""
-    for i, slug in enumerate(PROVIDER_ORDER, 1):
-        p = PROVIDERS[slug]
-        tags = f"{tier_class(p['tier'])} {meds(slug).lower()}"
+    for slug in PROVIDER_ORDER:
+        p, d = PROVIDERS[slug], PDATA[slug]
+        tags = f"{price_band(slug)} {'branded' if has_branded(slug) else 'compounded'}"
         logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
-        ctrows += f"""<div class="ctrow" data-score="{p['score']}" data-price="{tier_len(p['tier'])}" data-tags="{tags}">
-      <div class="ct-prov"><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a><span class="ct-tag">{p['highlight']}</span></span></div>
-      <div class="ct-meds"><span class="pill">{meds(slug)}</span></div>
-      <div class="ct-price"><b>{p['tier']}</b> <span>{TIERLABEL[p['tier']]}</span></div>
+        flag = ' <span class="ct-warn" title="Regulatory flag — see review">⚠</span>' if d.get("flag") else ""
+        ctrows += f"""<div class="ctrow" data-score="{p['score']}" data-price="{d['price']}" data-tags="{tags}">
+      <div class="ct-prov"><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a>{flag}<span class="ct-tag">{d['tagline']}</span></span></div>
+      <div class="ct-price"><b>${d['price']}<span>{d['unit']}</span></b><span class="ct-price-sub">{price_struct_short(slug)}</span></div>
+      <div class="ct-meds"><span class="pill">{d['meds']}</span><span class="ct-visit">{d['visit']}</span></div>
       <div class="ct-rate">{ring(p['score'])}<span class="ct-word">{score_word(p['score'])}</span></div>
       <div class="ct-act">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}</div>
     </div>"""
@@ -1130,7 +1295,7 @@ def render_home():
     # ---- top 3 detailed cards ----
     t3 = ""
     for i, slug in enumerate(PROVIDER_ORDER[:3], 1):
-        p = PROVIDERS[slug]
+        p, d = PROVIDERS[slug], PDATA[slug]
         win = " t3-win" if i == 1 else ""
         pick = '<span class="t3-pick">Editor\'s pick</span>' if i == 1 else ""
         rankcls = " r-coral" if i == 1 else ""
@@ -1141,12 +1306,12 @@ def render_home():
       <div class="t3rank{rankcls}">#{i}</div>
       <div class="t3head"><span class="t3logo">{logo}</span><div class="t3id"><span class="t3name">{p['name']}</span>{pick}</div></div>
       <div class="t3score">{p['score']}<span>/10</span><em>Editorial score</em></div>
-      <p class="t3tag">{p['highlight']}</p>
+      <p class="t3tag">{d['tagline']}</p>
       <div class="t3tiles">
-        <div><span>Price</span><b>{p['tier']} · {TIERLABEL[p['tier']]}</b></div>
-        <div><span>Medications</span><b>{meds(slug)}</b></div>
-        <div><span>Best for</span><b>{p['best_for']}</b></div>
-        <div><span>Support</span><b>{qual(p['subscores']['Clinical support'])}</b></div>
+        <div><span>Starts at</span><b>${d['price']}{d['unit']} · {price_struct_short(slug)}</b></div>
+        <div><span>Medications</span><b>{d['meds']}</b></div>
+        <div><span>Visit type</span><b>{d['visit']}</b></div>
+        <div><span>Insurance</span><b>{d['insurance']}</b></div>
       </div>
       <div class="t3liked"><span class="eyebrow-2">What we liked</span><ul>{liked}</ul></div>
       <a class="{ctacls}" {cta_attrs(slug)}>See {p['name']} pricing →</a>
@@ -1156,19 +1321,25 @@ def render_home():
     # ---- the rest (expandable rows) ----
     rest = ""
     for slug in PROVIDER_ORDER[3:]:
-        p = PROVIDERS[slug]
+        p, d = PROVIDERS[slug], PDATA[slug]
         pros = "".join(f"<li>{x}</li>" for x in p["pros"])
         cons = "".join(f"<li>{x}</li>" for x in p["cons"])
+        specs = "".join(f'<div><span>{k}</span><b>{v}</b></div>' for k, v in [
+            ("Starts at", f"${d['price']}{d['unit']} · {price_struct_short(slug)}"),
+            ("Medications", d["meds"]), ("Visit type", d["visit"]),
+            ("Insurance", d["insurance"]), ("Availability", d["avail"])])
         rest += f"""<div class="restrow">
       <button class="restrow-top" aria-expanded="false" onclick="wlrToggle(this)">
         <span class="rr-score">{p['score']}</span>
-        <span class="rr-main"><span class="rr-name">{p['name']}</span><span class="rr-tag">{p['highlight']}</span></span>
-        <span class="rr-col"><em>Price</em>{p['tier']} · {TIERLABEL[p['tier']]}</span>
-        <span class="rr-col rr-meds"><em>Medications</em>{meds(slug)}</span>
+        <span class="rr-main"><span class="rr-name">{p['name']}</span><span class="rr-tag">{d['tagline']}</span></span>
+        <span class="rr-col"><em>Starts at</em>${d['price']}{d['unit']}</span>
+        <span class="rr-col rr-meds"><em>Medications</em>{d['meds']}</span>
         <span class="rr-chev">{icon('arrow', size=18)}</span>
       </button>
       <div class="restrow-body" hidden>
         <p>{p['summary']}</p>
+        <div class="t3tiles rr-specs">{specs}</div>
+        <p class="rr-pricenote muted">{d['price_note']}. <em>As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>.</em></p>
         <div class="proscons">
           <div class="box pros"><h4>Pros</h4><ul class="pros">{pros}</ul></div>
           <div class="box cons"><h4>Watchouts</h4><ul class="cons">{cons}</ul></div>
@@ -1178,18 +1349,23 @@ def render_home():
       </div>
     </div>"""
 
-    # ---- framework accordion ----
+    # ---- scoring rubric strip ----
+    rubric_html = "".join(
+        f'<div class="rub-item"><b>{k}</b><span class="rub-w">{int(w*100)}%</span><p>{RUBRIC[k]}</p></div>'
+        for k, w in SCORE_WEIGHTS.items())
+
+    # ---- framework accordion (data-driven) ----
     fw = [
         ("01", "Budget", "dollar", "How much can you spend, monthly?",
-         f"Compounded semaglutide and tirzepatide run roughly half the price of branded. If cost is your main constraint, our budget picks (the $ tier) start lowest — {PROVIDERS[PROVIDER_ORDER[3]]['name'] if N>3 else 'the value programs'} and AltRx are good places to look."),
-        ("02", "Insurance", "shield", "Does your plan cover GLP-1s?",
-         "Coverage varies widely by plan and by whether the drug is branded or compounded. If you want to try to use insurance, favor programs that help you navigate it; many members pay out of pocket, which is why compounded options are popular."),
+         f"Compounded semaglutide and tirzepatide run far cheaper than branded Wegovy or Zepbound. If cost is the priority, the lowest advertised starting rates in our table are {cheap_names} — but read the fine print: those figures usually need a prepaid multi-month plan, and month-to-month is higher."),
+        ("02", "Insurance", "shield", "Do you want to use insurance?",
+         "Insurance rarely covers compounded GLP-1s, so most compounded programs are cash-pay. If you want to try insurance for branded Wegovy or Zepbound, Ro and Found both run insurance navigation — expect a branded price if it doesn't come through."),
         ("03", "Medication", "pill", "Branded or compounded?",
-         "Branded (Wegovy, Zepbound) is consistent but pricier; compounded is cheaper but availability and rules shift. Some programs specialize — TrimRx leans tirzepatide, Medvi offers both. Decide this before you compare prices."),
+         "Branded (Wegovy, Zepbound) is FDA-approved and consistent but costs $300–$600+/mo; compounded is cheaper ($49–$299/mo) but isn't FDA-approved and supply rules shift. Ro is branded-only in 2026; Found keeps both paths; most others are compounded-only."),
         ("04", "Support level", "clipboard", "How much guidance do you want?",
-         "If you want coaching and real clinician time, weight support heavily (Embody and Found score highest here). If you just want the medication handled, a leaner program will cost less and move faster."),
+         f"If you want a real care team, coaching and clinician time, weight Support heavily — {support_names} score highest there. If you just want the medication handled, an async, questionnaire-only program will be cheaper and faster."),
         ("05", "Visit style", "clock", "Video visit or async messaging?",
-         "Async (questionnaire + messaging) is fastest and cheapest; a live video visit gives you face time with a clinician. Most programs offer async; fewer offer video. Pick the one you'll actually use."),
+         "Most compounded programs are async: you fill in a questionnaire, a clinician reviews it, and medication ships — no appointment. A few (Ro, Found, WellMedR) offer a live video visit. Async is faster and cheaper; video gives you face time. Pick the one you'll actually use."),
     ]
     fw_html = ""
     for j, (num, kicker, ic, q, ans) in enumerate(fw):
@@ -1201,19 +1377,20 @@ def render_home():
         for q, a in FAQ)
 
     hero_logo = logo_img(top) or f'<b>{PROVIDERS[top]["name"]}</b>'
+    cheapest_price = min(PDATA[s]["price"] for s in PROVIDER_ORDER)
 
     body = f"""
 <section class="dhero"><div class="wrap dhero-grid">
   <div class="dhero-copy">
-    <span class="hero-flag"><span class="dot"></span> Updated {UPDATED} · {N} providers compared</span>
-    <h1>The honest guide to <span class="serif-accent hl-underline">online GLP-1</span> providers.</h1>
-    <p class="lede">We compared {N} telehealth programs prescribing semaglutide and tirzepatide across price, medications, support and visit type — so you can find the right fit in minutes.</p>
+    <span class="hero-flag"><span class="dot"></span> Updated {UPDATED} · {N} providers · real prices</span>
+    <h1>What online <span class="serif-accent hl-underline">GLP-1</span> programs actually cost.</h1>
+    <p class="lede">Real 2026 starting prices, medications and visit types for {N} telehealth weight-loss providers — semaglutide and tirzepatide — in one comparison. Every figure sourced; rankings never bought.</p>
     <div class="hero-stats">
-      <div class="hstat"><div class="hstat-k">Independent</div><div class="hstat-v">Payment never affects rankings</div></div>
-      <div class="hstat"><div class="hstat-k">{N} providers scored</div><div class="hstat-v">On 6 factors · {UPDATED}</div></div>
+      <div class="hstat"><div class="hstat-k">From ${cheapest_price}/mo</div><div class="hstat-v">Lowest advertised starting rate</div></div>
+      <div class="hstat"><div class="hstat-k">{N} providers scored</div><div class="hstat-v">On 4 factors · {UPDATED}</div></div>
     </div>
     <div class="hero-cta">
-      <a class="btn btn-primary btn-lg" href="#compare">Compare all {N} providers →</a>
+      <a class="btn btn-primary btn-lg" href="#compare">Compare prices →</a>
       <a class="btn btn-ghost btn-lg" href="/methodology">How we score</a>
     </div>
   </div>
@@ -1221,69 +1398,76 @@ def render_home():
     <div class="dhero-panel" role="img" aria-label="Online GLP-1 care">{icon('heart', size=40)}</div>
     <div class="float-card fc-a">{icon('check-c', size=20)}<div><b>Independently reviewed</b><span>No pay-to-rank</span></div></div>
     <div class="float-card fc-b"><div class="fc-k">Top editorial score</div><div class="fc-score">{PROVIDERS[top]['score']}<em>/10</em></div><div class="fc-sub">{hero_logo} · our #1</div></div>
-    <div class="float-card fc-c">{icon('scale', size=20)}<div><b>Scored on 6 factors</b><span>clinical · meds · value</span></div></div>
+    <div class="float-card fc-c">{icon('dollar', size=20)}<div><b>Real, sourced prices</b><span>as of {UPDATED}</span></div></div>
   </div>
 </div></section>
 
 <div class="trustbar"><div class="wrap">
   <span><b>{N} providers rated</b></span><span class="tb-sep">·</span>
-  <span>Scored on our <a href="/methodology">editorial methodology</a></span><span class="tb-sep">·</span>
+  <span>Every price sourced &amp; dated</span><span class="tb-sep">·</span>
   <span>Payment never affects rankings</span><span class="tb-sep">·</span>
   <span>Updated {UPDATED}</span>
 </div></div>
 
 <section class="section" id="compare"><div class="wrap">
-  <span class="eyebrow-2">The shortlist</span>
+  <span class="eyebrow-2">The comparison</span>
   <div class="cmp-head">
-    <h2>All {N} providers, side by side</h2>
+    <h2>Every provider, real starting price first</h2>
     <div class="cmp-sort"><span>Sort</span>
-      <button data-sort="rating" class="on">Rating</button>
-      <button data-sort="price-asc">Price ↑</button>
-      <button data-sort="price-desc">Price ↓</button></div>
+      <button data-sort="price-asc" class="on">Price ↑</button>
+      <button data-sort="price-desc">Price ↓</button>
+      <button data-sort="rating">Rating</button></div>
   </div>
-  <p class="lead" style="max-width:640px">Sort and filter to find your fit. Ratings reflect our editorial review across price, medications, clinical support and more.</p>
-  <div class="disclosure-note">{icon('badge', size=16)} <span>Some "See pricing" buttons are affiliate links; we may earn a commission if you start treatment, but rankings stay editorially independent. <a href="/disclosure">How this works</a>.</span></div>
+  <p class="lead" style="max-width:680px">Sorted by lowest advertised starting price. Filter by budget or medication type. Prices are the cheapest published rate as of {UPDATED} — tap a provider for the full breakdown and source.</p>
   <div class="cmp-filters" id="cmpFilters">
-    <button data-filter="all" class="on">All providers <em>{N}</em></button>
-    <button data-filter="budget">Budget $ <em>{n_budget}</em></button>
-    <button data-filter="mid">Mid $$ <em>{n_mid}</em></button>
-    <button data-filter="premium">Premium $$$ <em>{n_prem}</em></button>
-    <button data-filter="tirzepatide">Tirzepatide <em>{n_tirz}</em></button>
+    <button data-filter="all" class="on">All <em>{N}</em></button>
+    <button data-filter="under100">Under $100 <em>{n_u100}</em></button>
+    <button data-filter="mid">$100–$199 <em>{n_mid}</em></button>
+    <button data-filter="premium">$200+ <em>{n_prem}</em></button>
+    <button data-filter="branded">Offers branded <em>{n_branded}</em></button>
   </div>
   <div class="ctable">
-    <div class="ctrow ct-header"><div>Provider</div><div>Medications</div><div>Price</div><div>Editor rating</div><div></div></div>
+    <div class="ctrow ct-header"><div>Provider</div><div>Starting price</div><div>Medications &amp; visit</div><div>Editor rating</div><div></div></div>
     <div id="ctable">{ctrows}</div>
   </div>
-  <p class="cmp-foot muted">Want the deep dives? Browse all <a href="/comparisons">head-to-head comparisons</a> or read the <a href="/reviews">full reviews</a>.</p>
+  <p class="price-foot">{icon('badge', size=15)} <span>{PRICE_FOOTNOTE}</span></p>
+  <div class="disclosure-note">{icon('badge', size=16)} <span>Some "See pricing" buttons are affiliate links; we may earn a commission if you start treatment, but rankings stay editorially independent. <a href="/disclosure">How this works</a>.</span></div>
 </div></section>
-
-<section class="section"><div class="wrap"><div class="watch">
-  <div class="watch-ico">{icon('badge', size=22)}</div>
-  <div class="watch-copy"><span class="eyebrow-2">Provider watch</span><h3>Track GLP-1 pricing</h3>
-    <p>One short email when major providers change prices, add states, or update medication options.</p></div>
-  <form class="watch-form" onsubmit="return wlrWatch(this)">
-    <input type="email" name="email" required placeholder="your@email.com" aria-label="Email">
-    <button class="btn btn-primary" type="submit">Track providers →</button>
-  </form>
-</div></div></section>
 
 <section class="section section-soft"><div class="wrap">
   <span class="eyebrow-2">Detailed reviews</span>
-  <h2 style="margin-top:6px">What we found, <span class="serif-accent">provider by provider</span></h2>
-  <p class="lead" style="max-width:660px">We rate every provider across pricing, medication selection, clinical support, visit options and patient experience. Here are the top three.</p>
+  <h2 style="margin-top:6px">Our top three, <span class="serif-accent">and why</span></h2>
+  <p class="lead" style="max-width:680px">The three that balance price, medication choice, real support and transparency best. Full facts, sources and watch-outs in each review.</p>
   <div class="top3">{t3}</div>
 </div></section>
 
 <section class="section"><div class="wrap">
-  <div class="rest-head"><span class="eyebrow-2">The rest</span><span class="muted">{N-3} more providers</span></div>
+  <div class="rest-head"><span class="eyebrow-2">The rest</span><span class="muted">{N-3} more providers, ranked</span></div>
   <div class="restlist">{rest}</div>
 </div></section>
+
+<section class="section section-soft"><div class="wrap">
+  <span class="eyebrow-2">How we score</span>
+  <h2 style="margin-top:6px">Four factors, <span class="serif-accent">weighted</span> — nothing bought</h2>
+  <p class="lead" style="max-width:680px">Every provider gets a 0–10 on each factor below, from the real data we collected. The overall score is the weighted average. <a href="/methodology">See the full methodology →</a></p>
+  <div class="rubric-grid">{rubric_html}</div>
+</div></section>
+
+<section class="section"><div class="wrap"><div class="watch">
+  <div class="watch-ico">{icon('badge', size=22)}</div>
+  <div class="watch-copy"><span class="eyebrow-2">Provider watch</span><h3>Get price changes by email</h3>
+    <p>These prices move. We'll send one short email when a major provider changes pricing, adds states, or updates its medication options.</p></div>
+  <form class="watch-form" onsubmit="return wlrWatch(this)">
+    <input type="email" name="email" required placeholder="your@email.com" aria-label="Email">
+    <button class="btn btn-primary" type="submit">Notify me →</button>
+  </form>
+</div></div></section>
 
 <section class="section section-soft"><div class="wrap"><div class="framework-grid">
   <div class="fw-intro">
     <span class="eyebrow-2">The framework</span>
     <h2 style="margin-top:6px">How to choose <span class="serif-accent">your</span> GLP-1 provider</h2>
-    <p class="lead">Five questions, in order. Answer them and you'll narrow the field down to two or three providers.</p>
+    <p class="lead">Five questions, in order. Answer them and you'll narrow {N} providers down to two or three.</p>
     <div class="skip-card"><span class="eyebrow-2">Skip the framework</span>
       <p>Jump straight to the ranked comparison of all {N} providers.</p>
       <a class="btn btn-primary" href="#compare">See the comparison →</a></div>
@@ -1298,8 +1482,8 @@ def render_home():
 """
     body += WLR_HOME_JS
     return base_page(
-        f"The Honest Guide to Online GLP-1 Providers ({YEAR}) | {SITE['name']}",
-        f"We independently compared {len(PROVIDER_ORDER)} online GLP-1 weight-loss providers on price, medications, clinical support and visit type. Sort, filter and find your fit.",
+        f"Online GLP-1 Weight-Loss Providers Compared — Real 2026 Prices | {SITE['name']}",
+        f"Real 2026 starting prices, medications and visit types for {len(PROVIDER_ORDER)} online GLP-1 weight-loss providers (semaglutide & tirzepatide), independently scored. Every figure sourced.",
         "/", body, active="/", jsonld=[ld_website(), ld_org(), ld_faq()])
 
 
@@ -1308,14 +1492,34 @@ def render_home():
 # --------------------------------------------------------------------------
 def render_review(slug):
     p = PROVIDERS[slug]
+    d = PDATA[slug]
     rank = PROVIDER_ORDER.index(slug) + 1
     pros = "".join(f"<li>{x}</li>" for x in p["pros"])
     cons = "".join(f"<li>{x}</li>" for x in p["cons"])
+    # scorecard = the four real rubric factors + weighted overall
     sc_rows = ""
-    for k in SUBSCORE_ORDER:
-        v = p["subscores"][k]
-        sc_rows += f'<div class="row"><span>{k}</span><span class="snum">{v}</span><span class="bar"><i style="width:{v*10}%"></i></span></div>'
-    sc_rows += f'<div class="row"><span>Overall</span><span class="snum">{p["score"]}</span><span class="bar"><i style="width:{p["score"]*10}%"></i></span></div>'
+    for k, w in SCORE_WEIGHTS.items():
+        v = d["scores"][k]
+        sc_rows += (f'<div class="row"><span>{k} <em class="sc-w">{int(w*100)}%</em></span>'
+                    f'<span class="snum">{v}</span><span class="bar"><i style="width:{v*10}%"></i></span></div>')
+    sc_rows += f'<div class="row row-total"><span>Overall</span><span class="snum">{p["score"]}</span><span class="bar"><i style="width:{p["score"]*10}%"></i></span></div>'
+
+    # real "key facts" box
+    facts = [
+        ("Starting price", f"${d['price']}{d['unit']}"),
+        ("Pricing", d["struct"]),
+        ("Medications", d["meds"]),
+        ("Medication form", d["form"]),
+        ("Visit type", d["visit"]),
+        ("Insurance", d["insurance"]),
+        ("Availability", d["avail"]),
+    ]
+    facts_html = "".join(f'<div><span>{k}</span><b>{val}</b></div>' for k, val in facts)
+    flag_html = ""
+    if d.get("flag"):
+        ft, fb, furl = d["flag"]
+        flag_html = (f'<div class="callout callout-warn"><h3>{icon("badge")} {ft}</h3>'
+                     f'<p>{fb} <a href="{furl}" rel="nofollow" target="_blank">Read the FDA warning letter →</a></p></div>')
 
     # related versus pages featuring this provider
     related = [v for v in VERSUS if slug in (v["a"], v["b"])][:3]
@@ -1333,7 +1537,7 @@ def render_review(slug):
   <div class="meta-line"><span class="chip-score">{p['score']}<span style="font-weight:600">/10</span></span>
     <span class="stars">{stars(p['score'])}</span>
     <span class="tag">{score_word(p['score'])}</span>
-    <span class="tag">{p['tier']} · {TIER_MEANING[p['tier']]}</span>
+    <span class="tag tag-price">From ${d['price']}{d['unit']}</span>
     <span>Updated {UPDATED}</span></div>
   <p class="lede">{p['summary']}</p>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">{cta(slug, label=f"View {p['name']} plans", cls='btn btn-primary')}
@@ -1343,10 +1547,19 @@ def render_review(slug):
 <div class="wrap narrow article-body" style="padding-top:26px">
   <div class="disclosure-note">{icon('badge', size=16)} <span>We may earn a commission if you sign up through our links — at no cost to you, and with no effect on this score. <a href="/disclosure">Details</a>.</span></div>
 
+  <div class="factbox">
+    <div class="factbox-head"><h3>{p['name']} at a glance</h3><span class="factbox-price">${d['price']}<span>{d['unit']}</span></span></div>
+    <div class="factgrid">{facts_html}</div>
+    <p class="factbox-note">{d['price_note']}. <em>As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>. Confirm current pricing on the provider's site.</em></p>
+  </div>
+
+  {flag_html}
+
   <div class="callout"><h3>{icon('badge')} Our verdict</h3><p>{p['verdict']}</p>
     <p style="margin-bottom:0">{cta(slug, label=f"View {p['name']} plans", cls='btn btn-primary btn-sm')}</p></div>
 
   <h2 id="scorecard">Scorecard</h2>
+  <p class="muted" style="margin-top:-6px;font-size:.92rem">Each factor scored 0–10 from the real data above; overall is the weighted average. <a href="/methodology">How we score →</a></p>
   <div class="scorecard">{sc_rows}</div>
 
   <h2>Pros &amp; cons</h2>
@@ -1379,11 +1592,18 @@ def render_review(slug):
 def render_versus(v):
     a, b = PROVIDERS[v["a"]], PROVIDERS[v["b"]]
     An, Bn = a["name"], b["name"]
-    win_a = " win" if v["winner"] == v["a"] else ""
-    win_b = " win" if v["winner"] == v["b"] else ""
-    winner = PROVIDERS[v["winner"]]["name"]
-    flag_a = f'<div class="win-flag">{icon("badge", size=13)} Winner</div>' if v["winner"] == v["a"] else ""
-    flag_b = f'<div class="win-flag">{icon("badge", size=13)} Winner</div>' if v["winner"] == v["b"] else ""
+    # Winner follows the data-driven overall score (tie → the cheaper one, then hand-set).
+    if a["score"] != b["score"]:
+        win_slug = v["a"] if a["score"] > b["score"] else v["b"]
+    elif PDATA[v["a"]]["price"] != PDATA[v["b"]]["price"]:
+        win_slug = v["a"] if PDATA[v["a"]]["price"] < PDATA[v["b"]]["price"] else v["b"]
+    else:
+        win_slug = v.get("winner", v["a"])
+    win_a = " win" if win_slug == v["a"] else ""
+    win_b = " win" if win_slug == v["b"] else ""
+    winner = PROVIDERS[win_slug]["name"]
+    flag_a = f'<div class="win-flag">{icon("badge", size=13)} Winner</div>' if win_slug == v["a"] else ""
+    flag_b = f'<div class="win-flag">{icon("badge", size=13)} Winner</div>' if win_slug == v["b"] else ""
 
     def first_sentence(s):
         return re.split(r'(?<=[.!?])\s+', s.strip())[0]
@@ -1394,112 +1614,116 @@ def render_versus(v):
         if len(items) == 2: return f"{items[0]} and {items[1]}"
         return ", ".join(items[:-1]) + f", and {items[-1]}"
 
-    # specs table — use hand-written rows if present, else auto from sub-scores
-    def qual(x):
-        return ("Extensive" if x >= 9.2 else "Strong" if x >= 8.7 else "Solid" if x >= 8.2
-                else "Good" if x >= 7.8 else "Basic")
-    rows = v.get("rows")
-    if not rows:
-        rows = [
-            ("Clinician support", qual(a["subscores"]["Clinical support"]), qual(b["subscores"]["Clinical support"])),
-            ("Medication access", qual(a["subscores"]["Medication access"]), qual(b["subscores"]["Medication access"])),
-            ("Ease of starting", qual(a["subscores"]["Onboarding"]), qual(b["subscores"]["Onboarding"])),
-            ("Value for money", qual(a["subscores"]["Value"]), qual(b["subscores"]["Value"])),
-            ("Typical price", f"{a['tier']} · {TIER_MEANING[a['tier']]}", f"{b['tier']} · {TIER_MEANING[b['tier']]}"),
-        ]
-    trows = ""
-    trows += f'<tr><td class="attr">Editor rating</td><td><strong>{a["score"]}/10</strong> · {score_word(a["score"])}</td><td><strong>{b["score"]}/10</strong> · {score_word(b["score"])}</td></tr>'
-    trows += f'<tr><td class="attr">Best for</td><td>{a["best_for"]}</td><td>{b["best_for"]}</td></tr>'
+    da, db = PDATA[v["a"]], PDATA[v["b"]]
+    FACTORS = list(SCORE_WEIGHTS.keys())  # Value, Support, Medications, Transparency
+    def sc(slug, f): return PDATA[slug]["scores"][f]
+
+    # specs table — real facts
+    rows = [
+        ("Starting price", f"${da['price']}{da['unit']}", f"${db['price']}{db['unit']}"),
+        ("Pricing", da["struct"], db["struct"]),
+        ("Medications", da["meds"], db["meds"]),
+        ("Medication form", da["form"], db["form"]),
+        ("Visit type", da["visit"], db["visit"]),
+        ("Insurance", da["insurance"], db["insurance"]),
+        ("Availability", da["avail"], db["avail"]),
+    ]
+    trows = f'<tr><td class="attr">Editor rating</td><td><strong>{a["score"]}/10</strong> · {score_word(a["score"])}</td><td><strong>{b["score"]}/10</strong> · {score_word(b["score"])}</td></tr>'
     for attr, va, vb in rows:
         trows += f'<tr><td class="attr">{attr}</td><td>{va}</td><td>{vb}</td></tr>'
 
-    # round-by-round breakdown, driven by the sub-scores
+    # round-by-round on the four scored factors
     rounds_html = ""; wins_a = wins_b = 0
-    for cat in ROUND_ORDER:
-        sa, sb = a["subscores"][cat], b["subscores"][cat]
-        diff = round(sa - sb, 1)
+    for cat in FACTORS:
+        sa, sbb = sc(v["a"], cat), sc(v["b"], cat)
+        diff = round(sa - sbb, 1)
         if abs(diff) < 0.15:
-            win_name = None; sent = f"{An} and {Bn} are evenly matched."
+            win_name = None; sent = f"Evenly matched at about {sa}."
         elif diff > 0:
             wins_a += 1; win_name = An
-            deg = "clearly ahead" if diff >= 0.6 else ("a step ahead" if diff >= 0.3 else "just ahead")
-            sent = f"{An} scores {sa} to {sb} — {deg}."
+            deg = "clearly ahead" if diff >= 0.8 else ("ahead" if diff >= 0.3 else "just ahead")
+            sent = f"{An} scores {sa} to {sbb} — {deg}."
         else:
             wins_b += 1; win_name = Bn
-            deg = "clearly ahead" if -diff >= 0.6 else ("a step ahead" if -diff >= 0.3 else "just ahead")
-            sent = f"{Bn} scores {sb} to {sa} — {deg}."
+            deg = "clearly ahead" if -diff >= 0.8 else ("ahead" if -diff >= 0.3 else "just ahead")
+            sent = f"{Bn} scores {sbb} to {sa} — {deg}."
         win_tag = (f'<span class="win">Winner: {win_name}</span>' if win_name
                    else '<span class="win" style="color:var(--muted);background:var(--surface-2)">Even</span>')
         rounds_html += (f'<div class="vs-round"><h3>{cat}</h3>'
-                        f'<p>{CATEGORY_FRAMES[cat]} {sent}</p>'
-                        f'<div class="rd-scores">{An} <b>{sa}</b> · {Bn} <b>{sb}</b>{win_tag}</div></div>')
-    even = 6 - wins_a - wins_b
+                        f'<p>{RUBRIC[cat]} {sent}</p>'
+                        f'<div class="rd-scores">{An} <b>{sa}</b> · {Bn} <b>{sbb}</b>{win_tag}</div></div>')
+    even = len(FACTORS) - wins_a - wins_b
     tally = f"{An} takes {wins_a}, {Bn} takes {wins_b}" + (f", with {even} even" if even else "") + "."
 
-    # where they differ / agree
-    gaps = sorted(((c, a["subscores"][c], b["subscores"][c]) for c in ROUND_ORDER),
+    # where they differ most (real factors)
+    gaps = sorted(((c, sc(v["a"], c), sc(v["b"], c)) for c in FACTORS),
                   key=lambda x: abs(x[1] - x[2]), reverse=True)
-    big = [(c, sa, sb) for c, sa, sb in gaps if abs(sa - sb) >= 0.3][:2]
+    big = [(c, sa, sbb) for c, sa, sbb in gaps if abs(sa - sbb) >= 0.3][:2]
     if big:
-        parts = []
-        for c, sa, sb in big:
-            w = An if sa > sb else Bn
-            parts.append(f"<strong>{c.lower()}</strong>, where {w} leads {max(sa,sb)} to {min(sa,sb)}")
-        differ = "The clearest daylight between them shows up in " + " and ".join(parts) + ". "
+        parts = [f"<strong>{c.lower()}</strong>, where {An if sa > sbb else Bn} leads {max(sa,sbb)} to {min(sa,sbb)}"
+                 for c, sa, sbb in big]
+        differ = "The clearest daylight is in " + " and ".join(parts) + ". "
     else:
-        differ = "No single category blows the other away — the gaps are incremental rather than dramatic. "
-    differ += f"Zoom out and the split is simple: {An} is our pick for {a['best_for'].lower()}, while {Bn} earns {Bn}'s place as {b['best_for'].lower()}."
-    close = [c for c, sa, sb in gaps if abs(sa - sb) <= 0.2]
-    similar = (f"On {human_list(close)}, there's little to separate them — both land within a couple of tenths, so those categories won't decide your choice."
-               if close else "")
+        differ = "The gaps are incremental rather than dramatic. "
 
-    # pricing
-    ta, tb = a["tier"], b["tier"]
-    if ta == tb:
-        pricing = f"{An} and {Bn} both sit in the {TIER_MEANING[ta].lower()} range ({ta}), so price isn't the deciding factor between them."
-        cheaper_note = "Neither is dramatically cheaper than the other"
+    # pricing (real numbers)
+    pa, pb = da["price"], db["price"]
+    if pa == pb:
+        cheaper = None
+        pricing = (f"Both advertise the same starting rate — ${pa}{da['unit']} — so price alone won't decide it. "
+                   f"Look at the structure: {An} is {da['struct'].lower()}, {Bn} is {db['struct'].lower()}.")
+        differ += f"On price, they start level at ${pa}{da['unit']}."
     else:
-        if len(ta) < len(tb):
-            pricing = f"{An} is the more budget-friendly of the two ({ta}, {TIER_MEANING[ta].lower()}), while {Bn} sits higher ({tb}, {TIER_MEANING[tb].lower()})."
-            cheaper_note = f"{An} is the cheaper option"
-        else:
-            pricing = f"{Bn} is the more budget-friendly of the two ({tb}, {TIER_MEANING[tb].lower()}), while {An} sits higher ({ta}, {TIER_MEANING[ta].lower()})."
-            cheaper_note = f"{Bn} is the cheaper option"
+        cheaper = An if pa < pb else Bn
+        hp = Bn if pa < pb else An
+        lo, hi = (pa, pb) if pa < pb else (pb, pa)
+        pricing = (f"{cheaper} has the lower advertised starting price — ${lo}{da['unit']} vs ${hi}{da['unit']} for {hp}. "
+                   f"But read the fine print: {An} is {da['struct'].lower()} and {Bn} is {db['struct'].lower()}, and the cheapest rates "
+                   f"often need a prepaid multi-month plan — so compare the real all-in cost at your maintenance dose, not the headline.")
+        differ += f"On price, {cheaper} starts lower (${lo} vs ${hi} per month)."
+    similar = ""
 
-    # matchup FAQ
-    if v["winner"] == v["a"]:
-        wname, lname, ws, ls, wcount, loser_pick = An, Bn, a["score"], b["score"], wins_a, v["pick_b"]
-    else:
-        wname, lname, ws, ls, wcount, loser_pick = Bn, An, b["score"], a["score"], wins_b, v["pick_a"]
+    # winner / loser (data-driven) for the verdict + FAQ
+    lose_slug = v["b"] if win_slug == v["a"] else v["a"]
+    wname, lname = PROVIDERS[win_slug]["name"], PROVIDERS[lose_slug]["name"]
+    ws, ls = PROVIDERS[win_slug]["score"], PROVIDERS[lose_slug]["score"]
+    loser_pick = v["pick_b"] if win_slug == v["a"] else v["pick_a"]
     lp = loser_pick[0].lower() + loser_pick[1:]
-    med_better = An if a["subscores"]["Medication access"] >= b["subscores"]["Medication access"] else Bn
-    clin_better = An if a["subscores"]["Clinical support"] >= b["subscores"]["Clinical support"] else Bn
-    app_better = An if a["subscores"]["App & tracking"] >= b["subscores"]["App & tracking"] else Bn
+    win_lead_factor = max(FACTORS, key=lambda c: sc(win_slug, c) - sc(lose_slug, c))
+    med_better = An if sc(v["a"], "Medications") >= sc(v["b"], "Medications") else Bn
+    sup_better = An if sc(v["a"], "Support") >= sc(v["b"], "Support") else Bn
+    is_tie = ws == ls
     vfaq = [
         (f"Is {An} better than {Bn}?",
-         f"In our scoring, {wname} comes out ahead — {ws}/10 to {ls}/10, winning {wcount} of the six categories we rate. That makes it our pick for most people. {lname} is still the better choice if {lp}"),
-        (f"Which is cheaper, {An} or {Bn}?",
-         f"{cheaper_note}. {pricing} Whichever you lean toward, compare the total cost at your maintenance dose — not just the introductory price."),
+         (f"They're line-ball on our rubric at {ws}/10, and {wname} edges it on the lower starting price. " if is_tie
+          else f"In our scoring {wname} comes out ahead — {ws}/10 to {ls}/10, leading on {win_lead_factor.lower()}. ")
+         + f"It's our pick for most people; {lname} is the better choice if {lp}"),
+        (f"Which is cheaper, {An} or {Bn}?", pricing),
         (f"Do {An} and {Bn} prescribe the same medications?",
-         f"Both work from the same GLP-1 toolkit — semaglutide and/or tirzepatide, branded or compounded depending on the plan. On medication access and flexibility, {med_better} scores a little higher in our review. Availability of any specific product shifts over time, so confirm current options with each provider."),
-        (f"Which has better clinician support, {An} or {Bn}?",
-         f"{clin_better} edges ahead on clinical support in our scoring — that's the depth of real clinician time and follow-up you get. Both include a genuine medical review; the difference is how much ongoing access comes with it."),
+         f"{An} offers {da['meds'].lower()} ({da['form'].lower()}); {Bn} offers {db['meds'].lower()} ({db['form'].lower()}). "
+         f"On breadth of options, {med_better} scores higher. Compounded GLP-1s aren't FDA-approved finished products, and availability shifts — confirm current options with each provider."),
+        (f"Which gives you more support, {An} or {Bn}?",
+         f"{sup_better} scores higher on support — real clinician access, coaching and follow-up. For visits, {An} is {da['visit'].lower()} and {Bn} is {db['visit'].lower()}."),
         (f"Are {An} and {Bn} legit?",
-         f"Both meet the bar we score for: a real evaluation by a licensed clinician before any prescription, clear medication information, and a way to reach someone with questions. Neither should issue a GLP-1 without a proper review."),
-        (f"Which has the better app, {An} or {Bn}?",
-         f"{app_better} has the edge on day-to-day tools and tracking in our scoring. If living in an app and logging progress matters to you, that's worth weighing; if you mostly want the medication handled, it matters less."),
+         f"Both require a licensed clinician to review your intake before prescribing. Confirm each provider's credentials, state availability ({An}: {da['avail'].lower()}; {Bn}: {db['avail'].lower()}) and current pricing before you sign up — and note that compounded medications aren't FDA-approved."),
         (f"Can I switch between {An} and {Bn}?",
-         f"Generally, yes. Neither program locks you into a long contract, so if you start with one and it isn't the right fit you can move to the other. Just never stop or change a GLP-1 medication without talking to your clinician first."),
+         f"Generally yes — neither locks you into a long contract, though the lowest prices often require a prepaid plan. Never stop or change a GLP-1 medication without talking to your clinician first."),
     ]
     vfaq_html = "".join(f'<details><summary>{q}</summary><div class="faq-a"><p>{ans}</p></div></details>' for q, ans in vfaq)
 
-    intro = (f"<strong>{An} and {Bn} prescribe the same GLP-1 medications — so what really separates them is the care around the prescription.</strong> "
-             f"{An} is our pick for {a['best_for'].lower()}; {Bn}, for {b['best_for'].lower()}. Here's how they stack up, category by category.")
-    # bold the actual verdict (first sentence), keep the rest lighter
-    vparts = re.split(r'(?<=[.!?])\s+', v['verdict'].strip(), maxsplit=1)
-    verdict_html = f"<strong>{vparts[0]}</strong>" + (f" {vparts[1]}" if len(vparts) > 1 else "")
+    hero_lede = (f"{An} (from ${pa}{da['unit']}) vs {Bn} (from ${pb}{db['unit']}) — real 2026 prices, "
+                 f"medications and visit types, with a scored verdict on which fits you.")
+    intro = (f"<strong>{An} starts at ${pa}{da['unit']} ({da['struct'].lower()}); {Bn} at ${pb}{db['unit']} ({db['struct'].lower()}).</strong> "
+             f"Both prescribe GLP-1 medication — {An} offers {da['meds'].lower()}, {Bn} {db['meds'].lower()}. "
+             f"Here's how they compare on price, medications, support and transparency.")
+    if is_tie:
+        verdict_html = (f"<strong>It's a near-tie at {ws}/10 — {wname} takes it on the lower starting price.</strong> "
+                        f"{lname} is a close alternative if {lp}")
+    else:
+        verdict_html = (f"<strong>{wname} wins on our rubric, {ws}/10 to {ls}/10.</strong> "
+                        f"It leads most on {win_lead_factor.lower()}. Choose {lname} instead if {lp}")
     # sticky mobile CTA bar — winner on the left, more prominent
-    w_slug = v["winner"]; l_slug = v["b"] if w_slug == v["a"] else v["a"]
+    w_slug = win_slug; l_slug = lose_slug
     def visit_btn(slug, cls):
         url = AFFILIATE_LINKS.get(slug, "#")
         rel = ' rel="sponsored nofollow" target="_blank"' if url != "#" else ""
@@ -1518,25 +1742,25 @@ def render_versus(v):
   {crumbs([("Home","/"),("Comparisons","/comparisons"),(f'{An} vs {Bn}', "")])}
   <span class="flag">{icon('scale', size=15)} Head-to-head comparison · Updated {UPDATED}</span>
   <h1>{An} vs {Bn}</h1>
-  <p class="lede">{v['intro']}</p>
+  <p class="lede">{hero_lede}</p>
 </div></section>
 
 <div class="wrap wide article-body" style="padding-top:36px">
   <p style="font-size:1.1rem;margin-bottom:1.4em">{intro}</p>
 
   <div class="callout"><h3>Bottom line: {winner} wins</h3><p>{verdict_html}</p>
-    <p style="margin:16px 0 0">{cta(v['winner'], label=f"View {winner} plans", cls='btn btn-primary btn-sm')}</p></div>
+    <p style="margin:16px 0 0">{cta(win_slug, label=f"View {winner} plans", cls='btn btn-primary btn-sm')}</p></div>
 
   <h2>Round by round</h2>
-  <p>We scored both programs on the six things that actually decide a weight-loss plan. {tally} Here's how each category shook out.</p>
+  <p>We scored both programs on the four factors in our <a href="/methodology">methodology</a> — value, support, medications and transparency. {tally} Here's how each shook out.</p>
   <div class="vs-rounds">{rounds_html}</div>
 
   <h2>Where they differ most</h2>
   <p>{differ}</p>
-  {f'<p>{similar}</p>' if similar else ''}
 
   <h2>Pricing: {An} vs {Bn}</h2>
-  <p>{pricing} Remember that prices move constantly and depend on your dose, so treat the tiers as a guide and confirm the current number with each provider. The figure that matters is the total monthly cost once you reach your maintenance dose — a cheap starter price can climb. We unpack this in <a href="/guides/compounded-semaglutide-cost">how much compounded semaglutide costs</a>.</p>
+  <p>{pricing} We unpack how these plans are structured in <a href="/guides/compounded-semaglutide-cost">how much compounded semaglutide costs</a>.</p>
+  <p class="price-foot">{icon('badge', size=15)} <span>{An}: {da['price_note']} (as of {da['as_of']}, {da['src']}). {Bn}: {db['price_note']} (as of {db['as_of']}, {db['src']}).</span></p>
 
   <h2>The specs, side by side</h2>
   <div class="table-scroll"><table class="cmp">
@@ -1555,12 +1779,12 @@ def render_versus(v):
   <h2>Common questions</h2>
   <div class="faq">{vfaq_html}</div>
 
-  <p class="muted" style="font-size:.88rem;margin-top:28px">Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider — it changes nothing about the scores or the verdict. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
+  <p class="muted" style="font-size:.88rem;margin-top:28px">Both programs are scored with the same independent <a href="/methodology">methodology</a>. We may earn a commission from either provider — it changes nothing about the scores or the verdict. Prices are advertised starting rates as of {UPDATED}; confirm current pricing with each provider. Nothing here is medical advice.</p>
 </div>
 {sticky}
 """
-    ttl = f"{An} vs {Bn} ({YEAR}): Which Is Better? | {SITE['name']}"
-    desc = f"{An} vs {Bn} compared across six categories — clinician support, medications, cost, onboarding and more — with a clear verdict on which wins."
+    ttl = f"{An} vs {Bn} ({YEAR}): Cost &amp; Which Is Better | {SITE['name']}"
+    desc = f"{An} (from ${da['price']}{da['unit']}) vs {Bn} (from ${db['price']}{db['unit']}) — real prices, medications, visit types and support compared, with a scored verdict."
     return base_page(ttl, desc, versus_url(v), body, active="/comparisons", jsonld=ld_faq_custom(vfaq))
 
 # --------------------------------------------------------------------------

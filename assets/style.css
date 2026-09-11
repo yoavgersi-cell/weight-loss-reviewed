@@ -623,3 +623,57 @@ table.cmp tbody tr:hover td.attr { background: #dbe6dd; }
   .framework-grid { grid-template-columns: 1fr; gap: 26px; }
   .fw-a { padding-left: 20px; }
 }
+
+/* ---------- real-price comparison table additions ---------- */
+.ct-price b { letter-spacing: 0; font-size: 1.15rem; }
+.ct-price b span { display: inline; font-size: .8rem; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+.ct-price-sub { display: block; font-size: .74rem; color: var(--muted); margin-top: 2px; }
+.ct-meds { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.ct-visit { font-size: .78rem; color: var(--muted); }
+.ct-warn { color: var(--coral-dark); font-size: .95rem; cursor: help; }
+.ct-name + .ct-warn { margin-left: 5px; }
+.price-foot { display: flex; gap: 9px; align-items: flex-start; font-size: .8rem; color: var(--muted);
+  margin: 16px 0 12px; line-height: 1.5; }
+.price-foot svg { flex: none; margin-top: 2px; color: var(--muted); }
+
+/* ---------- scoring rubric strip ---------- */
+.rubric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+.rub-item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 16px; position: relative; }
+.rub-item b { font-family: var(--sans); font-weight: 800; font-size: 1.02rem; color: var(--ink); letter-spacing: -0.01em; }
+.rub-w { position: absolute; top: 16px; right: 16px; font-family: var(--sans); font-weight: 800; font-size: .8rem;
+  color: var(--accent); background: var(--accent-tint); padding: 2px 8px; border-radius: 999px; }
+.rub-item p { margin: 8px 0 0; font-size: .88rem; color: var(--ink-soft); line-height: 1.5; }
+@media (max-width: 860px){ .rubric-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px){ .rubric-grid { grid-template-columns: 1fr; } }
+
+/* ---------- expandable-row specs + price note ---------- */
+.rr-specs { margin: 16px 0 6px; grid-template-columns: repeat(3, 1fr); }
+.rr-pricenote { font-size: .84rem; line-height: 1.55; margin: 6px 0 4px; }
+.rr-pricenote em { font-style: normal; color: var(--muted); }
+.rr-pricenote a { color: var(--accent); }
+@media (max-width: 640px){ .rr-specs { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- review: key-facts box + regulatory flag ---------- */
+.factbox { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 22px 24px; margin: 22px 0; }
+.factbox-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line-soft); padding-bottom: 14px; margin-bottom: 16px; }
+.factbox-head h3 { margin: 0; font-size: 1.2rem; }
+.factbox-price { font-family: var(--sans); font-weight: 900; font-size: 1.7rem; color: var(--accent); letter-spacing: -0.02em; white-space: nowrap; }
+.factbox-price span { font-size: .85rem; font-weight: 700; color: var(--muted); }
+.factgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; }
+.factgrid div { display: flex; flex-direction: column; gap: 2px; }
+.factgrid span { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+.factgrid b { font-family: var(--sans); font-weight: 700; font-size: .98rem; color: var(--ink); }
+.factbox-note { margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--line-soft); font-size: .84rem; color: var(--ink-soft); line-height: 1.55; }
+.factbox-note em { font-style: normal; color: var(--muted); }
+.factbox-note a { color: var(--accent); }
+@media (max-width: 480px){ .factgrid { grid-template-columns: 1fr; } }
+
+.callout-warn { border-color: #e6c9ba; background: var(--coral-tint); }
+.callout-warn h3 { color: var(--coral-dark); }
+.callout-warn svg { color: var(--coral-dark); }
+.callout-warn a { color: var(--coral-dark); font-weight: 700; }
+
+.tag-price { background: var(--accent-tint) !important; color: var(--accent-dark) !important; font-weight: 700; }
+.sc-w { font-style: normal; color: var(--muted); font-weight: 600; font-size: .78rem; }
+.row-total .snum { color: var(--accent); }
+.row-total { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 8px; font-weight: 700; }
