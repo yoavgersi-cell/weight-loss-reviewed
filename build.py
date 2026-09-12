@@ -426,12 +426,12 @@ RUBRIC = {
 
 PDATA = {
     "embody": {
-        "price": 79, "unit": "/mo", "struct": "All-in, includes medication",
+        "price": 69, "unit": "/mo", "struct": "All-in, includes medication",
         "price_note": "Promo starting rate; ~$299/mo at standard/maintenance dosing",
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection or daily oral",
         "visit": "Clinician-reviewed telehealth", "insurance": "Cash-pay (HSA/FSA)",
         "avail": "Not stated", "included": "Medication, clinician review; rate locks per plan",
-        "tagline": "Compounded GLP-1 as an injection or a daily oral — from a promo $79/mo.",
+        "tagline": "Compounded GLP-1 as an injection or a daily oral — from a promo $69/mo.",
         "as_of": "Jul 2026", "src": "exploretreatments.com", "src_url": "https://www.exploretreatments.com/embody-glp1-weight-loss-review/",
         "scores": {"Value": 9.4, "Support": 8.0, "Medications": 9.0, "Transparency": 7.0},
     },
@@ -1034,6 +1034,28 @@ ALT_TARGETS = ["ro", "found", "embody", "medvi", "altrx"]
 def meds(slug):
     return PDATA[slug]["meds"] if slug in PDATA else "GLP-1 options"
 
+def med_parts(slug):
+    """(type_label, type_class, drug_text) for a compact, scannable meds cell."""
+    m = PDATA[slug]["meds"]
+    ml = m.lower()
+    has_b = any(w in ml for w in ("branded", "wegovy", "zepbound", "ozempic"))
+    has_c = "compounded" in ml
+    if has_b and has_c:
+        typ, cls = "Compounded + branded", "both"
+    elif has_b:
+        typ, cls = "Branded", "branded"
+    else:
+        typ, cls = "Compounded", "compounded"
+    drugs = m
+    for pre in ("Compounded + branded", "Compounded", "Branded"):
+        if drugs.startswith(pre):
+            drugs = drugs[len(pre):]
+            break
+    drugs = drugs.strip(" -–—()").replace("(", "").replace(")", "")
+    if not drugs or drugs.lower() in ("options", "glp-1 options"):
+        drugs = "Semaglutide & tirzepatide"
+    return typ, cls, drugs[0].upper() + drugs[1:]
+
 def price_band(slug):
     """Real price band for filtering: under $100, $100–$199, $200+."""
     p = PDATA[slug]["price"]
@@ -1286,10 +1308,11 @@ def render_home():
         tags = f"{price_band(slug)} {'branded' if has_branded(slug) else 'compounded'}"
         logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
         flag = ' <span class="ct-warn" title="Regulatory flag — see review">⚠</span>' if d.get("flag") else ""
+        mtype, mcls, mdrugs = med_parts(slug)
         ctrows += f"""<div class="ctrow" data-score="{p['score']}" data-price="{d['price']}" data-tags="{tags}">
       <div class="ct-prov"><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a>{flag}<span class="ct-tag">{d['tagline']}</span></span></div>
       <div class="ct-price"><b>${d['price']}<span>{d['unit']}</span></b><span class="ct-price-sub">{price_struct_short(slug)}</span></div>
-      <div class="ct-meds"><span class="pill">{d['meds']}</span><span class="ct-visit">{d['visit']}</span></div>
+      <div class="ct-meds"><span class="med-type mt-{mcls}">{mtype}</span><span class="med-drugs">{mdrugs}</span><span class="ct-visit">{icon('clock', size=13)}{d['visit']}</span></div>
       <div class="ct-rate">{ring(p['score'])}<span class="ct-word">{score_word(p['score'])}</span></div>
       <div class="ct-act">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}</div>
     </div>"""
