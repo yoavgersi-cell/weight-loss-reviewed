@@ -677,3 +677,38 @@ table.cmp tbody tr:hover td.attr { background: #dbe6dd; }
 .sc-w { font-style: normal; color: var(--muted); font-weight: 600; font-size: .78rem; }
 .row-total .snum { color: var(--accent); }
 .row-total { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 8px; font-weight: 700; }
+
+/* ==========================================================================
+   Comparison table — cleaner medication cell + tighter rhythm (UI polish)
+   ========================================================================== */
+#ctable .ctrow { padding: 15px 20px; align-items: center; }
+#ctable .ctrow:nth-child(even) { background: #fcfbf7; }
+#ctable .ctrow:hover { background: #f5f2ea; }
+
+.ct-meds { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.ct-meds .pill { display: none; }               /* retire the oversized pill */
+.med-type { display: inline-block; font-size: .64rem; font-weight: 800; letter-spacing: .06em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 5px; line-height: 1; white-space: nowrap; }
+.mt-compounded { background: var(--accent-tint); color: var(--accent-dark); }
+.mt-branded { background: #eef1f8; color: #33518f; }
+.mt-both { background: var(--coral-tint); color: var(--coral-dark); }
+.med-drugs { font-family: var(--sans); font-weight: 700; color: var(--ink); font-size: .9rem; line-height: 1.3; }
+.ct-visit { display: inline-flex; align-items: center; gap: 5px; font-size: .78rem; color: var(--muted); }
+.ct-visit svg { color: var(--muted); flex: none; }
+
+/* price cell a touch calmer */
+.ct-price b { font-size: 1.2rem; }
+.ct-price-sub { font-size: .72rem; }
+
+/* rating cell alignment */
+.ct-rate { gap: 12px; }
+.ct-word { font-size: .8rem; }
+
+/* header labels a bit lighter */
+.ctrow.ct-header { font-size: .68rem; letter-spacing: .08em; }
+
+@media (max-width: 860px){
+  #ctable .ctrow:nth-child(even) { background: var(--surface); }
+  #ctable .ctrow:hover { background: #fcfbf7; }
+  .ct-meds { gap: 6px; }
+}
