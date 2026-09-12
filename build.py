@@ -27,7 +27,7 @@ YEAR = TODAY.year
 # >>> REPLACE THESE with your real affiliate/tracking links, then rebuild. <<<
 AFFILIATE_LINKS = {
     "embody":     "https://track.revoffers.com/aff_c?offer_id=1548&aff_id=12904",
-    "ro":         "https://ro.co",  # no affiliate link supplied — homepage placeholder
+    "ro":         "https://track.revoffers.com/aff_c?offer_id=1662&aff_id=12904",
     "found":      "https://track.revoffers.com/aff_c?offer_id=1162&aff_id=12905",
     "altrx":      "https://altrx.com/glp1/offer-v9?sub1=&sub2=&sub3=&sub4=&sub5=&_ef_transaction_id=&utm_source=partners&utm_campaign=id_21&utm_affiliate=21&ef=n&ef_oid=108&ef_aid=21&uid=95&oid=108&affid=21&uid=1910&oid2=5043&affid2=1952",
     "medvi":      "https://glp1.medvi.org/rx?page=multi4&uid=105&oid=5&affid=2&pub=1952&sub1=1952&uid=1946&oid2=5665&affid2=1952",
