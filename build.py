@@ -414,12 +414,14 @@ PRICE_FOOTNOTE = ("Prices are the lowest advertised starting rates as of Septemb
     "medication separately. Always confirm current pricing at the provider before you buy.")
 
 # Scoring rubric — four factors, each 0–10, weighted. Overall = weighted mean.
-SCORE_WEIGHTS = {"Value": 0.25, "Support": 0.30, "Medications": 0.20, "Transparency": 0.25}
+# We weight trust and clinical legitimacy over sheer cheapness: for a
+# prescription medication, support and transparency carry more than price.
+SCORE_WEIGHTS = {"Value": 0.15, "Support": 0.30, "Medications": 0.25, "Transparency": 0.30}
 RUBRIC = {
-    "Value": "Starting price vs. what comparable programs charge for the same medication.",
-    "Support": "Real clinician access, coaching and follow-up — video and a care team score higher than async-only.",
-    "Medications": "Breadth of GLP-1 options (compounded, branded, oral) and how easily the plan adapts.",
-    "Transparency": "How clearly pricing, terms and availability are stated up front — and any regulatory red flags.",
+    "Value": "What you get for the price — not just the lowest sticker. A premium program that includes FDA-approved medication, insurance help and real support can be good value.",
+    "Support": "Real clinician access, coaching and follow-up — video visits and a care team score higher than async-only.",
+    "Medications": "Medication options and legitimacy — FDA-approved branded (Wegovy, Zepbound) rates above compounded-only, and breadth and flexibility add points.",
+    "Transparency": "How clearly and publicly pricing, terms and availability are stated — plus track record and any regulatory red flags.",
 }
 
 PDATA = {
@@ -439,9 +441,9 @@ PDATA = {
         "meds": "Branded Wegovy & Zepbound", "form": "Oral pill or injection pen",
         "visit": "Async + optional video", "insurance": "Insurance concierge + cash-pay",
         "avail": "Nationwide", "included": "Insurance help, labs when indicated, provider messaging, shipping",
-        "tagline": "The established name: branded Wegovy and Zepbound with insurance help — at a branded price.",
+        "tagline": "The most established, most transparent option — FDA-approved Wegovy and Zepbound, insurance help, video visits and labs.",
         "as_of": "Sep 2026", "src": "ro.co", "src_url": "https://ro.co/weight-loss/pricing/",
-        "scores": {"Value": 6.6, "Support": 8.8, "Medications": 8.8, "Transparency": 9.2},
+        "scores": {"Value": 7.6, "Support": 9.0, "Medications": 9.0, "Transparency": 9.5},
     },
     "found": {
         "price": 198, "unit": "/mo", "struct": "Membership + medication (billed separately)",
@@ -1951,32 +1953,29 @@ def render_guides_index():
 # Static pages
 # --------------------------------------------------------------------------
 def render_methodology():
-    weights = [
-        ("Clinical support", "Do you get real clinician access and coaching that lasts beyond signup?"),
-        ("Medication access", "Range of GLP-1 options and how easily the plan adapts to supply and budget."),
-        ("Value", "Total cost for what you get — judged against comparable programs, not in a vacuum."),
-        ("Transparency", "Is pricing and medication information clear before you pay?"),
-        ("Onboarding", "How fast and painless it is to get started, without cutting clinical corners."),
-        ("App & tracking", "Quality of the tools you use day to day."),
-    ]
-    rows = "".join(f'<tr><td class="attr">{n}</td><td>{d}</td></tr>' for n, d in weights)
+    rows = "".join(
+        f'<tr><td class="attr">{n}</td><td class="pr"><strong>{int(SCORE_WEIGHTS[n]*100)}%</strong></td><td>{RUBRIC[n]}</td></tr>'
+        for n in SCORE_WEIGHTS)
     body = f"""
 <section class="hero"><div class="wrap narrow">
   {crumbs([("Home","/"),("How We Rank","")])}
   <span class="hero-flag">Editorial standards</span>
   <h1>How we score weight-loss programs</h1>
-  <p class="lede">Our rankings are opinions, but they're not arbitrary. Here's exactly what we measure and how we keep it honest.</p>
+  <p class="lede">Our rankings are opinions, but they're not arbitrary. Here's exactly what we measure, how we weight it, and how we keep it honest.</p>
 </div></section>
 <div class="wrap narrow article-body" style="padding-top:26px">
-  <h2 style="margin-top:0">What we score</h2>
-  <p>Every program gets an overall score out of 10, built from six sub-scores. We weight support and access most heavily, because they're what actually determine whether a program works for real people over time.</p>
-  <div class="table-scroll"><table class="cmp"><thead><tr><th>Factor</th><th>What it captures</th></tr></thead><tbody>{rows}</tbody></table></div>
+  <h2 style="margin-top:0">The four factors</h2>
+  <p>Every program gets a 0–10 on each of four factors, scored from the real, sourced data we collect — starting price, medications, visit type, support, availability and track record. The overall score is the weighted average below.</p>
+  <div class="table-scroll"><table class="cmp"><thead><tr><th>Factor</th><th>Weight</th><th>What it captures</th></tr></thead><tbody>{rows}</tbody></table></div>
+
+  <h2>Why we weight it this way</h2>
+  <p>These are prescription medications, not a subscription box. So we deliberately weight <strong>support and transparency</strong> — real clinician access and a clear, honest, well-established operation — above the raw sticker price. The cheapest program isn't automatically the best: a rock-bottom compounded plan with thin oversight can score below a pricier, FDA-approved, well-supported one. We also credit <strong>FDA-approved branded medication</strong> over compounded-only, because it carries approval and consistency that compounding does not.</p>
 
   <h2>How we keep it independent</h2>
   <p>We're reader-supported: when you sign up through our links we may earn a commission. That funds the site, but it does not buy a better score or a higher ranking. Commissions do not factor into our scoring at all — a program we earn nothing from can outrank one we do, and sometimes does.</p>
 
-  <h2>About pricing tiers</h2>
-  <p>Because prices and promotions change constantly — and vary by dose and pharmacy — we show a relative tier ($, $$, $$$) rather than a fixed number that would be out of date within weeks. For current pricing, always check the provider directly through the "check offer" links.</p>
+  <h2>About the prices</h2>
+  <p>Every price on the site is a real, dated figure with a source — the lowest advertised starting rate as of the date shown. Many programs quote those rates only on a prepaid multi-month or promotional plan, and membership programs bill medication separately, so month-to-month and maintenance-dose costs run higher. We say so, and we tell you to confirm the current number at the provider before you buy.</p>
 
   <h2>What we don't do</h2>
   <ul>
@@ -1989,7 +1988,7 @@ def render_methodology():
 </div>
 """
     return base_page(f"How We Score Weight-Loss Programs — Methodology | {SITE['name']}",
-                     "Our editorial methodology: the six factors we score, how we weight them, and how we stay independent from the commissions that fund the site.",
+                     "Our editorial methodology: the four factors we score, how we weight them, and how we stay independent from the commissions that fund the site.",
                      "/methodology", body, active="/methodology", jsonld=ld_org())
 
 def render_about():
