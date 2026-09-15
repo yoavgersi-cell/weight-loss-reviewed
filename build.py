@@ -20,7 +20,7 @@ SITE = {
     "tagline": "We test, score and rank online weight-loss programs.",
     "email": "hello@weightlossreviewed.com",
 }
-TODAY = datetime.date(2026, 9, 9)
+TODAY = datetime.date.today()
 UPDATED = TODAY.strftime("%B %Y")
 YEAR = TODAY.year
 
@@ -1162,10 +1162,12 @@ def ld_website():
 
 def ld_product(p, slug):
     return ('{"@context":"https://schema.org","@type":"Product","name":"%s",'
-            '"description":"%s","review":{"@type":"Review","reviewRating":'
-            '{"@type":"Rating","ratingValue":"%s","bestRating":"10"},'
+            '"description":"%s","review":{"@type":"Review",'
+            '"datePublished":"%s","dateModified":"%s",'
+            '"reviewRating":{"@type":"Rating","ratingValue":"%s","bestRating":"10"},'
             '"author":{"@type":"Organization","name":"%s"}}}'
-            % (p["name"], p["summary"].replace('"', "'"), p["score"], SITE["name"]))
+            % (p["name"], p["summary"].replace('"', "'"),
+               TODAY.isoformat(), TODAY.isoformat(), p["score"], SITE["name"]))
 
 def ld_article(a):
     return ('{"@context":"https://schema.org","@type":"Article","headline":"%s",'
@@ -1607,8 +1609,8 @@ def render_review(slug):
 </div></section>
 """
     return base_page(
-        f"{p['name']} Reviews ({YEAR}): Cost, Medications & Is It Legit? | {SITE['name']}",
-        f"{p['name']} weight-loss reviews ({YEAR}): starts from ${d['price']}{d['unit']}, {d['meds'].lower()}. We score it {p['score']}/10 on price, support, medications and transparency.",
+        f"{p['name']} GLP-1 Review ({YEAR}): Real Cost & Honest Verdict | {SITE['name']}",
+        f"An independent, up-to-date {p['name']} review — real {YEAR} pricing from ${d['price']}{d['unit']}, {d['meds'].lower()}, and an honest {p['score']}/10 across price, support, medications and transparency. Updated {UPDATED}.",
         review_url(slug), body, active="/reviews", jsonld=ld_product(p, slug))
 
 # --------------------------------------------------------------------------
