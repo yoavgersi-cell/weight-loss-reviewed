@@ -20,7 +20,7 @@ SITE = {
     "tagline": "We test, score and rank online weight-loss programs.",
     "email": "hello@weightlossreviewed.com",
 }
-TODAY = datetime.date(2026, 9, 9)
+TODAY = datetime.date.today()
 UPDATED = TODAY.strftime("%B %Y")
 YEAR = TODAY.year
 
@@ -461,9 +461,9 @@ PDATA = {
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
         "visit": "Async, video when needed", "insurance": "Cash-pay",
         "avail": "Not stated", "included": "Consult, medication, tracking app, free shipping",
-        "tagline": "Low bundled starting price — but its parent drew an FDA warning letter over misleading claims.",
+        "tagline": "One of the lowest bundled prices — clear, no-membership pricing, though its parent drew an FDA warning letter over past marketing claims.",
         "as_of": "Sep 2026", "src": "altrx.com", "src_url": "https://www.altrx.com/products/compounded-semaglutide",
-        "scores": {"Value": 9.0, "Support": 7.8, "Medications": 8.4, "Transparency": 5.5},
+        "scores": {"Value": 9.3, "Support": 8.3, "Medications": 8.6, "Transparency": 6.0},
         "flag": ("FDA warning letter", "AltRx's parent (Trinity HealthCare Supply, LLC) received an FDA warning "
                  "letter dated June 8, 2026 over false or misleading claims about its compounded semaglutide and "
                  "tirzepatide, including labeling that implied FDA approval.",
@@ -1162,10 +1162,12 @@ def ld_website():
 
 def ld_product(p, slug):
     return ('{"@context":"https://schema.org","@type":"Product","name":"%s",'
-            '"description":"%s","review":{"@type":"Review","reviewRating":'
-            '{"@type":"Rating","ratingValue":"%s","bestRating":"10"},'
+            '"description":"%s","review":{"@type":"Review",'
+            '"datePublished":"%s","dateModified":"%s",'
+            '"reviewRating":{"@type":"Rating","ratingValue":"%s","bestRating":"10"},'
             '"author":{"@type":"Organization","name":"%s"}}}'
-            % (p["name"], p["summary"].replace('"', "'"), p["score"], SITE["name"]))
+            % (p["name"], p["summary"].replace('"', "'"),
+               TODAY.isoformat(), TODAY.isoformat(), p["score"], SITE["name"]))
 
 def ld_article(a):
     return ('{"@context":"https://schema.org","@type":"Article","headline":"%s",'
@@ -1607,8 +1609,8 @@ def render_review(slug):
 </div></section>
 """
     return base_page(
-        f"{p['name']} Review ({YEAR}): Is It Worth It? Score {p['score']}/10 | {SITE['name']}",
-        f"Our {p['name']} review — scored {p['score']}/10. {p['summary'][:110]}",
+        f"{p['name']} GLP-1 Review ({YEAR}): Real Cost & Honest Verdict | {SITE['name']}",
+        f"An independent, up-to-date {p['name']} review — real {YEAR} pricing from ${d['price']}{d['unit']}, {d['meds'].lower()}, and an honest {p['score']}/10 across price, support, medications and transparency. Updated {UPDATED}.",
         review_url(slug), body, active="/reviews", jsonld=ld_product(p, slug))
 
 # --------------------------------------------------------------------------
