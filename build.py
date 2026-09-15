@@ -1607,8 +1607,8 @@ def render_review(slug):
 </div></section>
 """
     return base_page(
-        f"{p['name']} Review ({YEAR}): Is It Worth It? Score {p['score']}/10 | {SITE['name']}",
-        f"Our {p['name']} review — scored {p['score']}/10. {p['summary'][:110]}",
+        f"{p['name']} Reviews ({YEAR}): Cost, Medications & Is It Legit? | {SITE['name']}",
+        f"{p['name']} weight-loss reviews ({YEAR}): starts from ${d['price']}{d['unit']}, {d['meds'].lower()}. We score it {p['score']}/10 on price, support, medications and transparency.",
         review_url(slug), body, active="/reviews", jsonld=ld_product(p, slug))
 
 # --------------------------------------------------------------------------
