@@ -63,7 +63,7 @@ PROVIDER_ORDER = ["embody", "ro", "found", "altrx", "medvi",
 
 PROVIDERS = {
     "embody": {
-        "name": "Embody",
+        "name": "embody",
         "score": 9.4,
         "tier": "$$",
         "best_for": "Best for an oral option",
@@ -87,11 +87,11 @@ PROVIDERS = {
             "Not the cheapest month-one price on the market",
             "Coaching depth is more than some people who just want a script want",
         ],
-        "verdict": "Embody is our top pick because it does the boring things well: you actually talk to a clinician, the medication plan bends when supply or budget changes, and the coaching keeps showing up. It's not the rock-bottom price, but it's the program most likely to still be working for you in month six.",
-        "summary": "A full-service telehealth weight-loss program built around GLP-1 medications, live clinician visits, and ongoing coaching. Embody positions itself as an end-to-end plan rather than a prescription vending machine — and in our testing that ongoing support is what separates it from cheaper competitors.",
+        "verdict": "embody is our top pick because it does the boring things well: you actually talk to a clinician, the medication plan bends when supply or budget changes, and the coaching keeps showing up. It's not the rock-bottom price, but it's the program most likely to still be working for you in month six.",
+        "summary": "A full-service telehealth weight-loss program built around GLP-1 medications, live clinician visits, and ongoing coaching. embody positions itself as an end-to-end plan rather than a prescription vending machine — and in our testing that ongoing support is what separates it from cheaper competitors.",
     },
     "ro": {
-        "name": "Ro",
+        "name": "ro",
         "score": 9.1,
         "tier": "$$$",
         "best_for": "Most established brand",
@@ -115,8 +115,8 @@ PROVIDERS = {
             "Tends to sit at the higher end on total monthly cost",
             "Scale can make the experience feel less personal than boutique programs",
         ],
-        "verdict": "Ro is the safe, established choice. If brand trust and smooth logistics matter more to you than squeezing out the lowest price, it's hard to go wrong. You pay a bit more for the polish and the name — for a lot of people that trade is worth it.",
-        "summary": "Ro is a well-known national telehealth company that offers a structured weight-management program including GLP-1 medications. It leans on scale — a large clinician network, mature pharmacy logistics, and a refined app — to deliver a dependable, if pricier, experience.",
+        "verdict": "ro is the safe, established choice. If brand trust and smooth logistics matter more to you than squeezing out the lowest price, it's hard to go wrong. You pay a bit more for the polish and the name — for a lot of people that trade is worth it.",
+        "summary": "ro is a well-known national telehealth company that offers a structured weight-management program including GLP-1 medications. It leans on scale — a large clinician network, mature pharmacy logistics, and a refined app — to deliver a dependable, if pricier, experience.",
     },
     "altrx": {
         "name": "AltRx",
@@ -231,7 +231,7 @@ PROVIDERS = {
         "summary": "Found pairs GLP-1 medication (where appropriate) with a genuine behavior-change program — coaching, an active community, and one of the best apps we tested. It's built for people who want support changing habits, not just a prescription.",
     },
     "medvi": {
-        "name": "Medvi",
+        "name": "MEDVi",
         "score": 8.5,
         "tier": "$$",
         "best_for": "Best for simple GLP-1 access",
@@ -255,8 +255,8 @@ PROVIDERS = {
             "Lighter coaching than the premium, support-led programs",
             "App and tracking tools are basic",
         ],
-        "verdict": "Medvi does the fundamentals well without dressing them up. If you know what you want and value a clean, quick path to a GLP-1 over heavy coaching, it's a solid, fairly priced choice. Just don't expect the hand-holding of the top-scoring programs.",
-        "summary": "Medvi is a straightforward telehealth program offering both semaglutide and tirzepatide with a quick, uncomplicated process. It's a sensible middle-ground pick for people who want efficient GLP-1 access without a lot of extras.",
+        "verdict": "MEDVi does the fundamentals well without dressing them up. If you know what you want and value a clean, quick path to a GLP-1 over heavy coaching, it's a solid, fairly priced choice. Just don't expect the hand-holding of the top-scoring programs.",
+        "summary": "MEDVi is a straightforward telehealth program offering both semaglutide and tirzepatide with a quick, uncomplicated process. It's a sensible middle-ground pick for people who want efficient GLP-1 access without a lot of extras.",
     },
     "healthrx": {
         "name": "HealthRx",
@@ -404,7 +404,7 @@ PROVIDERS = {
 # REAL provider data (researched Sep 2026). Prices are the LOWEST ADVERTISED
 # starting rates and, for most compounded programs, require a prepaid multi-
 # month plan or are promotional — per-dose and month-to-month prices run
-# higher. Membership programs (Ro, Found) bill medication separately, so the
+# higher. Membership programs (ro, Found) bill medication separately, so the
 # "from" figure is membership + the cheapest medication. Always confirm at the
 # provider's checkout. Every figure is sourced; see `src`/`src_url`.
 # ==========================================================================
@@ -589,8 +589,8 @@ ROUND_ORDER = ["Clinical support", "Medication access", "Value", "Onboarding", "
 VERSUS = [
     {
         "a": "embody", "b": "ro", "winner": "embody",
-        "intro": "Two of the strongest full-service programs we've tested go head to head. Embody edges it on ongoing coaching and flexibility; Ro counters with brand scale and polish. Here's how they actually differ.",
-        "verdict": "Both are excellent — this is a close one. Embody takes it for most people because the coaching keeps going and the medication plan flexes when supply or budget shifts. Ro is the pick if an established national brand and frictionless logistics are what put you at ease. You won't be poorly served either way.",
+        "intro": "Two of the strongest full-service programs we've tested go head to head. embody edges it on ongoing coaching and flexibility; ro counters with brand scale and polish. Here's how they actually differ.",
+        "verdict": "Both are excellent — this is a close one. embody takes it for most people because the coaching keeps going and the medication plan flexes when supply or budget shifts. ro is the pick if an established national brand and frictionless logistics are what put you at ease. You won't be poorly served either way.",
         "pick_a": "You want continuous coaching and a plan that adapts month to month.",
         "pick_b": "Brand recognition and mature pharmacy logistics matter most to you.",
         "rows": [
@@ -604,7 +604,7 @@ VERSUS = [
     {
         "a": "embody", "b": "altrx", "winner": "embody",
         "intro": "The premium all-rounder versus the budget champion. This one comes down to a simple question: are you paying for support, or paying as little as possible?",
-        "verdict": "If money is the deciding factor, AltRx wins outright — it's cheaper and faster to start. But Embody is the better program: you get real clinician time and coaching that AltRx simply doesn't include at its price. Pay less and self-manage with AltRx, or pay more and be supported with Embody.",
+        "verdict": "If money is the deciding factor, AltRx wins outright — it's cheaper and faster to start. But embody is the better program: you get real clinician time and coaching that AltRx simply doesn't include at its price. Pay less and self-manage with AltRx, or pay more and be supported with embody.",
         "pick_a": "You want clinician access and coaching, and will pay a bit more for it.",
         "pick_b": "You want the lowest entry price and are comfortable self-managing.",
         "rows": [
@@ -618,7 +618,7 @@ VERSUS = [
     {
         "a": "embody", "b": "trimrx", "winner": "embody",
         "intro": "A broad, do-everything program against a tirzepatide specialist. The right answer depends on whether you've already picked your medication.",
-        "verdict": "Embody is the better all-around program and the safer default if you're still weighing your options. But if you've specifically decided on tirzepatide, TrimRx's focus and titration support are a genuine advantage. Undecided? Start with Embody. Set on tirzepatide? TrimRx earns a look.",
+        "verdict": "embody is the better all-around program and the safer default if you're still weighing your options. But if you've specifically decided on tirzepatide, TrimRx's focus and titration support are a genuine advantage. Undecided? Start with embody. Set on tirzepatide? TrimRx earns a look.",
         "pick_a": "You want flexibility across GLP-1 options and stronger overall support.",
         "pick_b": "You've already decided tirzepatide is your route.",
         "rows": [
@@ -632,7 +632,7 @@ VERSUS = [
     {
         "a": "embody", "b": "bmimd", "winner": "embody",
         "intro": "Consumer-friendly full-service versus a medical-first, physician-led model. Both are strong; they're built for different people.",
-        "verdict": "For most healthy adults who want an effective, well-supported program, Embody is the smoother, better-value experience. bmiMD pulls ahead if you have health complexity — comorbidities, medication interactions, a history that needs careful oversight. Match the program to how medically complex your situation is.",
+        "verdict": "For most healthy adults who want an effective, well-supported program, embody is the smoother, better-value experience. bmiMD pulls ahead if you have health complexity — comorbidities, medication interactions, a history that needs careful oversight. Match the program to how medically complex your situation is.",
         "pick_a": "You're a straightforward case and want a great consumer experience.",
         "pick_b": "You have health complexity and want a physician clearly in charge.",
         "rows": [
@@ -646,7 +646,7 @@ VERSUS = [
     {
         "a": "ro", "b": "bmimd", "winner": "ro",
         "intro": "Two premium programs, two different philosophies: a polished national platform versus a physician-led medical practice. Both sit at the higher end on price.",
-        "verdict": "Ro is the better pick for a smooth, scaled, brand-backed experience. bmiMD is the better pick if medical depth is the point and you'd trade some polish for a physician's close involvement. Same rough price band — the deciding factor is whether you value logistics or clinical thoroughness more.",
+        "verdict": "ro is the better pick for a smooth, scaled, brand-backed experience. bmiMD is the better pick if medical depth is the point and you'd trade some polish for a physician's close involvement. Same rough price band — the deciding factor is whether you value logistics or clinical thoroughness more.",
         "pick_a": "You want a big-brand experience with frictionless logistics.",
         "pick_b": "You want maximum medical oversight for a complex situation.",
         "rows": [
@@ -674,7 +674,7 @@ VERSUS = [
     {
         "a": "ro", "b": "altrx", "winner": "ro",
         "intro": "Premium brand experience versus rock-bottom pricing. This is the clearest 'you get what you pay for' matchup in our lineup.",
-        "verdict": "If budget rules the decision, AltRx is dramatically cheaper and starts faster. If you want the reassurance of an established national brand with mature logistics — and can absorb the higher cost — Ro delivers that. There's no wrong answer; there's only which trade-off you'd rather make.",
+        "verdict": "If budget rules the decision, AltRx is dramatically cheaper and starts faster. If you want the reassurance of an established national brand with mature logistics — and can absorb the higher cost — ro delivers that. There's no wrong answer; there's only which trade-off you'd rather make.",
         "pick_a": "You value brand trust and polished logistics over price.",
         "pick_b": "You want the lowest possible entry cost.",
         "rows": [
@@ -687,22 +687,22 @@ VERSUS = [
     },
     {
         "a": "embody", "b": "found", "winner": "embody",
-        "intro": "Two support-heavy programs that both go well beyond the prescription. Embody leans on live clinician access and flexibility; Found is built around coaching and its app.",
-        "verdict": "Embody edges it as the more complete package — real clinician time plus flexible medication access. But Found is arguably the best in the category at coaching and habit change, so if that's specifically what you need, it's a genuinely close call.",
+        "intro": "Two support-heavy programs that both go well beyond the prescription. embody leans on live clinician access and flexibility; Found is built around coaching and its app.",
+        "verdict": "embody edges it as the more complete package — real clinician time plus flexible medication access. But Found is arguably the best in the category at coaching and habit change, so if that's specifically what you need, it's a genuinely close call.",
         "pick_a": "You want the most complete mix of clinician access, medication flexibility and coaching.",
         "pick_b": "Behavior change and a great app matter to you more than anything else.",
     },
     {
         "a": "ro", "b": "found", "winner": "ro",
         "intro": "An established national brand versus the category's best coaching experience. Both are polished; they emphasize different things.",
-        "verdict": "Ro takes it narrowly on the strength of its scale, logistics and brand trust. Found is right behind and wins outright if coaching and its app are your priority — this one comes down to whether you value infrastructure or behavior support more.",
+        "verdict": "ro takes it narrowly on the strength of its scale, logistics and brand trust. Found is right behind and wins outright if coaching and its app are your priority — this one comes down to whether you value infrastructure or behavior support more.",
         "pick_a": "Brand trust and smooth, proven logistics matter most.",
         "pick_b": "You want the strongest coaching and app, and will trade a little brand scale for it.",
     },
     {
         "a": "embody", "b": "medvi", "winner": "embody",
         "intro": "The most complete full-service program versus a lean, no-nonsense route to a GLP-1. Support and flexibility against speed and simplicity.",
-        "verdict": "Embody is the better program for most people — more clinician time, coaching and medication flexibility. Medvi is the pick if you already know what you want and would rather skip the extras for a faster, simpler start.",
+        "verdict": "embody is the better program for most people — more clinician time, coaching and medication flexibility. MEDVi is the pick if you already know what you want and would rather skip the extras for a faster, simpler start.",
         "pick_a": "You want ongoing support and a plan that adapts over time.",
         "pick_b": "You want a quick, straightforward path to semaglutide or tirzepatide.",
     },
@@ -716,21 +716,21 @@ VERSUS = [
     {
         "a": "found", "b": "medvi", "winner": "found",
         "intro": "A coaching-led program versus a simple GLP-1 access play. Both are mid-priced; the difference is how much hand-holding you get.",
-        "verdict": "Found wins for anyone who wants support built in — coaching, community and a strong app. Medvi is the leaner choice for people who just want the medication handled without the extras.",
+        "verdict": "Found wins for anyone who wants support built in — coaching, community and a strong app. MEDVi is the leaner choice for people who just want the medication handled without the extras.",
         "pick_a": "You want coaching and structure, not just a prescription.",
         "pick_b": "You want a clean, quick GLP-1 start and minimal fuss.",
     },
     {
         "a": "ro", "b": "medvi", "winner": "ro",
         "intro": "A big, established telehealth brand versus a simple, focused GLP-1 program. Trust and polish against speed and price.",
-        "verdict": "Ro takes it on scale, logistics and brand reassurance. Medvi is the value-minded alternative if you don't need the brand name and want a quicker, lighter experience.",
+        "verdict": "ro takes it on scale, logistics and brand reassurance. MEDVi is the value-minded alternative if you don't need the brand name and want a quicker, lighter experience.",
         "pick_a": "Brand trust and mature logistics are worth a higher price to you.",
         "pick_b": "You want a simpler, faster route and care less about the brand.",
     },
     {
         "a": "altrx", "b": "medvi", "winner": "altrx",
-        "intro": "Two value-minded programs, nearly neck and neck. AltRx leads on price; Medvi leans on a clean, flexible GLP-1 process.",
-        "verdict": "AltRx edges it on cost and speed, making it our pick for the tightest budgets. Medvi is just behind and worth it if you want a slightly more guided choice between semaglutide and tirzepatide. Genuinely close.",
+        "intro": "Two value-minded programs, nearly neck and neck. AltRx leads on price; MEDVi leans on a clean, flexible GLP-1 process.",
+        "verdict": "AltRx edges it on cost and speed, making it our pick for the tightest budgets. MEDVi is just behind and worth it if you want a slightly more guided choice between semaglutide and tirzepatide. Genuinely close.",
         "pick_a": "The lowest possible entry price is your priority.",
         "pick_b": "You want a clean, guided choice between semaglutide and tirzepatide.",
     },
@@ -744,14 +744,14 @@ VERSUS = [
     {
         "a": "ro", "b": "trimrx", "winner": "ro",
         "intro": "An established generalist versus a tirzepatide specialist. Brand and breadth against focus.",
-        "verdict": "Ro wins for most people on scale, logistics and trust. TrimRx is the better choice specifically if tirzepatide is your route and you want a program that specializes in it.",
+        "verdict": "ro wins for most people on scale, logistics and trust. TrimRx is the better choice specifically if tirzepatide is your route and you want a program that specializes in it.",
         "pick_a": "You want a broad, established program with smooth logistics.",
         "pick_b": "Tirzepatide specifically is your plan.",
     },
     {
         "a": "embody", "b": "healthrx", "winner": "embody",
         "intro": "A full-service, coaching-led program versus a prescription-forward one that nails pharmacy logistics.",
-        "verdict": "Embody is the more complete, better-supported program and our pick for most people. HealthRx is a solid, efficient choice if what you mainly want is reliable medication access with the pharmacy side handled for you.",
+        "verdict": "embody is the more complete, better-supported program and our pick for most people. HealthRx is a solid, efficient choice if what you mainly want is reliable medication access with the pharmacy side handled for you.",
         "pick_a": "You want clinician time and coaching, not just the medication.",
         "pick_b": "You mainly want reliable meds and smooth pharmacy handling.",
     },
@@ -1398,13 +1398,13 @@ def render_home():
         ("01", "Budget", "dollar", "How much can you spend, monthly?",
          f"Compounded semaglutide and tirzepatide run far cheaper than branded Wegovy or Zepbound. If cost is the priority, the lowest advertised starting rates in our table are {cheap_names} — but read the fine print: those figures usually need a prepaid multi-month plan, and month-to-month is higher."),
         ("02", "Insurance", "shield", "Do you want to use insurance?",
-         "Insurance rarely covers compounded GLP-1s, so most compounded programs are cash-pay. If you want to try insurance for branded Wegovy or Zepbound, Ro and Found both run insurance navigation — expect a branded price if it doesn't come through."),
+         "Insurance rarely covers compounded GLP-1s, so most compounded programs are cash-pay. If you want to try insurance for branded Wegovy or Zepbound, ro and Found both run insurance navigation — expect a branded price if it doesn't come through."),
         ("03", "Medication", "pill", "Branded or compounded?",
-         "Branded (Wegovy, Zepbound) is FDA-approved and consistent but costs $300–$600+/mo; compounded is cheaper ($49–$299/mo) but isn't FDA-approved and supply rules shift. Ro is branded-only in 2026; Found keeps both paths; most others are compounded-only."),
+         "Branded (Wegovy, Zepbound) is FDA-approved and consistent but costs $300–$600+/mo; compounded is cheaper ($49–$299/mo) but isn't FDA-approved and supply rules shift. ro is branded-only in 2026; Found keeps both paths; most others are compounded-only."),
         ("04", "Support level", "clipboard", "How much guidance do you want?",
          f"If you want a real care team, coaching and clinician time, weight Support heavily — {support_names} score highest there. If you just want the medication handled, an async, questionnaire-only program will be cheaper and faster."),
         ("05", "Visit style", "clock", "Video visit or async messaging?",
-         "Most compounded programs are async: you fill in a questionnaire, a clinician reviews it, and medication ships — no appointment. A few (Ro, Found, WellMedR) offer a live video visit. Async is faster and cheaper; video gives you face time. Pick the one you'll actually use."),
+         "Most compounded programs are async: you fill in a questionnaire, a clinician reviews it, and medication ships — no appointment. A few (ro, Found, WellMedR) offer a live video visit. Async is faster and cheaper; video gives you face time. Pick the one you'll actually use."),
     ]
     fw_html = ""
     for j, (num, kicker, ic, q, ans) in enumerate(fw):
