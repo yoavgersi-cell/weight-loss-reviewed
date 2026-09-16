@@ -712,3 +712,16 @@ table.cmp tbody tr:hover td.attr { background: #dbe6dd; }
   #ctable .ctrow:hover { background: #fcfbf7; }
   .ct-meds { gap: 6px; }
 }
+
+/* ---------- popular head-to-head comparisons grid ---------- */
+.vs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 22px; }
+.vs-link { display: flex; flex-direction: column; gap: 6px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; padding: 16px 16px; transition: border-color .14s, box-shadow .14s, transform .14s; }
+.vs-link:hover { border-color: var(--accent); box-shadow: 0 14px 30px -22px rgba(15,115,97,.5); transform: translateY(-1px); text-decoration: none; }
+.vs-link-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.vs-link-names { font-family: var(--sans); font-weight: 800; color: var(--ink); font-size: 1.02rem; letter-spacing: -0.01em; }
+.vs-link-names em { font-style: italic; font-weight: 600; color: var(--muted); font-family: var(--serif); }
+.vs-link-top svg { color: var(--accent); flex: none; }
+.vs-link-meta { font-size: .8rem; color: var(--muted); }
+@media (max-width: 900px){ .vs-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px){ .vs-grid { grid-template-columns: 1fr; } }

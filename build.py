@@ -1381,6 +1381,18 @@ def render_home():
         f'<div class="rub-item"><b>{k}</b><span class="rub-w">{int(w*100)}%</span><p>{RUBRIC[k]}</p></div>'
         for k, w in SCORE_WEIGHTS.items())
 
+    # ---- popular head-to-head comparisons (direct links → help Google index them) ----
+    _featured = [("ro", "altrx"), ("embody", "altrx"), ("ro", "found"), ("embody", "ro"),
+                 ("found", "altrx"), ("embody", "found"), ("ro", "medvi"), ("embody", "bmimd")]
+    def _find_vs(a, b):
+        return next((v for v in VERSUS if {v["a"], v["b"]} == {a, b}), None)
+    pop_vs = [v for v in (_find_vs(a, b) for a, b in _featured) if v][:8]
+    vs_grid = "".join(
+        f'<a class="vs-link" href="{versus_url(v)}">'
+        f'<span class="vs-link-top"><span class="vs-link-names">{PROVIDERS[v["a"]]["name"]} <em>vs</em> {PROVIDERS[v["b"]]["name"]}</span>{icon("arrow", size=16)}</span>'
+        f'<span class="vs-link-meta">${PDATA[v["a"]]["price"]}{PDATA[v["a"]]["unit"]} vs ${PDATA[v["b"]]["price"]}{PDATA[v["b"]]["unit"]} · see who wins</span></a>'
+        for v in pop_vs)
+
     # ---- framework accordion (data-driven) ----
     fw = [
         ("01", "Budget", "dollar", "How much can you spend, monthly?",
@@ -1474,6 +1486,14 @@ def render_home():
 </div></section>
 
 <section class="section section-soft"><div class="wrap">
+  <span class="eyebrow-2">Head-to-head</span>
+  <h2 style="margin-top:6px">Popular <span class="serif-accent">comparisons</span></h2>
+  <p class="lead" style="max-width:680px">Two providers, side by side — real prices, medications and a scored verdict on which one wins.</p>
+  <div class="vs-grid">{vs_grid}</div>
+  <p class="cmp-foot muted" style="margin-top:18px">See all <a href="/comparisons">head-to-head comparisons →</a></p>
+</div></section>
+
+<section class="section"><div class="wrap">
   <span class="eyebrow-2">How we score</span>
   <h2 style="margin-top:6px">Four factors, <span class="serif-accent">weighted</span> — nothing bought</h2>
   <p class="lead" style="max-width:680px">Every provider gets a 0–10 on each factor below, from the real data we collected. The overall score is the weighted average. <a href="/methodology">See the full methodology →</a></p>
