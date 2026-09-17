@@ -608,6 +608,39 @@ def price_display(slug):
     d = PDATA[slug]
     return f"${d['price']}{d['unit']}"
 
+# --- Reusable "real price" component -------------------------------------
+# Price is never shown as a bare number: it always carries the CONDITION that
+# unlocks it (membership, prepay, intro rate, dose-tiered) plus a checked date.
+def price_conditions(slug):
+    """Short, honest condition tags derived from the real pricing data."""
+    d = PDATA[slug]
+    note = (d.get("price_note", "") + " " + d.get("struct", "")).lower()
+    tags = []
+    if "membership" in d["struct"].lower():
+        tags.append("+ medication")
+    else:
+        tags.append("incl. medication")
+    if any(w in note for w in ("prepay", "prepaid", "annual", "12-month", "12 month")):
+        tags.append("on annual prepay")
+    if any(w in note for w in ("promo", "intro", "first month", "starting rate")):
+        tags.append("intro rate")
+    if any(w in note for w in ("dose", "maintenance", "tiered", "rises", "step", "higher dose")):
+        tags.append("rises with dose")
+    # de-dupe, keep order, cap at 3
+    seen, out = set(), []
+    for t in tags:
+        if t not in seen:
+            seen.add(t); out.append(t)
+    return out[:3]
+
+def price_block(slug, cls="", checked=True, limit=3):
+    """The signature price component: number + condition tags + verified date."""
+    d = PDATA[slug]
+    chips = "".join(f'<span class="pc-cond">{t}</span>' for t in price_conditions(slug)[:limit])
+    date = f'<span class="pc-checked">{icon("check", size=11)}Checked {d["as_of"]}</span>' if checked else ""
+    return (f'<span class="priceblock {cls}"><span class="pc-amt">${d["price"]}<span class="pc-unit">{d["unit"]}</span></span>'
+            f'<span class="pc-conds">{chips}</span>{date}</span>')
+
 # Apply real scores back onto PROVIDERS and rank the directory by them.
 for _slug, _d in PDATA.items():
     if _slug in PROVIDERS:
@@ -1128,27 +1161,30 @@ def header(active=""):
 </div></header>"""
 
 def footer():
-    review_links = "".join(f'<a href="{review_url(s)}">{PROVIDERS[s]["name"]} review</a>' for s in PROVIDER_ORDER)
-    guide_links = "".join(f'<a href="{article_url(a)}">{a["title"].split(":")[0].split("(")[0].strip()}</a>' for a in ARTICLES[:4])
+    review_links = "".join(f'<a href="{review_url(s)}">{PROVIDERS[s]["name"]}</a>' for s in PROVIDER_ORDER[:8])
+    vs_links = "".join(
+        f'<a href="{versus_url(v)}">{PROVIDERS[v["a"]]["name"]} vs {PROVIDERS[v["b"]]["name"]}</a>'
+        for v in VERSUS[:6])
+    guide_links = "".join(f'<a href="{article_url(a)}">{a["title"].split(":")[0].split("(")[0].strip()}</a>' for a in ARTICLES[:5])
     return f"""<footer class="site-footer"><div class="wrap">
-  <div class="foot-grid">
-    <div>
-      <a class="brand" href="/"><span class="brand-name">Weight&nbsp;Loss&nbsp;<em>Reviewed</em></span><span class="brand-tag">Compare the best GLP-1 weight-loss programs</span></a>
-      <p>Independent, editorial scoring of online weight-loss programs. We rank what we'd actually recommend to a friend — and we tell you exactly how we score.</p>
-      <p><a href="/methodology">Our scoring methodology →</a></p>
-      <div class="foot-badges">
-        <span>{icon('shield', size=16)} Independent</span>
-        <span>{icon('lock', size=16)} Secure &amp; private</span>
-        <span>{icon('user-check', size=16)} Clinician-informed</span>
-      </div>
+  <div class="foot-top">
+    <div class="foot-brand">
+      <a class="brand" href="/"><span class="brand-name">Weight&nbsp;Loss&nbsp;<em>Reviewed</em></span></a>
+      <p>An independent consumer-research product for online weight-loss programs. We check what each one actually costs, what you get, and what the fine print means — then score it transparently.</p>
+      <p class="foot-updated">{icon('clock', size=14)} Prices last checked {UPDATED}</p>
     </div>
-    <div><h4>Reviews</h4>{review_links}</div>
-    <div><h4>Popular guides</h4>{guide_links}<a href="/guides">All guides →</a></div>
+    <div class="foot-cols">
+      <div><h4>Compare</h4><a href="/">All programs</a><a href="/comparisons">Head-to-head</a><a href="/reviews">All reviews</a></div>
+      <div><h4>Provider reviews</h4>{review_links}<a href="/reviews">More →</a></div>
+      <div><h4>Popular comparisons</h4>{vs_links}</div>
+      <div><h4>Guides</h4>{guide_links}<a href="/guides">All guides →</a></div>
+      <div><h4>About</h4><a href="/about">About us</a><a href="/methodology">Methodology</a><a href="/disclosure">Affiliate &amp; medical disclosure</a></div>
+    </div>
   </div>
   <div class="foot-disclaim">
-    <p><strong>Advertising disclosure:</strong> Weight Loss Reviewed is reader-supported. When you sign up through links on our site we may earn a commission, at no extra cost to you. This never changes our scores or rankings — see our <a href="/disclosure">full disclosure</a> and <a href="/methodology">methodology</a>.</p>
-    <p><strong>Medical disclaimer:</strong> Nothing on this site is medical advice. GLP-1 and other weight-loss medications are prescription drugs; decisions about them belong to you and a licensed clinician. Content is for general information only.</p>
-    <p>© {YEAR} Weight Loss Reviewed. All rights reserved.</p>
+    <p><strong>Affiliate disclosure.</strong> We may earn a commission when you choose a provider through our links, at no extra cost to you. This never affects our scoring or ranking — see our <a href="/disclosure">full disclosure</a> and <a href="/methodology">methodology</a>.</p>
+    <p><strong>Medical disclaimer.</strong> Nothing here is medical advice. GLP-1 and other weight-loss medications are prescription drugs; decisions about them belong to you and a licensed clinician. Content is general information only.</p>
+    <p class="foot-copy">© {YEAR} Weight Loss Reviewed · Reviewed by the Weight Loss Reviewed editorial team.</p>
   </div>
 </div></footer>"""
 
@@ -1352,46 +1388,50 @@ def render_home():
     support_names = " and ".join(PROVIDERS[s]["name"] for s in
                                  sorted(PROVIDER_ORDER, key=lambda s: PDATA[s]["scores"]["Support"], reverse=True)[:2])
 
-    # ---- comparison table rows (price leads) ----
+    by_price = sorted(PROVIDER_ORDER, key=lambda s: PDATA[s]["price"])
+    min_p = PDATA[by_price[0]]["price"]
+    max_p = max(PDATA[s]["price"] for s in PROVIDER_ORDER)
+    n_compounded = sum(1 for s in PROVIDER_ORDER if "compounded" in PDATA[s]["meds"].lower())
+
+    # ---- comparison table rows (price + condition leads) ----
     ctrows = ""
     for slug in PROVIDER_ORDER:
         p, d = PROVIDERS[slug], PDATA[slug]
-        tags = f"{price_band(slug)} {'branded' if has_branded(slug) else 'compounded'}"
+        tags = f"{price_band(slug)} {'branded' if has_branded(slug) else 'compounded'} {'video' if 'video' in d['visit'].lower() else 'async'} {'insurance' if not _cashpay(slug) else 'cashpay'}"
         logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
-        flag = ' <span class="ct-warn" title="Regulatory flag — see review">⚠</span>' if d.get("flag") else ""
+        flag = f' <span class="ct-warn" title="Regulatory flag — see review">{icon("badge", size=13)}</span>' if d.get("flag") else ""
         mtype, mcls, mdrugs = med_parts(slug)
         ctrows += f"""<div class="ctrow" data-score="{p['score']}" data-price="{d['price']}" data-tags="{tags}">
       <div class="ct-prov"><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a>{flag}<span class="ct-tag">{d['tagline']}</span></span></div>
-      <div class="ct-price"><b>${d['price']}<span>{d['unit']}</span></b><span class="ct-price-sub">{price_struct_short(slug)}</span></div>
+      <div class="ct-price">{price_block(slug, limit=2)}</div>
       <div class="ct-meds"><span class="med-type mt-{mcls}">{mtype}</span><span class="med-drugs">{mdrugs}</span><span class="ct-visit">{icon('clock', size=13)}{d['visit']}</span></div>
-      <div class="ct-rate">{ring(p['score'])}<span class="ct-word">{score_word(p['score'])}</span></div>
-      <div class="ct-act">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}</div>
+      <div class="ct-rate"><span class="ct-scorebadge">{p['score']}</span><span class="ct-ratemeta"><span class="ct-word">{score_word(p['score'])}</span><span class="ct-bar"><i style="width:{p['score']*10}%"></i></span></span></div>
+      <div class="ct-act">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}<a class="ct-review" href="{review_url(slug)}">Read review</a></div>
     </div>"""
 
-    # ---- top 3 detailed cards ----
+    # ---- hero snapshot: the four lowest starting prices (a real data preview) ----
+    snap = "".join(
+        f'<a class="snap-row" href="{review_url(s)}"><span class="snap-name">{PROVIDERS[s]["name"]}</span>'
+        f'<span class="snap-med med-type mt-{med_parts(s)[1]}">{med_parts(s)[0]}</span>'
+        f'<span class="snap-price">${PDATA[s]["price"]}{PDATA[s]["unit"]}</span></a>'
+        for s in by_price[:4])
+
+    # ---- top three: best-for / why / trade-off (compact, not giant cards) ----
     t3 = ""
     for i, slug in enumerate(PROVIDER_ORDER[:3], 1):
         p, d = PROVIDERS[slug], PDATA[slug]
-        win = " t3-win" if i == 1 else ""
-        pick = '<span class="t3-pick">Editor\'s pick</span>' if i == 1 else ""
-        rankcls = " r-coral" if i == 1 else ""
-        logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
-        liked = "".join(f"<li>{icon('check', size=16)}{x}</li>" for x in p["pros"][:3])
-        ctacls = "btn btn-coral btn-block" if i == 1 else "btn btn-primary btn-block"
-        t3 += f"""<article class="t3card{win}">
-      <div class="t3rank{rankcls}">#{i}</div>
-      <div class="t3head"><span class="t3logo">{logo}</span><div class="t3id"><span class="t3name">{p['name']}</span>{pick}</div></div>
-      <div class="t3score">{p['score']}<span>/10</span><em>Editorial score</em></div>
-      <p class="t3tag">{d['tagline']}</p>
-      <div class="t3tiles">
-        <div><span>Starts at</span><b>${d['price']}{d['unit']} · {price_struct_short(slug)}</b></div>
-        <div><span>Medications</span><b>{d['meds']}</b></div>
-        <div><span>Visit type</span><b>{d['visit']}</b></div>
-        <div><span>Insurance</span><b>{d['insurance']}</b></div>
-      </div>
-      <div class="t3liked"><span class="eyebrow-2">What we liked</span><ul>{liked}</ul></div>
-      <a class="{ctacls}" {cta_attrs(slug)}>See {p['name']} pricing →</a>
-      <a class="btn btn-ghost btn-block" href="{review_url(slug)}" style="margin-top:8px">Read full review</a>
+        mtype, mcls, _ = med_parts(slug)
+        topcls = " t3b-top" if i == 1 else ""
+        pick = '<span class="t3b-pick">Editor\'s pick</span>' if i == 1 else ""
+        t3 += f"""<article class="t3b{topcls}">
+      <div class="t3b-for"><span class="eyebrow-2">Best for</span><b>{p['best_for']}</b>{pick}</div>
+      <div class="t3b-head"><span class="t3b-logo">{logo_img(slug) or f'<span class=ct-init>{p["name"][:2]}</span>'}</span>
+        <div><a class="t3b-name" href="{review_url(slug)}">{p['name']}</a><span class="t3b-score">{p['score']}/10 · {score_word(p['score'])}</span></div></div>
+      <div class="t3b-price">{price_block(slug)}</div>
+      <p class="t3b-meds"><span class="med-type mt-{mcls}">{mtype}</span> {d['meds'].lower()}, {d['visit'].lower()}</p>
+      <div class="t3b-note"><span class="t3b-lbl">Why it stands out</span><p>{p['pros'][0]}</p></div>
+      <div class="t3b-note t3b-trade"><span class="t3b-lbl">The trade-off</span><p>{p['cons'][0]}</p></div>
+      <div class="t3b-cta">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}<a class="btn btn-ghost btn-sm" href="{review_url(slug)}">Read review</a></div>
     </article>"""
 
     # ---- the rest (expandable rows) ----
@@ -1425,9 +1465,9 @@ def render_home():
       </div>
     </div>"""
 
-    # ---- scoring rubric strip ----
-    rubric_html = "".join(
-        f'<div class="rub-item"><b>{k}</b><span class="rub-w">{int(w*100)}%</span><p>{RUBRIC[k]}</p></div>'
+    # ---- methodology as a transparent research table ----
+    rubric_rows = "".join(
+        f'<tr><td class="rt-factor">{k}</td><td class="rt-weight">{int(w*100)}%</td><td class="rt-what">{RUBRIC[k]}</td></tr>'
         for k, w in SCORE_WEIGHTS.items())
 
     # ---- popular head-to-head comparisons (direct links → help Google index them) ----
@@ -1436,10 +1476,24 @@ def render_home():
     def _find_vs(a, b):
         return next((v for v in VERSUS if {v["a"], v["b"]} == {a, b}), None)
     pop_vs = [v for v in (_find_vs(a, b) for a, b in _featured) if v][:8]
+
+    def vs_diff(v):
+        da, db = PDATA[v["a"]], PDATA[v["b"]]
+        if has_branded(v["a"]) != has_branded(v["b"]):
+            who = v["a"] if has_branded(v["a"]) else v["b"]
+            return f"{PROVIDERS[who]['name']} offers FDA-approved branded meds"
+        if da["price"] != db["price"]:
+            lo = v["a"] if da["price"] < db["price"] else v["b"]
+            return f"{PROVIDERS[lo]['name']} starts ${abs(da['price']-db['price'])}/mo lower"
+        return "Close on price; the difference is support and visit type"
     vs_grid = "".join(
-        f'<a class="vs-link" href="{versus_url(v)}">'
-        f'<span class="vs-link-top"><span class="vs-link-names">{PROVIDERS[v["a"]]["name"]} <em>vs</em> {PROVIDERS[v["b"]]["name"]}</span>{icon("arrow", size=16)}</span>'
-        f'<span class="vs-link-meta">${PDATA[v["a"]]["price"]}{PDATA[v["a"]]["unit"]} vs ${PDATA[v["b"]]["price"]}{PDATA[v["b"]]["unit"]} · see who wins</span></a>'
+        f'<a class="vsx" href="{versus_url(v)}">'
+        f'<span class="vsx-pair"><span class="vsx-name">{PROVIDERS[v["a"]]["name"]}</span>'
+        f'<span class="vsx-vs">vs</span><span class="vsx-name">{PROVIDERS[v["b"]]["name"]}</span></span>'
+        f'<span class="vsx-prices"><b>${PDATA[v["a"]]["price"]}{PDATA[v["a"]]["unit"]}</b>'
+        f'<span class="vsx-sep">vs</span><b>${PDATA[v["b"]]["price"]}{PDATA[v["b"]]["unit"]}</b></span>'
+        f'<span class="vsx-diff">{vs_diff(v)}</span>'
+        f'<span class="vsx-go">Compare {PROVIDERS[v["a"]]["name"]} &amp; {PROVIDERS[v["b"]]["name"]} {icon("arrow", size=14)}</span></a>'
         for v in pop_vs)
 
     # ---- framework accordion (data-driven) ----
@@ -1468,111 +1522,115 @@ def render_home():
     cheapest_price = min(PDATA[s]["price"] for s in PROVIDER_ORDER)
 
     body = f"""
-<section class="dhero"><div class="wrap dhero-grid">
-  <div class="dhero-copy">
-    <span class="hero-flag"><span class="dot"></span> Updated {UPDATED} · {N} providers · real prices</span>
-    <h1>What online <span class="serif-accent hl-underline">GLP-1</span> programs actually cost.</h1>
-    <p class="lede">Real 2026 starting prices, medications and visit types for {N} telehealth weight-loss providers — semaglutide and tirzepatide — in one comparison. Every figure sourced; rankings never bought.</p>
-    <div class="hero-stats">
-      <div class="hstat"><div class="hstat-k">From ${cheapest_price}/mo</div><div class="hstat-v">Lowest advertised starting rate</div></div>
-      <div class="hstat"><div class="hstat-k">{N} providers scored</div><div class="hstat-v">On 4 factors · {UPDATED}</div></div>
-    </div>
+<section class="hero2"><div class="wrap hero2-grid">
+  <div class="hero2-copy">
+    <span class="hero-flag"><span class="dot"></span> Independent research · Updated {UPDATED}</span>
+    <h1 class="display">What online GLP-1 programs actually cost.</h1>
+    <p class="lede">We check what each online weight-loss program really charges — including the fine print — then line up medications, visit type and insurance so you can choose with clear eyes. Every price is individually sourced and dated. Rankings are never bought.</p>
+    <dl class="hero-facts">
+      <div><dt>{N}</dt><dd>programs reviewed</dd></div>
+      <div><dt>${min_p}–${max_p}<span>/mo</span></dt><dd>starting price range</dd></div>
+      <div><dt>{n_branded} <span>/</span> {n_compounded}</dt><dd>branded / compounded</dd></div>
+      <div><dt>{UPDATED}</dt><dd>prices last checked</dd></div>
+    </dl>
     <div class="hero-cta">
-      <a class="btn btn-primary btn-lg" href="#compare">Compare prices →</a>
-      <a class="btn btn-ghost btn-lg" href="/methodology">How we score</a>
+      <a class="btn btn-primary btn-lg" href="#compare">Compare all {N} programs →</a>
+      <a class="btn btn-ghost btn-lg" href="/methodology">How we review</a>
     </div>
   </div>
-  <div class="dhero-media">
-    <div class="dhero-panel" role="img" aria-label="Online GLP-1 care">{icon('heart', size=40)}</div>
-    <div class="float-card fc-a">{icon('check-c', size=20)}<div><b>Independently reviewed</b><span>No pay-to-rank</span></div></div>
-    <div class="float-card fc-b"><div class="fc-k">Top editorial score</div><div class="fc-score">{PROVIDERS[top]['score']}<em>/10</em></div><div class="fc-sub">{hero_logo} · our #1</div></div>
-    <div class="float-card fc-c">{icon('dollar', size=20)}<div><b>Real, sourced prices</b><span>as of {UPDATED}</span></div></div>
-  </div>
+  <aside class="hero2-snap" aria-label="Lowest starting prices">
+    <div class="snap-head"><span>Lowest starting prices</span><span class="snap-date">{icon('check', size=11)}Checked {UPDATED}</span></div>
+    <div class="snap-list">{snap}</div>
+    <a class="snap-all" href="#compare">See all {N} programs, sorted &amp; filtered →</a>
+  </aside>
 </div></section>
 
-<div class="trustbar"><div class="wrap">
-  <span><b>{N} providers rated</b></span><span class="tb-sep">·</span>
-  <span>Every price sourced &amp; dated</span><span class="tb-sep">·</span>
-  <span>Payment never affects rankings</span><span class="tb-sep">·</span>
-  <span>Updated {UPDATED}</span>
+<div class="trust2"><div class="wrap">
+  <span>{icon('check-c', size=15)} {N} providers reviewed</span>
+  <span>{icon('badge', size=15)} Prices individually sourced</span>
+  <span>{icon('clock', size=15)} Last checked {UPDATED}</span>
+  <span>{icon('scale', size=15)} Affiliate links don't affect scores</span>
 </div></div>
 
 <section class="section" id="compare"><div class="wrap">
-  <span class="eyebrow-2">The comparison</span>
-  <div class="cmp-head">
-    <h2>Every provider, real starting price first</h2>
+  <div class="sec-head-row">
+    <div><span class="eyebrow-2">The comparison</span>
+      <h2>Every program, real starting price first</h2></div>
     <div class="cmp-sort"><span>Sort</span>
       <button data-sort="price-asc" class="on">Price ↑</button>
       <button data-sort="price-desc">Price ↓</button>
       <button data-sort="rating">Rating</button></div>
   </div>
-  <p class="lead" style="max-width:680px">Sorted by lowest advertised starting price. Filter by budget or medication type. Prices are the cheapest published rate as of {UPDATED} — tap a provider for the full breakdown and source.</p>
+  <p class="lead" style="max-width:720px">Sorted by lowest starting price. Each price shows the condition that unlocks it — membership, prepay, intro rate or dose. Filter to narrow the field; tap a program for the full breakdown and source.</p>
   <div class="cmp-filters" id="cmpFilters">
     <button data-filter="all" class="on">All <em>{N}</em></button>
     <button data-filter="under100">Under $100 <em>{n_u100}</em></button>
     <button data-filter="mid">$100–$199 <em>{n_mid}</em></button>
     <button data-filter="premium">$200+ <em>{n_prem}</em></button>
-    <button data-filter="branded">Offers branded <em>{n_branded}</em></button>
+    <button data-filter="branded">Branded <em>{n_branded}</em></button>
+    <button data-filter="video">Video visits <em>{sum(1 for s in PROVIDER_ORDER if 'video' in PDATA[s]['visit'].lower())}</em></button>
   </div>
   <div class="ctable">
-    <div class="ctrow ct-header"><div>Provider</div><div>Starting price</div><div>Medications &amp; visit</div><div>Editor rating</div><div></div></div>
+    <div class="ctrow ct-header"><div>Program</div><div>Real starting price</div><div>Medications &amp; visit</div><div>Our rating</div><div></div></div>
     <div id="ctable">{ctrows}</div>
   </div>
   <p class="price-foot">{icon('badge', size=15)} <span>{PRICE_FOOTNOTE}</span></p>
-  <div class="disclosure-note">{icon('badge', size=16)} <span>Some "See pricing" buttons are affiliate links; we may earn a commission if you start treatment, but rankings stay editorially independent. <a href="/disclosure">How this works</a>.</span></div>
+  <div class="disclosure-note">{icon('badge', size=16)} <span>Some "See pricing" buttons are affiliate links — we may earn a commission when you choose a provider through them. This never affects our scoring or ranking. <a href="/disclosure">How this works</a>.</span></div>
 </div></section>
 
 <section class="section section-soft"><div class="wrap">
-  <span class="eyebrow-2">Detailed reviews</span>
-  <h2 style="margin-top:6px">Our top three, <span class="serif-accent">and why</span></h2>
-  <p class="lead" style="max-width:680px">The three that balance price, medication choice, real support and transparency best. Full facts, sources and watch-outs in each review.</p>
-  <div class="top3">{t3}</div>
+  <span class="eyebrow-2">Editors' picks</span>
+  <h2 style="margin-top:6px">Three programs worth a closer look</h2>
+  <p class="lead" style="max-width:720px">Not "the winners" — the three that best fit distinct needs, each with the trade-off we'd want a friend to know before signing up.</p>
+  <div class="top3b">{t3}</div>
 </div></section>
 
 <section class="section"><div class="wrap">
-  <div class="rest-head"><span class="eyebrow-2">The rest</span><span class="muted">{N-3} more providers, ranked</span></div>
+  <div class="rest-head"><span class="eyebrow-2">The rest</span><span class="muted">{N-3} more programs, ranked</span></div>
   <div class="restlist">{rest}</div>
 </div></section>
 
 <section class="section section-soft"><div class="wrap">
   <span class="eyebrow-2">Head-to-head</span>
-  <h2 style="margin-top:6px">Popular <span class="serif-accent">comparisons</span></h2>
-  <p class="lead" style="max-width:680px">Two providers, side by side — real prices, medications and a scored verdict on which one wins.</p>
-  <div class="vs-grid">{vs_grid}</div>
-  <p class="cmp-foot muted" style="margin-top:18px">See all <a href="/comparisons">head-to-head comparisons →</a></p>
+  <h2 style="margin-top:6px">Compare two programs directly</h2>
+  <p class="lead" style="max-width:720px">Real price against real price, plus the one difference that usually decides it. Each comparison weighs the trade-offs in full.</p>
+  <div class="vsx-grid">{vs_grid}</div>
+  <p class="cmp-foot muted" style="margin-top:18px">Browse all <a href="/comparisons">head-to-head comparisons →</a></p>
 </div></section>
 
-<section class="section"><div class="wrap">
-  <span class="eyebrow-2">How we score</span>
-  <h2 style="margin-top:6px">Four factors, <span class="serif-accent">weighted</span> — nothing bought</h2>
-  <p class="lead" style="max-width:680px">Every provider gets a 0–10 on each factor below, from the real data we collected. The overall score is the weighted average. <a href="/methodology">See the full methodology →</a></p>
-  <div class="rubric-grid">{rubric_html}</div>
-</div></section>
-
-<section class="section"><div class="wrap"><div class="watch">
-  <div class="watch-ico">{icon('badge', size=22)}</div>
-  <div class="watch-copy"><span class="eyebrow-2">Provider watch</span><h3>Get price changes by email</h3>
-    <p>These prices move. We'll send one short email when a major provider changes pricing, adds states, or updates its medication options.</p></div>
-  <form class="watch-form" onsubmit="return wlrWatch(this)">
-    <input type="email" name="email" required placeholder="your@email.com" aria-label="Email">
-    <button class="btn btn-primary" type="submit">Notify me →</button>
-  </form>
+<section class="section"><div class="wrap"><div class="method2">
+  <div class="method2-intro">
+    <span class="eyebrow-2">Methodology</span>
+    <h2 style="margin-top:6px">How we rate — and why price isn't everything</h2>
+    <p class="lead">Each program gets a 0–10 on four factors, scored from the sourced data. The overall is the weighted average. We weight trust and support above the raw sticker price.</p>
+    <a class="btn btn-ghost" href="/methodology">Read the full methodology →</a>
+  </div>
+  <table class="method2-table"><thead><tr><th>Factor</th><th>Weight</th><th>What we evaluate</th></tr></thead>
+    <tbody>{rubric_rows}</tbody></table>
 </div></div></section>
 
 <section class="section section-soft"><div class="wrap"><div class="framework-grid">
   <div class="fw-intro">
-    <span class="eyebrow-2">The framework</span>
-    <h2 style="margin-top:6px">How to choose <span class="serif-accent">your</span> GLP-1 provider</h2>
-    <p class="lead">Five questions, in order. Answer them and you'll narrow {N} providers down to two or three.</p>
-    <div class="skip-card"><span class="eyebrow-2">Skip the framework</span>
-      <p>Jump straight to the ranked comparison of all {N} providers.</p>
+    <span class="eyebrow-2">Decision guide</span>
+    <h2 style="margin-top:6px">How to choose your GLP-1 provider</h2>
+    <p class="lead">Five questions, in order. Work through them and you'll narrow {N} programs down to two or three. This is provider-selection guidance — not medical advice.</p>
+    <div class="skip-card"><span class="eyebrow-2">Skip the guide</span>
+      <p>Jump straight to the ranked comparison of all {N} programs.</p>
       <a class="btn btn-primary" href="#compare">See the comparison →</a></div>
   </div>
   <div class="fw-acc">{fw_html}</div>
 </div></div></section>
 
+<section class="section"><div class="wrap"><div class="watch2">
+  <div class="watch2-copy"><b>{icon('clock', size=16)} Prices change often.</b> Get one short email when a program we track changes its pricing, states or medications. A research utility, not a newsletter.</div>
+  <form class="watch2-form" onsubmit="return wlrWatch(this)">
+    <input type="email" name="email" required placeholder="you@email.com" aria-label="Email">
+    <button class="btn btn-primary btn-sm" type="submit">Notify me</button>
+  </form>
+</div></div></section>
+
 <section class="section"><div class="wrap narrow">
-  <h2 class="center">Frequently asked questions</h2>
+  <h2 class="center">Common questions</h2>
   <div class="faq" style="margin-top:24px">{faq_html}</div>
 </div></section>
 """
