@@ -551,6 +551,55 @@ PDATA = {
     },
 }
 
+# Real user reviews (from Trustpilot). Populated per provider as we collect them.
+# A provider with no entry simply renders no user-reviews section. Omit "rating"
+# to show quotes without an aggregate score.
+USER_REVIEWS = {
+    "embody": {
+        "source": "Trustpilot", "rating": 3.8, "count": "7,880",
+        "url": "https://www.trustpilot.com/review/joinem.co",
+        "summary": ("Across roughly 7,900 Trustpilot reviews, embody averages 3.8 out of 5. Reviewers "
+                    "consistently praise a fast, straightforward sign-up and clinicians who are thorough, "
+                    "attentive and clear about the plan. The recurring complaints are just as consistent, and "
+                    "worth going in aware of: shipping delays and long waits for medication, and unhelpful "
+                    "customer support when sorting out membership or billing issues."),
+        "quotes": [
+            {"rating": 5, "name": "Heather", "source": "Trustpilot",
+             "text": "The person I spoke to was very knowledgeable and made me feel comfortable with the process. I like the fact that there will be a follow-up email with instructions."},
+            {"rating": 4, "name": "Kristen Malone", "source": "Trustpilot",
+             "text": "This appointment went well, but I had to wait 3.5 weeks to get it."},
+            {"rating": 5, "name": "Donna Holz", "source": "Trustpilot",
+             "text": "Informative and answered the questions I presented. Respectful and easy to talk to."},
+            {"rating": 4, "name": "Frances Bonaduto", "source": "Trustpilot",
+             "text": "I feel my provider was listening to me and helping me understand what changes I had to make before going on my next dose."},
+            {"rating": 5, "name": "Heather Neel", "source": "Trustpilot",
+             "text": "It was easy! I was heard and understood, and everyone was super friendly."},
+            {"rating": 4, "name": "Debra Parmely", "source": "Trustpilot",
+             "text": "The call worked after several reschedules."},
+        ],
+    },
+    "altrx": {
+        "source": "Trustpilot",  # no aggregate Trustpilot score published for AltRx
+        "summary": ("AltRx doesn't carry an aggregate Trustpilot score yet, but recent reviewers describe a "
+                    "smooth start, on-time shipping and responsive support. A few note early-access delays and "
+                    "one billing slip that was refunded quickly."),
+        "quotes": [
+            {"rating": 5, "name": "Cindi Palmer", "source": "Trustpilot",
+             "text": "I'm just starting out with AltRx and the rep who helped me, Natalie, was wonderful. She gave me info on the plan and answered all of my questions and concerns. I was able to join with no hassles."},
+            {"rating": 5, "name": "Alicia Veauthier", "source": "Trustpilot",
+             "text": "I've been using AltRx for 4 months after switching from another company. Not a single problem. I've contacted customer service multiple times and received prompt responses, and I've lost 4-5 pounds a month. They accidentally billed me once but refunded me immediately."},
+            {"rating": 5, "name": "Tori Smith", "source": "Trustpilot",
+             "text": "I don't understand all the bad reviews because I've had a great experience. My care consultant helped me get a discounted rate and answered all my questions. With AltRx I've lost 8 lbs and it hasn't even been a month."},
+            {"rating": 5, "name": "Shannon Roberson", "source": "Trustpilot",
+             "text": "I've been with AltRx for a few months. I take tirzepatide from them and I always get everything on time."},
+            {"rating": 5, "name": "Venita Ware", "source": "Trustpilot",
+             "text": "So far so good, no real complaints. It was hard to get an appointment at first because of all the new patients and my meds were delayed a little, but they kept communicating with me the whole time."},
+            {"rating": 5, "name": "Angela", "source": "Trustpilot",
+             "text": "I was skeptical at first after reading the reviews, but I'm very happy with this company. Three of my coworkers use them too and they're happy as well."},
+        ],
+    },
+}
+
 def score_overall(slug):
     s = PDATA[slug]["scores"]
     return round(sum(s[k] * w for k, w in SCORE_WEIGHTS.items()), 1)
@@ -1537,13 +1586,103 @@ def render_home():
 # --------------------------------------------------------------------------
 # Page: Provider review
 # --------------------------------------------------------------------------
+def _cashpay(slug):
+    return "insurance" not in PDATA[slug]["insurance"].lower()
+
+def who_for(slug):
+    """Concrete 'best for / not for' bullets derived from the real data."""
+    p, d, sc = PROVIDERS[slug], PDATA[slug], PDATA[slug]["scores"]
+    ml = d["meds"].lower()
+    good, bad = [], []
+    if d["price"] <= 99: good.append("keeping monthly cost as low as possible")
+    if sc["Support"] >= 8.5: good.append("real coaching and clinician time, not just a prescription")
+    if any(w in ml for w in ("wegovy", "zepbound", "branded")): good.append("FDA-approved branded medication (Wegovy, Zepbound)")
+    if "oral" in d["form"].lower() or "sublingual" in d["form"].lower() or "drops" in d["form"].lower() or "lozenge" in d["form"].lower():
+        good.append("a pill or oral option instead of a weekly injection")
+    if "video" in d["visit"].lower(): good.append("the option of a live video visit")
+    if not _cashpay(slug): good.append("trying to run it through insurance")
+    if not good: good.append("a straightforward, no-frills GLP-1 start")
+
+    if _cashpay(slug): bad.append("you need to use insurance for the medication")
+    if "async" in d["visit"].lower() and "video" not in d["visit"].lower():
+        bad.append("you want a scheduled live video visit with a clinician")
+    if sc["Support"] < 7.5: bad.append("you want heavy coaching and hand-holding")
+    if d["price"] >= 200: bad.append("you're on a tight monthly budget")
+    if d.get("flag"): bad.append("a regulatory red flag on the provider would put you off")
+    if "compounded" in ml and "branded" not in ml: bad.append("you specifically want FDA-approved branded medication")
+    if not bad: bad.append("you want a big, nationally-known brand name")
+    b1 = "".join(f"<li>{icon('check', size=16)}{x}</li>" for x in good[:4])
+    b2 = "".join(f"<li>{x}</li>" for x in bad[:4])
+    return (f'<div class="whofor"><div class="wf-col wf-good"><h4>{icon("check-c", size=18)} A good fit if…</h4>'
+            f'<ul>{b1}</ul></div><div class="wf-col wf-bad"><h4>Maybe look elsewhere if…</h4>'
+            f'<ul class="cons">{b2}</ul></div></div>')
+
+def provider_faq(slug):
+    p, d = PROVIDERS[slug], PDATA[slug]
+    n = p["name"]
+    ins = (f"{n} runs an insurance concierge that pursues coverage for branded medication; many members also pay cash. "
+           if "concierge" in d["insurance"].lower() or "uses insurance" in d["insurance"].lower()
+           else f"{n} is cash-pay. Insurance rarely covers compounded GLP-1s, so members pay out of pocket, though HSA/FSA funds usually work. ")
+    legit = (f"{n}'s parent drew an FDA warning letter in 2026 over past marketing claims — worth knowing — but a licensed clinician still reviews your intake before prescribing. "
+             if d.get("flag")
+             else f"Yes — a licensed clinician reviews your medical intake before any prescription is issued. ")
+    legit += "Compounded GLP-1 medications aren't FDA-approved finished products, so confirm the provider's credentials and your state's availability before you sign up."
+    qa = [
+        (f"How much does {n} cost?",
+         f"{n} starts at <strong>${d['price']}{d['unit']}</strong> — {d['struct'].lower()}. {d['price_note']}. Confirm the current price at {d['src']}."),
+        (f"What medications does {n} prescribe?",
+         f"{d['meds']}, taken as {d['form'].lower()}. Availability of any specific product shifts with supply, so check current options with {n}."),
+        (f"Does {n} take insurance?", ins),
+        (f"How do {n} visits work?",
+         f"{d['visit']}. You complete an online medical intake, a licensed clinician reviews it, and — if appropriate — medication ships to your door."),
+        (f"Where is {n} available?", f"{d['avail']}. Confirm your state is covered before you start."),
+        (f"Is {n} legit?", legit),
+    ]
+    return "".join(f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>' for q, a in qa)
+
+def render_user_reviews(slug):
+    """Special user-review component. Renders only when real review data exists
+    in USER_REVIEWS[slug]; ready for Trustpilot / Reddit content."""
+    r = USER_REVIEWS.get(slug)
+    if not r:
+        return ""
+    n = PROVIDERS[slug]["name"]
+    src_meta = ""
+    if r.get("rating"):
+        cnt = f" · {r['count']} reviews" if r.get("count") else ""
+        link = f' <a href="{r["url"]}" rel="nofollow" target="_blank">on {r["source"]}</a>' if r.get("url") else ""
+        src_meta = (f'<div class="ur-score"><div class="ur-num">{r["rating"]}<span>/5</span></div>'
+                    f'<div class="ur-stars">{"★"*round(r["rating"])}{"☆"*(5-round(r["rating"]))}</div>'
+                    f'<div class="ur-src">{r.get("source","Verified reviews")}{cnt}{link}</div></div>')
+    bars = ""
+    if r.get("dist"):
+        mx = max(r["dist"].values()) or 1
+        for star in (5, 4, 3, 2, 1):
+            pct = round(r["dist"].get(star, 0) / mx * 100)
+            bars += (f'<div class="ur-bar"><span>{star}★</span><span class="ur-track">'
+                     f'<i style="width:{pct}%"></i></span><span class="ur-cnt">{r["dist"].get(star,0)}</span></div>')
+        bars = f'<div class="ur-dist">{bars}</div>'
+    quotes = "".join(
+        f'<figure class="ur-quote"><div class="ur-q-stars">{"★"*q.get("rating",5)}{"☆"*(5-q.get("rating",5))}</div>'
+        f'<blockquote>{q["text"]}</blockquote>'
+        f'<figcaption>{q.get("name","Verified user")} · <span class="ur-tag">{q.get("source","")}</span></figcaption></figure>'
+        for q in r.get("quotes", []))
+    summ = f'<p class="ur-summary">{r["summary"]}</p>' if r.get("summary") else ""
+    return f"""
+  <h2 id="reviews">What real users say about {n}</h2>
+  <div class="userreviews">
+    <div class="ur-head">{src_meta}{bars}</div>
+    {summ}
+    <div class="ur-quotes">{quotes}</div>
+  </div>"""
+
 def render_review(slug):
     p = PROVIDERS[slug]
     d = PDATA[slug]
+    n = p["name"]
     rank = PROVIDER_ORDER.index(slug) + 1
     pros = "".join(f"<li>{x}</li>" for x in p["pros"])
     cons = "".join(f"<li>{x}</li>" for x in p["cons"])
-    # scorecard = the four real rubric factors + weighted overall
     sc_rows = ""
     for k, w in SCORE_WEIGHTS.items():
         v = d["scores"][k]
@@ -1551,86 +1690,129 @@ def render_review(slug):
                     f'<span class="snum">{v}</span><span class="bar"><i style="width:{v*10}%"></i></span></div>')
     sc_rows += f'<div class="row row-total"><span>Overall</span><span class="snum">{p["score"]}</span><span class="bar"><i style="width:{p["score"]*10}%"></i></span></div>'
 
-    # real "key facts" box
-    facts = [
-        ("Starting price", f"${d['price']}{d['unit']}"),
-        ("Pricing", d["struct"]),
-        ("Medications", d["meds"]),
-        ("Medication form", d["form"]),
-        ("Visit type", d["visit"]),
-        ("Insurance", d["insurance"]),
-        ("Availability", d["avail"]),
-    ]
+    facts = [("Starting price", f"${d['price']}{d['unit']}"), ("Pricing", d["struct"]),
+             ("Medications", d["meds"]), ("Medication form", d["form"]), ("Visit type", d["visit"]),
+             ("Insurance", d["insurance"]), ("Availability", d["avail"])]
     facts_html = "".join(f'<div><span>{k}</span><b>{val}</b></div>' for k, val in facts)
+
     flag_html = ""
     if d.get("flag"):
         ft, fb, furl = d["flag"]
         flag_html = (f'<div class="callout callout-warn"><h3>{icon("badge")} {ft}</h3>'
                      f'<p>{fb} <a href="{furl}" rel="nofollow" target="_blank">Read the FDA warning letter →</a></p></div>')
 
-    # related versus pages featuring this provider
+    # medication-type chip for the how-it-works section
+    mtype, mcls, mdrugs = med_parts(slug)
+    included = d.get("included", "")
+
+    # related versus pages
     related = [v for v in VERSUS if slug in (v["a"], v["b"])][:3]
     rel_cards = "".join(
-        f'<a class="post-card" href="{versus_url(v)}"><div class="thumb"></div><div class="pc-body">'
-        f'<h3>{PROVIDERS[v["a"]]["name"]} vs {PROVIDERS[v["b"]]["name"]}</h3>'
-        f'<span class="read">Compare →</span></div></a>' for v in related)
+        f'<a class="vs-link" href="{versus_url(v)}"><span class="vs-link-top">'
+        f'<span class="vs-link-names">{PROVIDERS[v["a"]]["name"]} <em>vs</em> {PROVIDERS[v["b"]]["name"]}</span>{icon("arrow", size=16)}</span>'
+        f'<span class="vs-link-meta">${PDATA[v["a"]]["price"]}{PDATA[v["a"]]["unit"]} vs ${PDATA[v["b"]]["price"]}{PDATA[v["b"]]["unit"]} · see who wins</span></a>'
+        for v in related)
+
+    reviews_html = render_user_reviews(slug)
+    ur_navlink = '<a href="#reviews">User reviews</a>' if reviews_html else ""
+
+    # sticky conversion rail
+    rail = f"""<aside class="rev-rail">
+  <div class="rail-card">
+    <div class="rail-top">{f'<span class="rail-logo"><img src="{logo_src(slug)}" alt="{n} logo"></span>' if logo_src(slug) else ''}
+      <div><div class="rail-score">{p['score']}<span>/10</span></div><div class="rail-word">{score_word(p['score'])} · #{rank} of {len(PROVIDER_ORDER)}</div></div></div>
+    <div class="rail-price"><span>Starts at</span><b>${d['price']}{d['unit']}</b><em>{d['struct'].lower()}</em></div>
+    <div class="rail-mini">
+      <div><span>Medications</span><b>{d['meds']}</b></div>
+      <div><span>Visit</span><b>{d['visit']}</b></div>
+      <div><span>Insurance</span><b>{d['insurance']}</b></div>
+    </div>
+    {cta(slug, label=f"See {n} pricing", cls='btn btn-primary btn-block btn-lg')}
+    <p class="rail-disc">Affiliate link · doesn't affect our score</p>
+  </div>
+  <nav class="rail-nav"><span class="eyebrow-2">On this page</span>
+    <a href="#verdict">Our verdict</a><a href="#how">How it works</a><a href="#pricing">Pricing</a>
+    <a href="#scorecard">Scorecard</a><a href="#proscons">Pros &amp; cons</a>{ur_navlink}<a href="#whofor">Who it's for</a><a href="#faq">FAQ</a>
+  </nav>
+</aside>"""
 
     body = f"""
-{crumbs([("Home","/"),("Reviews","/reviews"),(p["name"]+" Review", "")])}
-<section class="hero"><div class="wrap narrow">
-  <span class="hero-flag"><span class="dot"></span> Ranked #{rank} of {len(PROVIDER_ORDER)} · {p['best_for']}</span>
-  {f'<div><span class="hero-logo"><img src="{logo_src(slug)}" alt="{p["name"]} logo"></span></div>' if logo_src(slug) else ''}
-  <h1>{p['name']} Review ({YEAR})</h1>
-  <div class="meta-line"><span class="chip-score">{p['score']}<span style="font-weight:600">/10</span></span>
-    <span class="stars">{stars(p['score'])}</span>
-    <span class="tag">{score_word(p['score'])}</span>
-    <span class="tag tag-price">From ${d['price']}{d['unit']}</span>
-    <span>Updated {UPDATED}</span></div>
+{crumbs([("Home","/"),("Reviews","/reviews"),(n+" Review", "")])}
+<section class="rev-hero"><div class="wrap">
+  <span class="hero-flag"><span class="dot"></span> Independent review · Updated {UPDATED} · #{rank} of {len(PROVIDER_ORDER)}</span>
+  <div class="rev-hero-row">
+    {f'<span class="rev-hero-logo"><img src="{logo_src(slug)}" alt="{n} logo"></span>' if logo_src(slug) else ''}
+    <div>
+      <h1>{n} Review ({YEAR})</h1>
+      <div class="meta-line"><span class="chip-score">{p['score']}<span style="font-weight:600">/10</span></span>
+        <span class="stars">{stars(p['score'])}</span><span class="tag">{score_word(p['score'])}</span>
+        <span class="tag tag-price">From ${d['price']}{d['unit']}</span></div>
+    </div>
+  </div>
   <p class="lede">{p['summary']}</p>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">{cta(slug, label=f"View {p['name']} plans", cls='btn btn-primary')}
-    <a class="btn btn-ghost" href="#scorecard">Jump to scorecard</a></div>
 </div></section>
 
-<div class="wrap narrow article-body" style="padding-top:26px">
-  <div class="disclosure-note">{icon('badge', size=16)} <span>We may earn a commission if you sign up through our links — at no cost to you, and with no effect on this score. <a href="/disclosure">Details</a>.</span></div>
+<div class="wrap rev-layout">
+  <main class="rev-main">
+    <div class="disclosure-note">{icon('badge', size=16)} <span>We may earn a commission if you sign up through our links — at no cost to you, and with no effect on this score. <a href="/disclosure">Details</a>.</span></div>
 
-  <div class="factbox">
-    <div class="factbox-head"><h3>{p['name']} at a glance</h3><span class="factbox-price">${d['price']}<span>{d['unit']}</span></span></div>
-    <div class="factgrid">{facts_html}</div>
-    <p class="factbox-note">{d['price_note']}. <em>As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>. Confirm current pricing on the provider's site.</em></p>
-  </div>
+    <div class="callout" id="verdict"><h3>{icon('badge')} The bottom line</h3><p>{p['verdict']}</p>
+      <p style="margin-bottom:0">{cta(slug, label=f"See {n} pricing", cls='btn btn-primary btn-sm')}</p></div>
 
-  {flag_html}
+    {flag_html}
 
-  <div class="callout"><h3>{icon('badge')} Our verdict</h3><p>{p['verdict']}</p>
-    <p style="margin-bottom:0">{cta(slug, label=f"View {p['name']} plans", cls='btn btn-primary btn-sm')}</p></div>
+    <h2 id="how">How {n} works</h2>
+    <p>Getting started with {n} follows the standard telehealth path: you fill in an online medical intake, a licensed clinician reviews it ({d['visit'].lower()}), and if a GLP-1 is appropriate, {mdrugs.lower() if mcls!='branded' else d['meds'].lower()} is prescribed and shipped to your door. {('It includes ' + included.lower() + '.') if included else ''}</p>
+    <ol class="steps">
+      <li><b>Medical intake</b> — a short online questionnaire about your health, history and goals.</li>
+      <li><b>Clinician review</b> — {d['visit'].lower()}; a licensed prescriber decides whether a GLP-1 is safe and appropriate for you.</li>
+      <li><b>Medication &amp; delivery</b> — {d['meds'].lower()} ships to your home, with {('ongoing support: ' + included.lower()) if included else 'ongoing check-ins as included in your plan'}.</li>
+    </ol>
 
-  <h2 id="scorecard">Scorecard</h2>
-  <p class="muted" style="margin-top:-6px;font-size:.92rem">Each factor scored 0–10 from the real data above; overall is the weighted average. <a href="/methodology">How we score →</a></p>
-  <div class="scorecard">{sc_rows}</div>
+    <h2 id="pricing">{n} pricing &amp; what it really costs</h2>
+    <div class="pricebox">
+      <div class="pricebox-lead"><span>Starts at</span><b>${d['price']}<em>{d['unit']}</em></b><span class="pricebox-struct">{d['struct']}</span></div>
+      <p>{d['price_note']}.</p>
+      <p class="pricebox-src">{icon('badge', size=14)} As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>. Prices move — always confirm the current number at checkout.</p>
+    </div>
+    <p>For a like-for-like sense of where that sits, compare it against every provider in our <a href="/">ranked pricing table</a>, or line {n} up directly in a <a href="/comparisons">head-to-head</a>.</p>
 
-  <h2>Pros &amp; cons</h2>
-  <div class="proscons">
-    <div class="box pros"><h4>{icon('check-c', size=20)} What we liked</h4><ul class="pros">{pros}</ul></div>
-    <div class="box cons"><h4>What to weigh</h4><ul class="cons">{cons}</ul></div>
-  </div>
+    <h2>Medications &amp; what's included</h2>
+    <p><span class="med-type mt-{mcls}">{mtype}</span> {n} prescribes <strong>{d['meds'].lower()}</strong>, taken as {d['form'].lower()}. {('Your plan includes ' + included.lower() + '.') if included else ''} Insurance: {d['insurance'].lower()}. Available: {d['avail'].lower()}.</p>
 
-  <h2>Who it's for</h2>
-  <p>{p['name']} is our pick for <strong>{p['best_for'].lower()}</strong>. {p['highlight']}</p>
-  <p>As with any GLP-1 program, whether it's right for you depends on your health profile and goals — and ultimately on a conversation with a licensed clinician. Use our score as a starting point, not a prescription.</p>
+    <h2 id="scorecard">Our scorecard</h2>
+    <p class="muted" style="margin-top:-4px;font-size:.92rem">Each factor is scored 0–10 from the real data above; the overall is the weighted average. <a href="/methodology">How we score →</a></p>
+    <div class="scorecard">{sc_rows}</div>
 
-  <p style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap">{cta(slug, label=f"Visit {p['name']}", cls='btn btn-primary')}
-    <a class="btn btn-ghost" href="/comparisons">Compare with others</a></p>
+    <h2 id="proscons">Pros &amp; cons</h2>
+    <div class="proscons">
+      <div class="box pros"><h4>{icon('check-c', size=20)} What we liked</h4><ul class="pros">{pros}</ul></div>
+      <div class="box cons"><h4>What to weigh</h4><ul class="cons">{cons}</ul></div>
+    </div>
+{reviews_html}
+    <h2 id="whofor">Who {n} is for</h2>
+    {who_for(slug)}
+
+    <h2 id="faq">{n} FAQ</h2>
+    <div class="faq" style="margin-top:16px">{provider_faq(slug)}</div>
+
+    <h2>{n} vs the alternatives</h2>
+    <p>Not sure {n} is the one? See how it stacks up head-to-head:</p>
+    <div class="vs-grid rev-vsgrid">{rel_cards}</div>
+
+    <div class="rev-cta">
+      <div><h3>Ready to look at {n}?</h3><p>Check current pricing and plans — it only takes a minute.</p></div>
+      {cta(slug, label=f"See {n} pricing", cls='btn btn-primary btn-lg')}
+    </div>
+  </main>
+  {rail}
 </div>
 
-<section class="section section-alt"><div class="wrap">
-  <h2 style="margin-top:0">{p['name']} compared</h2>
-  <div class="post-grid">{rel_cards}</div>
-</div></section>
+<div class="vs-sticky"><a class="vs-sticky-btn win" {cta_attrs(slug)}>See {n} pricing</a><a class="vs-sticky-btn" href="/">Compare all {len(PROVIDER_ORDER)}</a></div><div class="vs-sticky-spacer"></div>
 """
     return base_page(
-        f"{p['name']} GLP-1 Review ({YEAR}): Real Cost & Honest Verdict | {SITE['name']}",
-        f"An independent, up-to-date {p['name']} review — real {YEAR} pricing from ${d['price']}{d['unit']}, {d['meds'].lower()}, and an honest {p['score']}/10 across price, support, medications and transparency. Updated {UPDATED}.",
+        f"{n} GLP-1 Review ({YEAR}): Real Cost & Honest Verdict | {SITE['name']}",
+        f"An independent, up-to-date {n} review — real {YEAR} pricing from ${d['price']}{d['unit']}, {d['meds'].lower()}, and an honest {p['score']}/10 across price, support, medications and transparency. Updated {UPDATED}.",
         review_url(slug), body, active="/reviews", jsonld=ld_product(p, slug))
 
 # --------------------------------------------------------------------------
