@@ -58,7 +58,7 @@ ASSET_VER = _asset_ver()
 # scores are editorial (our rating, 0-10). price_tier is a relative indicator.
 # --------------------------------------------------------------------------
 PROVIDER_ORDER = ["embody", "ro", "found", "altrx", "medvi",
-                  "trimrx", "healthrx", "bmimd", "directmeds",
+                  "trimrx", "healthrx", "bmimd", "directmeds", "wellmedr",
                   "shed", "sprout"]
 
 PROVIDERS = {
@@ -1507,7 +1507,7 @@ def render_home():
         ("04", "Support level", "clipboard", "How much guidance do you want?",
          f"If you want a real care team, coaching and clinician time, weight Support heavily — {support_names} score highest there. If you just want the medication handled, an async, questionnaire-only program will be cheaper and faster."),
         ("05", "Visit style", "clock", "Video visit or async messaging?",
-         "Most compounded programs are async: you fill in a questionnaire, a clinician reviews it, and medication ships — no appointment. A few (ro, Found, AltRx) offer a live video visit. Async is faster and cheaper; video gives you face time. Pick the one you'll actually use."),
+         "Most compounded programs are async: you fill in a questionnaire, a clinician reviews it, and medication ships — no appointment. A few (ro, Found, WellMedr) offer a live video visit. Async is faster and cheaper; video gives you face time. Pick the one you'll actually use."),
     ]
     fw_html = ""
     for j, (num, kicker, ic, q, ans) in enumerate(fw):
