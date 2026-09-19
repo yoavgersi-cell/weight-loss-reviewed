@@ -433,7 +433,7 @@ PDATA = {
         "avail": "Not stated", "included": "Medication, clinician review; rate locks per plan",
         "tagline": "Compounded GLP-1 as an injection or a daily oral — from a promo $69/mo.",
         "as_of": "Jul 2026", "src": "exploretreatments.com", "src_url": "https://www.exploretreatments.com/embody-glp1-weight-loss-review/",
-        "scores": {"Value": 9.4, "Support": 8.0, "Medications": 9.0, "Transparency": 7.0},
+        "scores": {"Value": 9.4, "Support": 8.7, "Medications": 9.2, "Transparency": 7.4},
     },
     "ro": {
         "price": 39, "unit": "/mo", "struct": "Membership + medication (billed separately)",
@@ -463,7 +463,7 @@ PDATA = {
         "avail": "Not stated", "included": "Consult, medication, tracking app, free shipping",
         "tagline": "One of the lowest bundled prices — clear, no-membership pricing, though its parent drew an FDA warning letter over past marketing claims.",
         "as_of": "Sep 2026", "src": "altrx.com", "src_url": "https://www.altrx.com/products/compounded-semaglutide",
-        "scores": {"Value": 9.3, "Support": 8.3, "Medications": 8.6, "Transparency": 6.0},
+        "scores": {"Value": 9.4, "Support": 8.7, "Medications": 8.8, "Transparency": 6.6},
         "flag": ("FDA warning letter", "AltRx's parent (Trinity HealthCare Supply, LLC) received an FDA warning "
                  "letter dated June 8, 2026 over false or misleading claims about its compounded semaglutide and "
                  "tirzepatide, including labeling that implied FDA approval.",
@@ -556,7 +556,7 @@ PDATA = {
 # to show quotes without an aggregate score.
 USER_REVIEWS = {
     "embody": {
-        "source": "Trustpilot", "rating": 3.8, "count": "7,880",
+        "source": "Trustpilot", "rating": 3.8, "count": "7,880", "review_tag": "Invited review",
         "url": "https://www.trustpilot.com/review/joinem.co",
         "summary": ("Across roughly 7,900 Trustpilot reviews, embody averages 3.8 out of 5. Reviewers "
                     "consistently praise a fast, straightforward sign-up and clinicians who are thorough, "
@@ -579,7 +579,7 @@ USER_REVIEWS = {
         ],
     },
     "altrx": {
-        "source": "Trustpilot",  # no aggregate Trustpilot score published for AltRx
+        "source": "Trustpilot", "review_tag": "Unprompted review",  # no aggregate Trustpilot score for AltRx
         "summary": ("AltRx doesn't carry an aggregate Trustpilot score yet, but recent reviewers describe a "
                     "smooth start, on-time shipping and responsive support. A few note early-access delays and "
                     "one billing slip that was refunded quickly."),
@@ -1698,40 +1698,50 @@ def provider_faq(slug):
     ]
     return "".join(f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>' for q, a in qa)
 
+def tp_stars(rating, size="m"):
+    """Trustpilot-style star boxes with partial fill on the fractional box."""
+    boxes = ""
+    for i in range(1, 6):
+        fill = 100 if rating >= i else (round((rating - (i - 1)) * 100) if rating > i - 1 else 0)
+        boxes += (f'<span class="tp-box"><span class="tp-fill" style="width:{fill}%"></span>'
+                  f'<span class="tp-star">★</span></span>')
+    return f'<span class="tp-stars tp-{size}">{boxes}</span>'
+
+TP_LOGO = '<span class="tp-logo"><span class="tp-logo-star">★</span>Trustpilot</span>'
+
 def render_user_reviews(slug):
-    """Special user-review component. Renders only when real review data exists
-    in USER_REVIEWS[slug]; ready for Trustpilot / Reddit content."""
+    """Authentic Trustpilot-style social proof — renders only when real data exists."""
     r = USER_REVIEWS.get(slug)
     if not r:
         return ""
     n = PROVIDERS[slug]["name"]
-    src_meta = ""
+    tag = r.get("review_tag", "")
     if r.get("rating"):
-        cnt = f" · {r['count']} reviews" if r.get("count") else ""
-        link = f' <a href="{r["url"]}" rel="nofollow" target="_blank">on {r["source"]}</a>' if r.get("url") else ""
-        src_meta = (f'<div class="ur-score"><div class="ur-num">{r["rating"]}<span>/5</span></div>'
-                    f'<div class="ur-stars">{"★"*round(r["rating"])}{"☆"*(5-round(r["rating"]))}</div>'
-                    f'<div class="ur-src">{r.get("source","Verified reviews")}{cnt}{link}</div></div>')
-    bars = ""
-    if r.get("dist"):
-        mx = max(r["dist"].values()) or 1
-        for star in (5, 4, 3, 2, 1):
-            pct = round(r["dist"].get(star, 0) / mx * 100)
-            bars += (f'<div class="ur-bar"><span>{star}★</span><span class="ur-track">'
-                     f'<i style="width:{pct}%"></i></span><span class="ur-cnt">{r["dist"].get(star,0)}</span></div>')
-        bars = f'<div class="ur-dist">{bars}</div>'
-    quotes = "".join(
-        f'<figure class="ur-quote"><div class="ur-q-stars">{"★"*q.get("rating",5)}{"☆"*(5-q.get("rating",5))}</div>'
-        f'<blockquote>{q["text"]}</blockquote>'
-        f'<figcaption>{q.get("name","Verified user")} · <span class="ur-tag">{q.get("source","")}</span></figcaption></figure>'
-        for q in r.get("quotes", []))
-    summ = f'<p class="ur-summary">{r["summary"]}</p>' if r.get("summary") else ""
+        head = (f'<div class="tp-summary"><div class="tp-summary-l">{tp_stars(r["rating"], "l")}'
+                f'<div class="tp-score"><b>TrustScore {r["rating"]}</b>'
+                f'<span>{r.get("count","")} reviews · {TP_LOGO}</span></div></div>'
+                f'<a class="tp-all" href="{r.get("url","#")}" rel="nofollow" target="_blank">Read all reviews on Trustpilot →</a></div>')
+    else:
+        head = (f'<div class="tp-summary tp-summary-noscore"><div>{TP_LOGO}<p>Recent verified reviews. '
+                f'{n} does not publish an aggregate Trustpilot score yet.</p></div></div>')
+    summ = (f'<div class="tp-takeaway"><span class="eyebrow-2">What reviewers tell us</span><p>{r["summary"]}</p></div>'
+            if r.get("summary") else "")
+    cards = ""
+    for q in r.get("quotes", []):
+        initials = "".join(w[0] for w in q.get("name", "U").split()[:2]).upper()
+        meta = " · ".join(x for x in [q.get("date", ""), tag] if x)
+        cards += (f'<figure class="tp-card"><div class="tp-card-head"><span class="tp-avatar">{initials}</span>'
+                  f'<div class="tp-card-who"><b>{q.get("name","Verified user")}</b>'
+                  f'<span class="tp-vf">{icon("check-c", size=12)}Verified customer</span></div></div>'
+                  f'{tp_stars(q.get("rating",5),"s")}<blockquote>{q["text"]}</blockquote>'
+                  f'{f"<figcaption>{meta}</figcaption>" if meta else ""}</figure>')
     return f"""
-  <h2 id="reviews">What real users say about {n}</h2>
-  <div class="userreviews">
-    <div class="ur-head">{src_meta}{bars}</div>
+  <h2 id="reviews">What {n} customers actually say</h2>
+  <div class="tpbox">
+    {head}
     {summ}
-    <div class="ur-quotes">{quotes}</div>
+    <div class="tp-cards">{cards}</div>
+    <p class="tp-disc">Rating and reviews from {r.get("source","Trustpilot")}, captured {UPDATED}. We show a representative mix — including critical reviews — and quotes are only lightly trimmed for length. <a href="{r.get("url","#")}" rel="nofollow" target="_blank">Verify on {r.get("source","Trustpilot")} →</a></p>
   </div>"""
 
 def render_review(slug):
@@ -1789,8 +1799,8 @@ def render_review(slug):
     <p class="rail-disc">Affiliate link · doesn't affect our score</p>
   </div>
   <nav class="rail-nav"><span class="eyebrow-2">On this page</span>
-    <a href="#verdict">Our verdict</a><a href="#how">How it works</a><a href="#pricing">Pricing</a>
-    <a href="#scorecard">Scorecard</a><a href="#proscons">Pros &amp; cons</a>{ur_navlink}<a href="#whofor">Who it's for</a><a href="#faq">FAQ</a>
+    <a href="#verdict">Our verdict</a><a href="#pricing">Pricing</a>{ur_navlink}
+    <a href="#scorecard">How we rate it</a><a href="#proscons">Pros &amp; cons</a><a href="#whofor">Who it's for</a><a href="#faq">FAQ</a>
   </nav>
 </aside>"""
 
@@ -1819,27 +1829,16 @@ def render_review(slug):
 
     {flag_html}
 
-    <h2 id="how">How {n} works</h2>
-    <p>Getting started with {n} follows the standard telehealth path: you fill in an online medical intake, a licensed clinician reviews it ({d['visit'].lower()}), and if a GLP-1 is appropriate, {mdrugs.lower() if mcls!='branded' else d['meds'].lower()} is prescribed and shipped to your door. {('It includes ' + included.lower() + '.') if included else ''}</p>
-    <ol class="steps">
-      <li><b>Medical intake</b> — a short online questionnaire about your health, history and goals.</li>
-      <li><b>Clinician review</b> — {d['visit'].lower()}; a licensed prescriber decides whether a GLP-1 is safe and appropriate for you.</li>
-      <li><b>Medication &amp; delivery</b> — {d['meds'].lower()} ships to your home, with {('ongoing support: ' + included.lower()) if included else 'ongoing check-ins as included in your plan'}.</li>
-    </ol>
-
     <h2 id="pricing">{n} pricing &amp; what it really costs</h2>
     <div class="pricebox">
       <div class="pricebox-lead"><span>Starts at</span><b>${d['price']}<em>{d['unit']}</em></b><span class="pricebox-struct">{d['struct']}</span></div>
       <p>{d['price_note']}.</p>
       <p class="pricebox-src">{icon('badge', size=14)} As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>. Prices move — always confirm the current number at checkout.</p>
     </div>
-    <p>For a like-for-like sense of where that sits, compare it against every provider in our <a href="/">ranked pricing table</a>, or line {n} up directly in a <a href="/comparisons">head-to-head</a>.</p>
-
-    <h2>Medications &amp; what's included</h2>
-    <p><span class="med-type mt-{mcls}">{mtype}</span> {n} prescribes <strong>{d['meds'].lower()}</strong>, taken as {d['form'].lower()}. {('Your plan includes ' + included.lower() + '.') if included else ''} Insurance: {d['insurance'].lower()}. Available: {d['avail'].lower()}.</p>
-
-    <h2 id="scorecard">Our scorecard</h2>
-    <p class="muted" style="margin-top:-4px;font-size:.92rem">Each factor is scored 0–10 from the real data above; the overall is the weighted average. <a href="/methodology">How we score →</a></p>
+    <p>{n} prescribes <span class="med-type mt-{mcls}">{mtype}</span> <strong>{d['meds'].lower()}</strong> ({d['form'].lower()}), {d['visit'].lower()}. Insurance: {d['insurance'].lower()}. Available: {d['avail'].lower()}. {('Your plan includes ' + included.lower() + '.') if included else ''} See where that sits against every program in our <a href="/">pricing table</a>.</p>
+{reviews_html}
+    <h2 id="scorecard">How we rate {n}</h2>
+    <p class="muted" style="margin-top:-4px;font-size:.92rem">Each factor is scored 0–10 from the sourced data; the overall is the weighted average. <a href="/methodology">How we score →</a></p>
     <div class="scorecard">{sc_rows}</div>
 
     <h2 id="proscons">Pros &amp; cons</h2>
@@ -1847,7 +1846,7 @@ def render_review(slug):
       <div class="box pros"><h4>{icon('check-c', size=20)} What we liked</h4><ul class="pros">{pros}</ul></div>
       <div class="box cons"><h4>What to weigh</h4><ul class="cons">{cons}</ul></div>
     </div>
-{reviews_html}
+
     <h2 id="whofor">Who {n} is for</h2>
     {who_for(slug)}
 
