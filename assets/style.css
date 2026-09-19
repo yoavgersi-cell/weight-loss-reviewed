@@ -1019,3 +1019,44 @@ table.cmp tbody tr:hover td.attr { background: #dbe6dd; }
 .foot-copy { color: #7f938b; }
 @media (max-width: 900px){ .foot-top { grid-template-columns: 1fr; gap: 26px; } .foot-cols { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px){ .foot-cols { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   Authentic Trustpilot-style review component (real social proof)
+   ========================================================================== */
+.tpbox { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 24px; margin: 12px 0 6px; }
+.tp-stars { display: inline-flex; gap: 3px; }
+.tp-box { position: relative; width: 22px; height: 22px; background: #dcdce6; display: grid; place-items: center; overflow: hidden; border-radius: 2px; }
+.tp-fill { position: absolute; left: 0; top: 0; height: 100%; background: #00b67a; }
+.tp-star { position: relative; color: #fff; font-size: 12px; line-height: 1; }
+.tp-l .tp-box { width: 27px; height: 27px; } .tp-l .tp-star { font-size: 15px; }
+.tp-s .tp-box { width: 17px; height: 17px; } .tp-s .tp-star { font-size: 9px; }
+.tp-logo { display: inline-flex; align-items: center; gap: 4px; font-family: var(--sans); font-weight: 700; color: var(--ink); }
+.tp-logo-star { color: #00b67a; font-size: 1.1em; }
+
+.tp-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--line-soft); padding-bottom: 18px; margin-bottom: 18px; }
+.tp-summary-l { display: flex; align-items: center; gap: 14px; }
+.tp-score b { display: block; font-family: var(--sans); font-weight: 800; font-size: 1.12rem; color: var(--ink); letter-spacing: -0.01em; }
+.tp-score span { font-size: .84rem; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.tp-all { font-weight: 600; font-size: .9rem; white-space: nowrap; }
+.tp-summary-noscore { justify-content: flex-start; }
+.tp-summary-noscore p { margin: 6px 0 0; font-size: .9rem; color: var(--muted); }
+
+.tp-takeaway { margin-bottom: 18px; }
+.tp-takeaway .eyebrow-2 { display: block; margin-bottom: 6px; }
+.tp-takeaway p { margin: 0; color: var(--ink-soft); font-size: 1rem; line-height: 1.65; }
+
+.tp-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tp-card { margin: 0; background: var(--paper); border: 1px solid var(--line-soft); border-radius: 10px; padding: 16px 18px; }
+.tp-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.tp-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--accent-tint); color: var(--accent-dark);
+  font-family: var(--sans); font-weight: 800; font-size: .78rem; display: grid; place-items: center; flex: none; }
+.tp-card-who b { display: block; font-size: .9rem; color: var(--ink); font-weight: 700; }
+.tp-vf { display: inline-flex; align-items: center; gap: 4px; font-size: .72rem; color: #067a55; }
+.tp-vf svg { color: #00b67a; }
+.tp-card .tp-stars { margin: 2px 0 9px; }
+.tp-card blockquote { margin: 0 0 8px; font-size: .92rem; color: var(--ink); line-height: 1.5; }
+.tp-card figcaption { font-size: .76rem; color: var(--muted); }
+.tp-disc { font-size: .8rem; color: var(--muted); margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--line-soft); line-height: 1.55; }
+.tp-disc a { color: var(--accent); }
+@media (max-width: 620px){ .tp-cards { grid-template-columns: 1fr; } .tp-summary { gap: 12px; } }
