@@ -857,13 +857,13 @@ ARTICLES = [
 <p>The single biggest predictor of whether people stay on a program is support after signup. A questionnaire and an auto-approved prescription is cheap to run, so plenty of programs stop there. The ones worth paying for give you a real clinician to message, someone to adjust your dose when side effects hit, and check-ins that continue past month one. When you compare programs, look past the intake and ask what month three looks like.</p>
 
 <h2 id="medication">2. Which medications — and how flexible the path is</h2>
-<p>Programs split into branded GLP-1s (the name-brand injectables) and compounded versions prepared by pharmacies. Branded tends to cost more; compounded is usually cheaper but availability and rules shift over time. The programs that handle this best don't lock you into one lane — if supply tightens or your budget changes, they can switch you without starting over. Flexibility here quietly matters more than the sticker price.</p>
+<p>Programs split into <a href="https://www.health.harvard.edu/healthy-aging-and-longevity/how-does-ozempic-work-understanding-glp-1s-for-diabetes-weight-loss-and-beyond" target="_blank" rel="noopener">branded GLP-1s</a> (the name-brand injectables) and <a href="https://www.fda.gov/drugs/drug-alerts-and-statements/fdas-concerns-unapproved-glp-1-drugs-used-weight-loss" target="_blank" rel="noopener">compounded versions</a> prepared by pharmacies. Branded tends to cost more; compounded is usually cheaper — and, as the FDA notes, is not FDA-approved — so availability and rules shift over time. The programs that handle this best don't lock you into one lane — if supply tightens or your budget changes, they can switch you without starting over. Flexibility here quietly matters more than the sticker price.</p>
 
 <h2 id="cost">3. The <em>total</em> cost, not the headline price</h2>
 <p>"From $X/month" almost never includes everything. Read for the medication cost, the membership or visit fee, lab work if required, and what happens when your dose increases during titration. A cheap entry price attached to a plan that balloons at higher doses can end up costing more than a program that was honest up front. We score transparency separately for exactly this reason.</p>
 
 <h2 id="titration">4. Titration and side-effect handling</h2>
-<p>GLP-1 medications are started low and increased gradually. Nausea and other side effects are common early on, and how a program handles that window is a real quality signal. Can you reach someone quickly? Will they slow your titration if you're struggling? A program that treats side effects as a support problem, not an inconvenience, is one you're far more likely to stay on.</p>
+<p>GLP-1 medications are started low and increased gradually. Nausea and other gastrointestinal side effects are common early on — <a href="https://pubmed.ncbi.nlm.nih.gov/33567185/" target="_blank" rel="noopener">the pivotal STEP 1 trial indexed on PubMed</a> reported nausea in roughly 44% of participants — and how a program handles that window is a real quality signal. Can you reach someone quickly? Will they slow your titration if you're struggling? A program that treats side effects as a support problem, not an inconvenience, is one you're far more likely to stay on.</p>
 
 <h2 id="exit">5. What happens when you want to stop</h2>
 <p>Good programs plan for the off-ramp as carefully as the on-ramp. Ask whether there's a maintenance plan, guidance for tapering, and no punitive lock-in. A program confident in its results doesn't need to trap you.</p>
@@ -884,7 +884,7 @@ ARTICLES = [
 <p>Compounded semaglutide is often marketed as the budget-friendly way onto a GLP-1, and broadly that's true — it's typically cheaper than the branded injectables. But the quotes you'll see online swing widely, and the reasons aren't always obvious from the landing page. Here's what actually drives the number so you can compare offers on equal terms.</p>
 
 <h2 id="what">What "compounded" means</h2>
-<p>Compounded medications are prepared by a pharmacy rather than sold as a mass-produced branded product. That can lower cost, but it also means quality and sourcing vary by pharmacy — so who prepares your medication matters as much as the price. A responsible program is transparent about its pharmacy partners.</p>
+<p><a href="https://www.fda.gov/drugs/drug-alerts-and-statements/fdas-concerns-unapproved-glp-1-drugs-used-weight-loss" target="_blank" rel="noopener">Compounded medications</a> are prepared by a pharmacy rather than sold as a mass-produced branded product, and the FDA points out they are not FDA-approved and don't go through the same premarket review for safety, effectiveness or quality. That can lower cost, but it also means quality and sourcing vary by pharmacy — so who prepares your medication matters as much as the price. A responsible program is transparent about its pharmacy partners.</p>
 
 <h2 id="drivers">What drives the price</h2>
 <ul>
@@ -897,7 +897,7 @@ ARTICLES = [
 <h2 id="compare">How to compare offers fairly</h2>
 <p>Put every offer into the same shape before you judge it: total cost for a full month <em>at your expected maintenance dose</em>, including membership, visits, and shipping. A program that's cheapest at the starter dose isn't necessarily cheapest where you'll actually spend most of your time. This is exactly why our reviews score <strong>value</strong> and <strong>transparency</strong> as separate things.</p>
 
-<div class="callout warn"><h3>A note on very low prices</h3><p>If a quote is far below everyone else, find out why before you celebrate. Ask about the pharmacy, what's included, and what happens at higher doses. Unusually cheap sometimes means something's missing.</p></div>
+<div class="callout warn"><h3>A note on very low prices</h3><p>If a quote is far below everyone else, find out why before you celebrate. Ask about the pharmacy, what's included, and what happens at higher doses — the <a href="https://www.fda.gov/drugs/human-drug-compounding/fda-alerts-health-care-providers-compounders-and-patients-dosing-errors-associated-compounded" target="_blank" rel="noopener">FDA has warned about dosing errors and mislabeled pharmacies</a> on some compounded semaglutide products. Unusually cheap sometimes means something's missing.</p></div>
 
 <p>Want the value-first option? <a href="/reviews/altrx">AltRx</a> was the budget leader in our lineup; if you'd rather trade a little cost for more support, our <a href="/">full comparison</a> lays out the differences.</p>
 
@@ -912,7 +912,7 @@ ARTICLES = [
         "description": "How online weight-loss prescriptions actually work, what a legitimate telehealth evaluation looks like, and the warning signs of a service cutting corners.",
         "dek": "Yes — and that's a good thing. Here's what a real online evaluation involves, and how to tell it apart from a service that's just selling.",
         "body": """
-<p>Short answer: yes. GLP-1 weight-loss medications are prescription drugs, and any legitimate program will require a prescription from a licensed clinician before you can get one. What's changed is <em>how</em> that prescription happens — increasingly through a telehealth evaluation rather than an in-person visit. Understanding what a proper evaluation looks like is the best way to spot a service that's cutting corners.</p>
+<p>Short answer: yes. <a href="https://www.health.harvard.edu/healthy-aging-and-longevity/how-does-ozempic-work-understanding-glp-1s-for-diabetes-weight-loss-and-beyond" target="_blank" rel="noopener">GLP-1 weight-loss medications</a> are prescription drugs, and any legitimate program will require a prescription from a licensed clinician before you can get one. What's changed is <em>how</em> that prescription happens — increasingly through a telehealth evaluation rather than an in-person visit. Understanding what a proper evaluation looks like is the best way to spot a service that's cutting corners.</p>
 
 <h2 id="how">How an online prescription works</h2>
 <p>A legitimate telehealth flow generally looks like this: you complete a detailed medical intake, a licensed clinician reviews it (often with a video or phone visit, or a structured async review), they determine whether the medication is appropriate and safe for you, and only then is a prescription issued and sent to a pharmacy. The clinician is making a medical judgment — not rubber-stamping a purchase.</p>
@@ -926,7 +926,7 @@ ARTICLES = [
 </ul>
 
 <h2 id="flags">Warning signs to avoid</h2>
-<p>Be cautious with any service that promises a prescription "guaranteed," skips a meaningful medical review, has no clear way to reach a clinician, or won't tell you who is prescribing. A prescription that requires no genuine evaluation isn't a shortcut — it's a red flag. We wrote a fuller checklist in <a href="/guides/how-to-spot-a-legit-online-clinic">how to spot a legit online clinic</a>.</p>
+<p>Be cautious with any service that promises a prescription "guaranteed," skips a meaningful medical review, has no clear way to reach a clinician, or won't tell you who is prescribing — the <a href="https://www.fda.gov/drugs/drug-alerts-and-statements/fdas-concerns-unapproved-glp-1-drugs-used-weight-loss" target="_blank" rel="noopener">FDA has flagged safety concerns</a> with GLP-1 drugs sold outside proper clinical channels. A prescription that requires no genuine evaluation isn't a shortcut — it's a red flag. We wrote a fuller checklist in <a href="/guides/how-to-spot-a-legit-online-clinic">how to spot a legit online clinic</a>.</p>
 
 <div class="callout"><h3>The bottom line</h3><p>Needing a prescription is a feature, not a hurdle. The programs worth trusting treat the evaluation seriously — that's the whole point of a clinician being involved. Our <a href="/">top-rated programs</a> all use real clinical review.</p></div>
 
@@ -944,7 +944,7 @@ ARTICLES = [
 <p>If you're looking at a GLP-1 program, you'll run into two names constantly: <strong>semaglutide</strong> and <strong>tirzepatide</strong>. They're related but not identical, and programs sometimes specialize in one or the other. This is a plain-English guide to the difference — but the actual decision belongs with a licensed clinician who knows your history.</p>
 
 <h2 id="what">What they are</h2>
-<p>Semaglutide is a GLP-1 receptor agonist — it mimics a gut hormone that helps regulate appetite and blood sugar. It's the active ingredient in several well-known branded weight-loss and diabetes medications. Tirzepatide acts on GLP-1 <em>and</em> a second receptor (GIP), which is why it's sometimes described as a "dual" agonist. Both are given as weekly injections and both are titrated up gradually.</p>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/33567185/" target="_blank" rel="noopener">Semaglutide</a> is a <a href="https://www.health.harvard.edu/healthy-aging-and-longevity/how-does-ozempic-work-understanding-glp-1s-for-diabetes-weight-loss-and-beyond" target="_blank" rel="noopener">GLP-1 receptor agonist</a> — it mimics a gut hormone that helps regulate appetite and blood sugar. It's the active ingredient in several well-known branded weight-loss and diabetes medications. <a href="https://pubmed.ncbi.nlm.nih.gov/35658024/" target="_blank" rel="noopener">Tirzepatide</a> acts on GLP-1 <em>and</em> a second receptor (GIP), which is why it's sometimes described as a "dual" agonist. Both are given as weekly injections and both are titrated up gradually.</p>
 
 <h2 id="differ">How they differ in practice</h2>
 <p>The headline difference is mechanism — tirzepatide's dual action versus semaglutide's single pathway. In practice, the factors that tend to decide the choice are more mundane: how your body tolerates each, side-effect profile, availability and cost of the specific product, and your clinician's judgment about your health profile. Neither is universally "better"; they're tools matched to a person.</p>
@@ -973,7 +973,7 @@ ARTICLES = [
 <p>GLP-1 medications work while you take them by helping regulate appetite. That leads to an uncomfortable but important question people often skip at signup: what happens when you stop? Planning for that is one of the more overlooked parts of choosing a program — and one of the more important.</p>
 
 <h2 id="why">Why weight can come back</h2>
-<p>Because these medications act on appetite regulation, stopping them can bring back the hunger signals they were quieting. Without a plan to maintain the habits and results you built, some or much of the lost weight can return over time. This isn't a failure of willpower — it's how the medication works. The takeaway is that stopping should be a deliberate, supported process, not a cold turn-off.</p>
+<p>Because these medications <a href="https://www.health.harvard.edu/healthy-aging-and-longevity/how-does-ozempic-work-understanding-glp-1s-for-diabetes-weight-loss-and-beyond" target="_blank" rel="noopener">act on appetite regulation</a>, stopping them can bring back the hunger signals they were quieting. Without a plan to maintain the habits and results you built, some or much of the lost weight can return over time. This isn't a failure of willpower — <a href="https://www.cdc.gov/obesity/adult-obesity-facts/index.html" target="_blank" rel="noopener">obesity is a chronic condition</a>, and it's how the medication works. The takeaway is that stopping should be a deliberate, supported process, not a cold turn-off.</p>
 
 <h2 id="maintenance">What a maintenance plan looks like</h2>
 <ul>
@@ -1007,12 +1007,12 @@ ARTICLES = [
   <li><strong>Named, licensed prescribers.</strong> You should be able to find out who is prescribing and that they're licensed in your area.</li>
   <li><strong>A way to reach someone.</strong> Legit programs give you a clear channel to a clinician for questions and side effects. If support is a black hole, walk away.</li>
   <li><strong>Transparent pricing.</strong> The total cost — medication, membership, visits — should be clear before you pay, not revealed at checkout.</li>
-  <li><strong>Honest medication information.</strong> Clear detail on whether medications are branded or compounded, and which pharmacies are used.</li>
+  <li><strong>Honest medication information.</strong> Clear detail on whether medications are branded or compounded, and which pharmacies are used — the <a href="https://www.fda.gov/drugs/human-drug-compounding/fda-alerts-health-care-providers-compounders-and-patients-dosing-errors-associated-compounded" target="_blank" rel="noopener">FDA has found fake pharmacy names on some compounded product labels</a>.</li>
   <li><strong>Realistic claims.</strong> Be wary of guaranteed results or dramatic promises. Responsible programs describe typical outcomes, not miracles.</li>
   <li><strong>A sane cancellation and exit policy.</strong> No punitive lock-in, and a real answer for how you taper or maintain. See <a href="/guides/what-happens-when-you-stop-glp1">what happens when you stop</a>.</li>
 </ol>
 
-<div class="callout warn"><h3>Biggest single red flag</h3><p>A "guaranteed" prescription with no meaningful medical review. A clinician's job is to decide whether a medication is safe <em>for you</em> — a program that skips that isn't offering a shortcut, it's skipping the part that keeps you safe.</p></div>
+<div class="callout warn"><h3>Biggest single red flag</h3><p>A "guaranteed" prescription with no meaningful medical review. A clinician's job is to decide whether a medication is safe <em>for you</em> — a program that skips that isn't offering a shortcut, it's skipping the part that keeps you safe. The <a href="https://www.fda.gov/drugs/drug-alerts-and-statements/fdas-concerns-unapproved-glp-1-drugs-used-weight-loss" target="_blank" rel="noopener">FDA has raised specific safety concerns</a> about GLP-1 drugs obtained this way.</p></div>
 
 <h2 id="how">How we apply this</h2>
 <p>Every program in our lineup is scored on <strong>transparency</strong> and <strong>clinical support</strong> partly against this exact checklist. It's why our rankings favor programs with real clinician involvement even when cheaper options exist. Start with our <a href="/">comparison chart</a> and you've already cleared most of these checks.</p>
