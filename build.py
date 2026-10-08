@@ -2204,6 +2204,36 @@ def render_alternatives(target):
 # --------------------------------------------------------------------------
 # Page: Article
 # --------------------------------------------------------------------------
+# Topically-relevant head-to-head pages to surface from each guide, so the
+# articles feed internal links into the comparison inventory. Pairs are
+# matched order-independently against VERSUS; any that don't exist are skipped.
+ARTICLE_VERSUS = {
+    "glp1-weight-loss-programs-compared": [("embody", "ro"), ("embody", "altrx"), ("ro", "found")],
+    "compounded-semaglutide-cost":        [("wellmedr", "altrx"), ("altrx", "trimrx"), ("embody", "altrx")],
+    "do-you-need-a-prescription-online":  [("embody", "ro"), ("ro", "found"), ("altrx", "trimrx")],
+    "tirzepatide-vs-semaglutide":         [("embody", "trimrx"), ("altrx", "trimrx"), ("found", "trimrx")],
+    "what-happens-when-you-stop-glp1":    [("embody", "ro"), ("ro", "found"), ("embody", "found")],
+    "how-to-spot-a-legit-online-clinic":  [("embody", "ro"), ("ro", "altrx"), ("ro", "found")],
+}
+_VS_BY_PAIR = {frozenset((v["a"], v["b"])): v for v in VERSUS}
+
+def article_versus_block(slug):
+    pairs = ARTICLE_VERSUS.get(slug, [])
+    cards = ""
+    for pa, pb in pairs:
+        v = _VS_BY_PAIR.get(frozenset((pa, pb)))
+        if not v:
+            continue
+        cards += (
+            f'<a class="vs-link" href="{versus_url(v)}"><span class="vs-link-top">'
+            f'<span class="vs-link-names">{PROVIDERS[v["a"]]["name"]} <em>vs</em> {PROVIDERS[v["b"]]["name"]}</span>{icon("arrow", size=16)}</span>'
+            f'<span class="vs-link-meta">${PDATA[v["a"]]["price"]}{PDATA[v["a"]]["unit"]} vs ${PDATA[v["b"]]["price"]}{PDATA[v["b"]]["unit"]} · see who wins</span></a>')
+    if not cards:
+        return ""
+    return (f'<h2>Popular head-to-head comparisons</h2>'
+            f'<p>Weighing two specific programs? These matchups break the decision down to a clear verdict:</p>'
+            f'<div class="vs-grid rev-vsgrid">{cards}</div>')
+
 def render_article(a):
     # build a simple TOC from h2 ids
     heads = re.findall(r'<h2 id="([^"]+)">(.*?)</h2>', a["body"])
@@ -2222,7 +2252,9 @@ def render_article(a):
     <p class="lede">{a['dek']}</p>
   </div>
   {toc}
-  <div class="article-body">{a['body']}</div>
+  <div class="article-body">{a['body']}
+
+  {article_versus_block(a['slug'])}</div>
 
   <p style="border-top:1px solid var(--line);margin-top:36px;padding-top:22px;color:var(--ink-soft)">
     See how the leading programs stack up in our <a href="/">ranked comparison</a>, or browse all <a href="/comparisons">head-to-head comparisons</a>.</p>
