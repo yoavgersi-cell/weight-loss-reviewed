@@ -840,6 +840,78 @@ VERSUS = [
 ]
 
 # --------------------------------------------------------------------------
+# Auto-generate the remaining head-to-head pages so every provider pairing
+# has a comparison. render_versus() builds all prose from the real PDATA
+# (prices, meds, visit type, the four scored factors), so a generated entry
+# only needs a/b plus a data-grounded "choose X if…" line for each side.
+# This captures the long tail of "<brand> vs <brand>" search demand.
+# --------------------------------------------------------------------------
+def _vs_has_branded(slug):
+    m = PDATA[slug]["meds"].lower()
+    return any(w in m for w in ("branded", "wegovy", "zepbound", "ozempic"))
+
+def _vs_is_live(slug):
+    v = PDATA[slug]["visit"].lower()
+    return ("video" in v) or ("consult" in v)
+
+def _vs_is_oral(slug):
+    f = PDATA[slug]["form"].lower()
+    return any(w in f for w in ("oral", "pill", "drops", "lozenge", "sublingual"))
+
+def _vs_pick_reasons(x, y):
+    """Ordered list of (category, phrase) for why someone picks x over y — each
+    grounded in a real difference in the data. Strongest differentiator first."""
+    dx, dy = PDATA[x], PDATA[y]
+    sx, sy = dx["scores"], dy["scores"]
+    out = []
+    if dx["price"] < dy["price"]:
+        out.append(("price", f"you want the lower entry price — ${dx['price']}{dx['unit']} vs ${dy['price']}{dy['unit']}"))
+    if _vs_has_branded(x) and not _vs_has_branded(y):
+        out.append(("branded", "you'd rather use FDA-approved branded medication (Wegovy, Zepbound) than compounded-only"))
+    if sx["Support"] - sy["Support"] >= 0.4:
+        out.append(("support", "you want stronger clinical support — more clinician time, coaching and follow-up"))
+    if _vs_is_live(x) and not _vs_is_live(y):
+        out.append(("visit", "you'd prefer live video access to a clinician rather than an async-only questionnaire"))
+    if sx["Medications"] - sy["Medications"] >= 0.4:
+        out.append(("meds", "you want the broadest medication menu and the flexibility to switch or adjust dose"))
+    if sx["Transparency"] - sy["Transparency"] >= 0.5:
+        out.append(("transparency", "clearly posted, no-surprises pricing matters most to you"))
+    if _vs_is_oral(x) and not _vs_is_oral(y):
+        out.append(("form", "you want an oral or needle-free option, not just weekly injections"))
+    if sx["Value"] - sy["Value"] >= 0.4:
+        out.append(("value", "you want the strongest value for the money on our rubric"))
+    return out
+
+def _vs_choose(x, y, avoid_cat):
+    for cat, phrase in _vs_pick_reasons(x, y):
+        if cat != avoid_cat:
+            # phrase begins lowercase ("you want…"); present as "You want…"
+            return cat, phrase[0].upper() + phrase[1:]
+    return None, None
+
+_existing_pairs = {frozenset((v["a"], v["b"])) for v in VERSUS}
+_rank = {s: i for i, s in enumerate(PROVIDER_ORDER)}
+_auto = []
+for _i in range(len(PROVIDER_ORDER)):
+    for _j in range(_i + 1, len(PROVIDER_ORDER)):
+        _x, _y = PROVIDER_ORDER[_i], PROVIDER_ORDER[_j]  # _x outranks _y
+        if frozenset((_x, _y)) in _existing_pairs:
+            continue
+        _cat_a, _pick_a = _vs_choose(_x, _y, avoid_cat=None)
+        _cat_b, _pick_b = _vs_choose(_y, _x, avoid_cat=_cat_a)
+        # Fallbacks so both sides always read cleanly.
+        if not _pick_a:
+            _pick_a = f"You want our higher-rated pick of the two ({PROVIDERS[_x]['name']}, {score_overall(_x)}/10)."
+        elif not _pick_a.endswith("."):
+            _pick_a += "."
+        if not _pick_b:
+            _pick_b = f"You prefer {PROVIDERS[_y]['name']} — {PDATA[_y]['tagline'].rstrip('.').lower()}."
+        elif not _pick_b.endswith("."):
+            _pick_b += "."
+        _auto.append({"a": _x, "b": _y, "pick_a": _pick_a, "pick_b": _pick_b})
+VERSUS.extend(_auto)
+
+# --------------------------------------------------------------------------
 # Articles (long-tail). Bodies are HTML fragments; keep them original + useful.
 # --------------------------------------------------------------------------
 ARTICLES = [
@@ -2186,9 +2258,18 @@ def render_versus_index():
     cards = ""
     for v in VERSUS:
         a, b = PROVIDERS[v["a"]], PROVIDERS[v["b"]]
+        da, db = PDATA[v["a"]], PDATA[v["b"]]
+        if a["score"] != b["score"]:
+            win = a if a["score"] > b["score"] else b
+        elif da["price"] != db["price"]:
+            win = a if da["price"] < db["price"] else b
+        else:
+            win = PROVIDERS[v.get("winner", v["a"])]
+        blurb = (f"From ${da['price']}{da['unit']} vs ${db['price']}{db['unit']}. "
+                 f"{win['name']} takes it on our rubric — see the round-by-round.")
         cards += f"""<a class="post-card" href="{versus_url(v)}"><div class="thumb"></div><div class="pc-body">
   <h3>{a['name']} vs {b['name']}</h3>
-  <p>{a['name']} ({a['score']}) vs {b['name']} ({b['score']}). {v['intro'][:90]}…</p>
+  <p>{a['name']} ({a['score']}) vs {b['name']} ({b['score']}). {blurb}</p>
   <span class="read">See the verdict →</span></div></a>"""
     alt_cards = "".join(
         f'<a class="post-card" href="{alt_url(s)}"><div class="thumb"></div><div class="pc-body">'
