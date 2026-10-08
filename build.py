@@ -1845,8 +1845,10 @@ def render_review(slug):
     mtype, mcls, mdrugs = med_parts(slug)
     included = d.get("included", "")
 
-    # related versus pages
-    related = [v for v in VERSUS if slug in (v["a"], v["b"])][:3]
+    # related versus pages — every matchup this provider has, closest-ranked
+    # rivals first (most decision-relevant, and links all 11 comparison pages).
+    related = [v for v in VERSUS if slug in (v["a"], v["b"])]
+    related.sort(key=lambda v: abs(PROVIDER_ORDER.index(v["a"]) - PROVIDER_ORDER.index(v["b"])))
     rel_cards = "".join(
         f'<a class="vs-link" href="{versus_url(v)}"><span class="vs-link-top">'
         f'<span class="vs-link-names">{PROVIDERS[v["a"]]["name"]} <em>vs</em> {PROVIDERS[v["b"]]["name"]}</span>{icon("arrow", size=16)}</span>'
@@ -1926,7 +1928,7 @@ def render_review(slug):
     <div class="faq" style="margin-top:16px">{provider_faq(slug)}</div>
 
     <h2>{n} vs the alternatives</h2>
-    <p>Not sure {n} is the one? See how it stacks up head-to-head:</p>
+    <p>Not sure {n} is the one? See how it stacks up head-to-head against every other program we've reviewed:</p>
     <div class="vs-grid rev-vsgrid">{rel_cards}</div>
 
     <div class="rev-cta">
