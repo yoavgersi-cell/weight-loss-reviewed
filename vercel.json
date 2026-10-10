@@ -3,7 +3,6 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/:path*", "has": [{ "type": "host", "value": "www.weightlossreviewed.com" }], "destination": "https://weightlossreviewed.com/:path*", "permanent": true },
     { "source": "/reviews/altarex", "destination": "/reviews/altrx", "permanent": true },
     { "source": "/reviews/trimarex", "destination": "/reviews/trimrx", "permanent": true },
     { "source": "/vs/embody-vs-altarex", "destination": "/embody-vs-altrx", "permanent": true },
