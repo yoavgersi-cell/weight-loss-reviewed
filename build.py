@@ -581,6 +581,15 @@ MAINT_BASIS = {
 def maint_price(slug):
     return MAINT.get(slug)
 
+def maint_headline(slug):
+    """(big_price, sub_line) for a review — leads with the real monthly cost."""
+    m = MAINT.get(slug); d = PDATA[slug]
+    if m is None:
+        return f"${d['price']}{d['unit']}", "intro rate · ongoing price not disclosed"
+    if m == d["price"]:
+        return f"${m}/mo", MAINT_BASIS.get(slug, "")
+    return f"${m}/mo", f"{MAINT_BASIS.get(slug, 'ongoing')} · intro from ${d['price']}{d['unit']}"
+
 def maint_sort_key(slug):
     """Sort by real monthly cost; undisclosed-maintenance providers sort last."""
     m = MAINT.get(slug)
@@ -1898,8 +1907,8 @@ def provider_faq(slug):
              else f"Yes — a licensed clinician reviews your medical intake before any prescription is issued. ")
     legit += "Compounded GLP-1 medications aren't FDA-approved finished products, so confirm the provider's credentials and your state's availability before you sign up."
     qa = [
-        (f"How much does {n} cost?",
-         f"{n} starts at <strong>${d['price']}{d['unit']}</strong> — {d['struct'].lower()}. {d['price_note']}. Confirm the current price at {d['src']}."),
+        (f"How much does {n} really cost per month?",
+         f"At the dose most people stay on, expect about <strong>{maint_headline(slug)[0]}</strong> — {d['struct'].lower()}. The advertised starting rate is <strong>${d['price']}{d['unit']}</strong>, but that's usually an intro or prepay figure. {d['price_note']}. Confirm the current price at {d['src']}."),
         (f"What medications does {n} prescribe?",
          f"{d['meds']}, taken as {d['form'].lower()}. Availability of any specific product shifts with supply, so check current options with {n}."),
         (f"Does {n} take insurance?", ins),
@@ -1970,10 +1979,17 @@ def render_review(slug):
                     f'<span class="snum">{v}</span><span class="bar"><i style="width:{v*10}%"></i></span></div>')
     sc_rows += f'<div class="row row-total"><span>Overall</span><span class="snum">{p["score"]}</span><span class="bar"><i style="width:{p["score"]*10}%"></i></span></div>'
 
-    facts = [("Starting price", f"${d['price']}{d['unit']}"), ("Pricing", d["struct"]),
+    _mbig, _msub = maint_headline(slug)
+    facts = [("Real price / mo", _mbig), ("Intro rate", f"${d['price']}{d['unit']}"), ("Pricing", d["struct"]),
              ("Medications", d["meds"]), ("Medication form", d["form"]), ("Visit type", d["visit"]),
              ("Insurance", d["insurance"]), ("Availability", d["avail"])]
     facts_html = "".join(f'<div><span>{k}</span><b>{val}</b></div>' for k, val in facts)
+
+    # buyer-reported watchout (coded Trustpilot) — the thing that goes wrong after month 1
+    reported_html = (f'<div class="callout callout-warn"><h3>{icon("badge")} What buyers report</h3>'
+                     f'<p>{REPORTED[slug]} Based on our Oct 2026 read of public Trustpilot reviews — '
+                     f'we weight unprompted reviews over invited ones, which run up to 2.7 stars higher.</p></div>'
+                     if slug in REPORTED else "")
 
     flag_html = ""
     if d.get("flag"):
@@ -2003,7 +2019,7 @@ def render_review(slug):
   <div class="rail-card">
     <div class="rail-top">{f'<span class="rail-logo"><img src="{logo_src(slug)}" alt="{n} logo"></span>' if logo_src(slug) else ''}
       <div><div class="rail-score">{p['score']}<span>/10</span></div><div class="rail-word">{score_word(p['score'])} · #{rank} of {len(PROVIDER_ORDER)}</div></div></div>
-    <div class="rail-price"><span>Starts at</span><b>${d['price']}{d['unit']}</b><em>{d['struct'].lower()}</em></div>
+    <div class="rail-price"><span>Real price / mo</span><b>{_mbig}</b><em>{_msub or d['struct'].lower()}</em></div>
     <div class="rail-mini">
       <div><span>Medications</span><b>{d['meds']}</b></div>
       <div><span>Visit</span><b>{d['visit']}</b></div>
@@ -2028,7 +2044,7 @@ def render_review(slug):
       <h1>{n} Review ({YEAR})</h1>
       <div class="meta-line"><span class="chip-score">{p['score']}<span style="font-weight:600">/10</span></span>
         <span class="stars">{stars(p['score'])}</span><span class="tag">{score_word(p['score'])}</span>
-        <span class="tag tag-price">From ${d['price']}{d['unit']}</span></div>
+        <span class="tag tag-price">{_mbig} real</span></div>
     </div>
   </div>
   <p class="lede">{p['summary']}</p>
@@ -2042,11 +2058,12 @@ def render_review(slug):
       <p style="margin-bottom:0">{cta(slug, label=f"See {n} pricing", cls='btn btn-primary btn-sm')}</p></div>
 
     {flag_html}
+    {reported_html}
 
     <h2 id="pricing">{n} pricing &amp; what it really costs</h2>
     <div class="pricebox">
-      <div class="pricebox-lead"><span>Starts at</span><b>${d['price']}<em>{d['unit']}</em></b><span class="pricebox-struct">{d['struct']}</span></div>
-      <p>{d['price_note']}.</p>
+      <div class="pricebox-lead"><span>What you'll really pay</span><b>{_mbig}</b><span class="pricebox-struct">{_msub or d['struct']}</span></div>
+      <p><strong>The real monthly cost at the dose you stay on is {_mbig}</strong> — {d['struct'].lower()}. The headline is <strong>${d['price']}{d['unit']}</strong> to start. {d['price_note']}.</p>
       <p class="pricebox-src">{icon('badge', size=14)} As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>. Prices move — always confirm the current number at checkout.</p>
     </div>
     <p>{n} prescribes <span class="med-type mt-{mcls}">{mtype}</span> <strong>{d['meds'].lower()}</strong> ({d['form'].lower()}), {d['visit'].lower()}. Insurance: {d['insurance'].lower()}. Available: {d['avail'].lower()}. {('Your plan includes ' + included.lower() + '.') if included else ''} See where that sits against every program in our <a href="/">pricing table</a>.</p>
@@ -2083,7 +2100,7 @@ def render_review(slug):
 """
     return base_page(
         f"{n} GLP-1 Review ({YEAR}): Real Cost & Honest Verdict | {SITE['name']}",
-        f"An independent, up-to-date {n} review — real {YEAR} pricing from ${d['price']}{d['unit']}, {d['meds'].lower()}, and an honest {p['score']}/10 across price, support, medications and transparency. Updated {UPDATED}.",
+        f"An independent {n} review — the real monthly cost ({maint_headline(slug)[0]}, not just the ${d['price']}{d['unit']} intro), {d['meds'].lower()}, what buyers report, and an honest {p['score']}/10. Updated {UPDATED}.",
         review_url(slug), body, active="/reviews", jsonld=ld_product(p, slug))
 
 # --------------------------------------------------------------------------
