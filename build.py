@@ -1170,6 +1170,124 @@ ARTICLES = [
 <p class="muted"><em>General information only, not medical advice. When in doubt about a provider's legitimacy, consult your own clinician or your regional health authority.</em></p>
 """,
     },
+    {
+        "slug": "what-will-i-really-pay-glp1",
+        "title": f"What Will I Really Pay for a GLP-1? Month 1 vs Month 4 vs Year One",
+        "tag": "Costs",
+        "date": "2026-10-10",
+        "description": "The '$39 first month' is almost never what you keep paying. Here's how to work out your real monthly GLP-1 cost — and the year-one number that actually matters.",
+        "dek": "Intro prices get you in the door. This is how to find the number you'll still be paying in month four — before you hand over a card.",
+        "body": """
+<p>The most common complaint we see from online GLP-1 buyers isn't that the medication didn't work — it's that the bill wasn't what they expected. Almost always, the cause is the same: a headline like <em>"$39 first month"</em> or <em>"start for $79"</em> that quietly becomes something much larger by the time you're at your maintenance dose. If you plan around the real monthly cost from the start, you avoid the surprise entirely.</p>
+
+<h2 id="month1">Month 1: the teaser</h2>
+<p>Intro rates are real, but temporary. They come in a few flavours: a discounted first month, a low "starting dose" price, or a membership fee that looks like the whole cost until the medication is billed on top. Treat the first-month number as a trial price, not your budget. The question that matters is what month four looks like.</p>
+
+<h2 id="month4">Month 4: the price you actually keep paying</h2>
+<p>GLP-1 doses are started low and raised over several weeks. By the time you reach a maintenance dose — usually around month three or four — you're paying the ongoing rate, which is frequently two to five times the intro. Across the programs we track in <a href="/">our comparison</a>, real maintenance prices for compounded semaglutide and tirzepatide typically land in the low-to-mid hundreds per month; branded Wegovy or Zepbound without insurance runs higher still. Membership programs are the easiest to misread: a "$39" plan can become roughly $298/mo once the membership fee and the medication are both counted.</p>
+<p>To find your month-four number, add three things: the medication cost at a maintenance dose, any membership or visit fee, and anything billed separately (labs, shipping). That total — not the first-month figure — is what you're really signing up for.</p>
+
+<h2 id="yearone">Year one: the number that decides value</h2>
+<p>Multiply your month-four cost by twelve, then add any prepaid bundle you paid up front. Year-one cost is where programs that looked cheap can lose to ones that were honest, because a low teaser attached to a plan that climbs with dose often overtakes a flat, all-in price. It's also where prepay matters: a six-month bundle lowers the monthly rate, but you're betting the provider ships reliably for all six months — so weigh the refund terms before you commit.</p>
+
+<h2 id="insurance">Where insurance and Medicare change the math</h2>
+<p>Insurance rarely covers compounded GLP-1s, so most compounded buyers pay cash. It sometimes covers branded Wegovy or Zepbound for weight loss, usually with prior authorization that's often denied — if it comes through, a maker savings card can bring the cost down sharply. If you're on Medicare, there are newer lower-cost routes to the original branded drugs worth checking on <a href="https://www.medicare.gov/" target="_blank" rel="noopener">medicare.gov</a> before you default to cash-pay compounded. Rules here change often, so confirm current coverage rather than trusting a year-old forum post.</p>
+
+<div class="callout"><h3>The one habit that prevents bill shock</h3><p>Before you sign up anywhere, write down the month-four price, not the month-one price. Our <a href="/">comparison chart</a> leads with that real maintenance number for every program, with the intro rate shown underneath — so you're comparing like for like.</p></div>
+
+<p class="muted"><em>General information only, not medical advice, and not financial advice. Prices change monthly — always confirm the current figure with the provider before you buy. Whether a GLP-1 is right for you is a decision for you and a licensed clinician.</em></p>
+""",
+    },
+    {
+        "slug": "compounded-vs-brand-vs-pills",
+        "title": "Compounded vs Brand-Name vs Pills: What's Actually FDA-Approved",
+        "tag": "Medications",
+        "date": "2026-10-10",
+        "description": "Branded, compounded, and the new GLP-1 pills explained in plain English — which are FDA-approved, which aren't, and what that means for cost and safety.",
+        "dek": "The label 'GLP-1' hides three very different things. Knowing which is which changes what you pay — and what you're taking on.",
+        "body": """
+<p>Shop for a GLP-1 online and you'll meet three categories that get blurred together on purpose: branded originals, compounded copies, and a newer wave of pills. They are not the same product at a different price — they differ in what's been tested, what's FDA-approved, and what can go wrong. Here's the plain-English version.</p>
+
+<h2 id="branded">Branded originals (FDA-approved)</h2>
+<p>These are the name-brand medications from the two companies that developed them. Novo Nordisk makes semaglutide (Wegovy for weight loss, plus a Wegovy pill; Ozempic is the diabetes brand). Eli Lilly makes tirzepatide (Zepbound for weight loss; Mounjaro for diabetes). They're <a href="https://www.health.harvard.edu/healthy-aging-and-longevity/how-does-ozempic-work-understanding-glp-1s-for-diabetes-weight-loss-and-beyond" target="_blank" rel="noopener">FDA-approved and backed by their own clinical trials</a>, so quality and dosing are consistent. The trade-off is price: without insurance, injectable originals run several hundred dollars a month, though insurance or a maker savings card can change that a lot.</p>
+
+<h2 id="compounded">Compounded copies (not FDA-approved)</h2>
+<p>Compounded semaglutide or tirzepatide is mixed by a compounding pharmacy from the same active ingredient. It's usually the cheapest route, which is why most online cash-pay programs sell it — but it is <a href="https://www.fda.gov/drugs/drug-alerts-and-statements/fdas-concerns-unapproved-glp-1-drugs-used-weight-loss" target="_blank" rel="noopener">not FDA-approved</a>, has no trials of its own, and quality can vary by pharmacy. It was widely allowed during the 2022–2024 shortages; those ended, so it now sits in a legal gray zone, and the FDA has <a href="https://www.fda.gov/drugs/human-drug-compounding/compounding-and-fda-questions-and-answers" target="_blank" rel="noopener">warned about dosing errors and unapproved versions</a>. It's not a "generic" — no approved generic of Wegovy or Zepbound exists yet. Compounded can be a reasonable cash-pay option, but go in knowing what it is, and check the pharmacy (see below).</p>
+
+<h2 id="pills">Pills and oral options</h2>
+<p>Oral GLP-1s are the newest wrinkle. There's an FDA-approved oral semaglutide, and Lilly's orforglipron (Foundayo) is a newer pill. Separately, many compounded programs sell oral drops, tablets or "gum" versions — those are compounded, not FDA-approved, and shouldn't be confused with the approved pills. If needles are the dealbreaker, a pill can be the thing that keeps you on treatment; just confirm whether the specific product is an approved original or a compounded preparation.</p>
+
+<h2 id="graymarket">What to avoid entirely</h2>
+<p>Steer clear of "research peptides" — GLP-1-like compounds (for example, retatrutide) sold online "not for human use" with no prescription, often for $10–$35/mo. There's no clinical oversight, no quality guarantee, and real safety risk. If price is the problem, the answer is the cheapest <em>legal</em> option with a real clinician, not the gray market.</p>
+
+<h2 id="pharmacy">How to tell what you're actually getting</h2>
+<p>A legitimate program names its pharmacy and its type. A <strong>503A</strong> pharmacy compounds per individual prescription; a <strong>503B</strong> outsourcing facility makes larger batches under tighter FDA oversight. Either can be fine — but "we won't say" is a red flag. And in every case, a licensed clinician should review your intake and decide what's appropriate; the medication itself is never the whole story.</p>
+
+<div class="callout"><h3>The short version</h3><p>Branded = FDA-approved, consistent, pricier. Compounded = cheaper, not FDA-approved, quality varies by pharmacy. Pills come in both forms — check which. Our <a href="/">comparison chart</a> labels every program FDA-approved or compounded, so you always know which lane you're in.</p></div>
+
+<p class="muted"><em>General information only, not medical advice. We don't compare the clinical efficacy or safety of specific medications. Which option is appropriate for you is a decision for you and a licensed clinician.</em></p>
+""",
+    },
+    {
+        "slug": "before-you-prepay-glp1",
+        "title": "Before You Prepay: 5 Questions About Refunds and Cancelling",
+        "tag": "Costs",
+        "date": "2026-10-10",
+        "description": "Prepaid GLP-1 bundles unlock the lowest prices — and cause the most 'trapped' complaints. Five questions to answer in writing before you pay for months up front.",
+        "dek": "The cheapest headline prices almost always need a prepaid plan. That's fine — until a refill is late. Ask these five things first.",
+        "body": """
+<p>Nearly a third of the complaints we see from online GLP-1 buyers are some version of feeling trapped: prepaid for months, then stuck when a refill ran late, the medication didn't suit them, or cancelling turned into a maze. Prepaid bundles aren't a scam — they're how you unlock the lowest monthly rates — but they move the risk onto you. Before you pay for several months up front, get clear answers to these five questions, ideally in writing.</p>
+
+<h2 id="refund">1. What's the refund policy if I stop early?</h2>
+<p>If you prepay six months and cancel after two — because of side effects, cost, or results — what happens to the rest? Some programs refund unused months, some pro-rate, some keep it all. Find the actual terms, not the reassuring sentence on the sales page. "No refunds on prepaid plans" is a valid policy; just decide if you accept it <em>before</em> you pay.</p>
+
+<h2 id="cancel">2. How, exactly, do I cancel?</h2>
+<p>Can you cancel online in your account, or only by phone or email during business hours? The harder it is to find, the more it tells you. The best programs let you cancel the same way you signed up. If you can't locate the cancel path before paying, assume it's deliberately difficult.</p>
+
+<h2 id="late">3. What happens if a refill ships late?</h2>
+<p>Late refills are the single most common operational complaint, and on a prepaid plan you've already paid for medication you're now waiting on. Ask what the program commits to on shipping times, whether they cover a gap, and how you reach a human when something's stuck. A clear answer here is worth more than a few dollars off the monthly rate.</p>
+
+<h2 id="dose">4. Does the price change when my dose goes up?</h2>
+<p>GLP-1 doses rise during titration. On some plans the price rises too. Confirm whether your prepaid rate is locked across dose increases or whether month four costs more than month one — this is exactly where a "cheap" plan can quietly overtake an honest flat-price one. (We walk through this in <a href="/guides/what-will-i-really-pay-glp1">what you'll really pay: month 1 vs month 4 vs year one</a>.)</p>
+
+<h2 id="human">5. Is there a real person I can reach?</h2>
+<p>The thing buyers ask for most is simply a human who answers. Before prepaying, test it: send a question and see how long a reply takes, and whether it's a person or a template. A program that's slow to answer while it's trying to sell you is not going to be faster once it already has six months of your money.</p>
+
+<div class="callout"><h3>Prepay with your eyes open</h3><p>Prepaid bundles are often the right call for the lowest price — if the refund terms are fair and support is real. Our <a href="/">comparison</a> flags membership and prepay structures and shows the real monthly cost, so you can weigh the lock-in against the saving.</p></div>
+
+<p class="muted"><em>General information only, not medical or financial advice. Terms and prices change — confirm current refund, cancellation and shipping policies directly with the provider before you pay.</em></p>
+""",
+    },
+    {
+        "slug": "new-to-glp1-first-4-weeks",
+        "title": "New to GLP-1s? What to Expect in the First 4 Weeks",
+        "tag": "Guides",
+        "date": "2026-10-10",
+        "description": "A plain, no-judgment walkthrough of starting a GLP-1 online: how approval works, the low starting dose, early side effects, and what a good program does in month one.",
+        "dek": "Starting is the part people worry about most. Here's what actually happens in the first month — and what a good program does to make it easier.",
+        "body": """
+<p>If you're considering a GLP-1 for the first time, the unknowns are the hard part: how you get approved, whether you'll feel awful, and what you're actually committing to. Here's a straight, no-judgment walkthrough of the first four weeks, and what separates a program that supports you from one that just ships a box.</p>
+
+<h2 id="approval">Week 0: how approval actually works</h2>
+<p>Most online programs start with a medical intake form — your history, current medications, and goals. A licensed clinician reviews it and, if a GLP-1 is appropriate, writes the prescription; many approvals happen the same day without a live call. That convenience is the appeal, but it's also the weak point: the best programs still put a real clinician in the loop and let you reach one, rather than rubber-stamping a form. A licensed clinician — not the website — decides whether the medication is right for you.</p>
+
+<h2 id="startdose">Weeks 1–2: the low starting dose</h2>
+<p>GLP-1s are deliberately started at a low dose and raised slowly. That's not the program being stingy — starting low is how side effects are kept manageable. You likely won't see dramatic results in the first two weeks, and that's expected. What you should notice is the medication arriving on time and clear instructions on how to take it.</p>
+
+<h2 id="sideeffects">Weeks 2–4: early side effects and "food noise"</h2>
+<p>Nausea and other gastrointestinal effects are the most common early experience; in the pivotal <a href="https://pubmed.ncbi.nlm.nih.gov/33567185/" target="_blank" rel="noopener">STEP 1 trial indexed on PubMed</a>, nausea affected roughly 44% of participants, usually early and often easing over time. Many people also describe a quieting of "food noise" — the constant background pull toward food — within the first few weeks. How a program handles this window is the real test: can you message someone quickly, and will they slow your titration if you're struggling? That's support, not luxury.</p>
+
+<h2 id="goodmonth1">What a good program does in month one</h2>
+<p>Beyond shipping the medication, a program worth staying with checks in, answers questions from a real person within a reasonable time, and adjusts the plan if side effects are rough. It's upfront about what month four will cost once you're at a maintenance dose, not just the intro price. And it doesn't trap you — you can cancel if it isn't working.</p>
+
+<h2 id="choosing">Choosing where to start</h2>
+<p>As a first-timer, weight support and honesty over the lowest sticker price. A slightly pricier program with a reachable clinician will usually serve you better in month one than a rock-bottom plan that goes quiet after you pay. Our <a href="/">comparison</a> scores support and transparency heavily for exactly this reason, and labels every program FDA-approved or compounded so you know what you're starting on.</p>
+
+<div class="callout"><h3>The short version</h3><p>Expect a low starting dose, some early nausea that usually eases, and slow-but-real progress. Pick a program you can reach a human at — that one factor shapes the whole first month.</p></div>
+
+<p class="muted"><em>General information only, not medical advice. Side effects and suitability vary — start, adjust, or stop a GLP-1 only under the guidance of a licensed clinician.</em></p>
+""",
+    },
 ]
 
 # --------------------------------------------------------------------------
@@ -1718,21 +1836,21 @@ def render_home():
     <p class="lead">Your situation changes what matters most. Pick where you are — we'll point you to the right answer first.</p>
   </div>
   <div class="stage-grid">
-    <a class="stage-card" href="/guides/do-you-need-a-prescription-online">
+    <a class="stage-card" href="/guides/new-to-glp1-first-4-weeks">
       <span class="stage-ico">{icon('clipboard', size=22)}</span>
       <b>I'm new to this</b>
-      <span class="stage-need">How it works, what month 1 vs month 4 costs, and whether a real clinician is involved — no judgment.</span>
-      <span class="stage-go">New to GLP-1s {icon('arrow', size=14)}</span></a>
+      <span class="stage-need">How approval works, the low starting dose, early side effects, and whether a real clinician is involved — no judgment.</span>
+      <span class="stage-go">The first 4 weeks {icon('arrow', size=14)}</span></a>
     <a class="stage-card" href="#compare">
       <span class="stage-ico">{icon('scale', size=22)}</span>
       <b>I'm switching providers</b>
       <span class="stage-need">Keep your current dose, pay less all-in, and find someone who actually answers — fast first shipment.</span>
       <span class="stage-go">Compare on real price {icon('arrow', size=14)}</span></a>
-    <a class="stage-card" href="/guides/compounded-semaglutide-cost">
+    <a class="stage-card" href="/guides/what-will-i-really-pay-glp1">
       <span class="stage-ico">{icon('dollar', size=22)}</span>
       <b>I'm 3+ months in</b>
-      <span class="stage-need">The price at your maintenance dose, 3-month plans, a named pharmacy and reliable refills — no lock-in.</span>
-      <span class="stage-go">Maintenance-dose cost {icon('arrow', size=14)}</span></a>
+      <span class="stage-need">The price at your maintenance dose, year-one math, a named pharmacy and reliable refills — no lock-in.</span>
+      <span class="stage-go">What you'll really pay {icon('arrow', size=14)}</span></a>
     <a class="stage-card" href="/guides/what-happens-when-you-stop-glp1">
       <span class="stage-ico">{icon('pill', size=22)}</span>
       <b>I stopped and want to restart</b>
@@ -2371,6 +2489,10 @@ ARTICLE_VERSUS = {
     "tirzepatide-vs-semaglutide":         [("embody", "trimrx"), ("altrx", "trimrx"), ("found", "trimrx")],
     "what-happens-when-you-stop-glp1":    [("embody", "ro"), ("ro", "found"), ("embody", "found")],
     "how-to-spot-a-legit-online-clinic":  [("embody", "ro"), ("ro", "altrx"), ("ro", "found")],
+    "what-will-i-really-pay-glp1":         [("ro", "wellmedr"), ("embody", "ro"), ("altrx", "trimrx")],
+    "compounded-vs-brand-vs-pills":        [("ro", "altrx"), ("found", "altrx"), ("embody", "ro")],
+    "before-you-prepay-glp1":              [("trimrx", "medvi"), ("medvi", "wellmedr"), ("altrx", "trimrx")],
+    "new-to-glp1-first-4-weeks":           [("embody", "ro"), ("ro", "found"), ("embody", "found")],
 }
 _VS_BY_PAIR = {frozenset((v["a"], v["b"])): v for v in VERSUS}
 
