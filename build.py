@@ -457,7 +457,7 @@ PDATA = {
     },
     "altrx": {
         "price": 89, "unit": "/mo", "struct": "All-in, includes medication",
-        "price_note": "Promo starting rate (semaglutide); tirzepatide from $149/mo; post-promo pricing undisclosed",
+        "price_note": "The $89/mo promo (semaglutide; tirzepatide from $149/mo) ran through Sep 5, 2026 and has ended; current standard pricing is not clearly published — confirm at checkout",
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
         "visit": "Async, video when needed", "insurance": "Cash-pay",
         "avail": "Not stated", "included": "Consult, medication, tracking app, free shipping",
@@ -560,9 +560,9 @@ PDATA = {
 # publishing — prices change monthly.
 # --------------------------------------------------------------------------
 MAINT = {
-    "embody": 299, "ro": 298, "found": 198, "altrx": None, "medvi": 299,
-    "trimrx": 253, "healthrx": 189, "bmimd": 149, "directmeds": 297,
-    "wellmedr": 88, "shed": 199, "sprout": 249,
+    "embody": 299, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
+    "trimrx": 299, "healthrx": 133, "bmimd": 129, "directmeds": 297,
+    "wellmedr": 149, "shed": 199, "sprout": 249,
 }
 MAINT_BASIS = {
     "embody": "standard maintenance dose",
@@ -608,6 +608,13 @@ REPORTED = {
     "ro": "Most-reported issue: the $149/mo membership fee surprises people at checkout.",
     "wellmedr": "Most-reported issue: first orders or refills not shipped (months 0–1).",
 }
+
+def type_label(slug):
+    """(label, css-suffix) for the FDA-approved / compounded / both medication tag."""
+    b = has_branded(slug); c = "compounded" in PDATA[slug]["meds"].lower()
+    if b and c: return "FDA-approved + compounded", "both"
+    if b: return "FDA-approved", "fda"
+    return "Compounded", "compounded"
 
 def real_price_block(slug, cls=""):
     """The headline is the REAL monthly cost at maintenance, with the intro
@@ -1661,12 +1668,6 @@ def render_home():
     support_names = " and ".join(PROVIDERS[s]["name"] for s in
                                  sorted(PROVIDER_ORDER, key=lambda s: PDATA[s]["scores"]["Support"], reverse=True)[:2])
 
-    def type_label(slug):
-        b = has_branded(slug); c = "compounded" in PDATA[slug]["meds"].lower()
-        if b and c: return "FDA-approved + compounded", "both"
-        if b: return "FDA-approved", "fda"
-        return "Compounded", "compounded"
-
     # ---- comparison table rows — the REAL monthly price leads every row ----
     ctrows = ""
     for slug in by_real:
@@ -2547,81 +2548,105 @@ def render_article(a):
 # Index pages
 # --------------------------------------------------------------------------
 def render_reviews_index():
-    cards = ""
+    rows = ""
     for i, slug in enumerate(PROVIDER_ORDER, 1):
-        p = PROVIDERS[slug]
-        cards += f"""<a class="post-card" href="{review_url(slug)}"><div class="thumb"></div><div class="pc-body">
-  <span class="tag">#{i} · {p['best_for']}</span>
-  <h3>{p['name']} <span style="color:var(--muted);font-weight:700">— {p['score']}/10</span></h3>
-  <p>{p['highlight']}</p><span class="read">Read review →</span></div></a>"""
+        p, d = PROVIDERS[slug], PDATA[slug]
+        tlabel, tcls = type_label(slug)
+        logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
+        flag = f' <span class="ct-warn" title="Regulatory flag — see review">{icon("badge", size=13)}</span>' if d.get("flag") else ""
+        mtype, mcls, mdrugs = med_parts(slug)
+        reported = f'<span class="ct-reported">{icon("badge", size=12)}{REPORTED[slug]}</span>' if slug in REPORTED else ""
+        _bf = p['best_for']
+        _bf = _bf[len("best for"):].strip() if _bf.lower().startswith("best for") else _bf
+        rows += f"""<div class="ctrow">
+      <div class="ct-prov"><span class="ct-rank">{i}</span><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a>{flag}<span class="ct-type mt-{tcls}">{tlabel}</span><span class="ct-bestfor">Best for {_bf.lower()}</span></span></div>
+      <div class="ct-price">{real_price_block(slug)}</div>
+      <div class="ct-meds"><span class="med-drugs">{mdrugs}</span><span class="ct-visit">{icon('clock', size=13)}{d['visit']}</span>{reported}</div>
+      <div class="ct-rate"><span class="ct-scorebadge">{p['score']}</span><span class="ct-ratemeta"><span class="ct-word">{score_word(p['score'])}</span><span class="ct-bar"><i style="width:{p['score']*10}%"></i></span></span></div>
+      <div class="ct-act">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}<a class="ct-review" href="{review_url(slug)}">Read review</a></div>
+    </div>"""
     body = f"""
-<section class="hero"><div class="wrap">
+<section class="hero2 hero2-slim"><div class="wrap">
   {crumbs([("Home","/"),("Reviews","")])}
-  <span class="hero-flag">{len(PROVIDER_ORDER)} in-depth, independent reviews</span>
-  <h1>Online weight-loss program reviews</h1>
-  <p class="lede">Independently scored reviews of each program — the good, the trade-offs, and who it's really for.</p>
+  <span class="hero-flag"><span class="dot"></span> {len(PROVIDER_ORDER)} programs · ranked by our score · Updated {UPDATED}</span>
+  <h1 class="display" style="font-size:clamp(1.9rem,3.4vw,2.6rem)">Online GLP-1 program reviews, ranked</h1>
+  <p class="lede" style="max-width:62ch">Every program scored 0–10 on value, support, medications and transparency — then ranked. Each row shows the real monthly price at maintenance, the medication type, and what buyers report. Tap any program for the full review.</p>
 </div></section>
-<section class="section"><div class="wrap"><div class="post-grid">{cards}</div></div></section>
+<div class="trust2"><div class="wrap">
+  <span>{icon('check-c', size=15)} Independently scored · <a href="/methodology">how we rank</a></span>
+  <span>{icon('badge', size=15)} Real prices, not intro teasers</span>
+  <span>{icon('scale', size=15)} Affiliate links never change a score</span>
+</div></div>
+<section class="section"><div class="wrap">
+  <div class="ctable">
+    <div class="ctrow ct-header"><div>Program</div><div>Real price / mo</div><div>Medication &amp; visit</div><div>Our score</div><div></div></div>
+    {rows}
+  </div>
+  <p class="price-foot">{icon('badge', size=15)} <span>Ranked by our editorial score (not price). Real maintenance prices are drawn from each provider's sourced pricing; compounded GLP-1s aren't FDA-approved and prices change monthly — confirm at the provider before you buy.</span></p>
+</div></section>
 """
-    return base_page(f"Online Weight-Loss Program Reviews ({YEAR}) | {SITE['name']}",
-                     "In-depth, independently scored reviews of the top online weight-loss programs, including pros, cons and who each is best for.",
+    return base_page(f"Online Weight-Loss Program Reviews ({YEAR}) — Ranked | {SITE['name']}",
+                     "Every major online GLP-1 program scored and ranked on value, support, medications and transparency, with the real monthly price and what buyers report.",
                      "/reviews", body, active="/reviews", jsonld=ld_org())
 
 def render_versus_index():
     cards = ""
+    def _rp(slug):
+        m = MAINT.get(slug); d = PDATA[slug]
+        return f"${m}/mo" if m else f"${d['price']}{d['unit']}"
     for v in VERSUS:
         a, b = PROVIDERS[v["a"]], PROVIDERS[v["b"]]
         da, db = PDATA[v["a"]], PDATA[v["b"]]
         if a["score"] != b["score"]:
-            win = a if a["score"] > b["score"] else b
-        elif da["price"] != db["price"]:
-            win = a if da["price"] < db["price"] else b
+            wslug = v["a"] if a["score"] > b["score"] else v["b"]
+        elif maint_sort_key(v["a"]) != maint_sort_key(v["b"]):
+            wslug = v["a"] if maint_sort_key(v["a"]) < maint_sort_key(v["b"]) else v["b"]
         else:
-            win = PROVIDERS[v.get("winner", v["a"])]
-        blurb = (f"From ${da['price']}{da['unit']} vs ${db['price']}{db['unit']}. "
-                 f"{win['name']} takes it on our rubric — see the round-by-round.")
-        cards += f"""<a class="post-card" href="{versus_url(v)}"><div class="thumb"></div><div class="pc-body">
-  <h3>{a['name']} vs {b['name']}</h3>
-  <p>{a['name']} ({a['score']}) vs {b['name']} ({b['score']}). {blurb}</p>
-  <span class="read">See the verdict →</span></div></a>"""
+            wslug = v.get("winner", v["a"])
+        win = PROVIDERS[wslug]
+        cards += f"""<a class="vsrow" href="{versus_url(v)}">
+      <span class="vsr-pair"><b>{a['name']}</b> <em>vs</em> <b>{b['name']}</b></span>
+      <span class="vsr-prices">{_rp(v['a'])} <i>vs</i> {_rp(v['b'])}</span>
+      <span class="vsr-scores">{a['score']} · {b['score']}</span>
+      <span class="vsr-win"><span class="vsr-wtag">{icon('badge', size=12)} {win['name']}</span></span>
+      <span class="vsr-go">Verdict {icon('arrow', size=14)}</span></a>"""
     alt_cards = "".join(
-        f'<a class="post-card" href="{alt_url(s)}"><div class="thumb"></div><div class="pc-body">'
-        f'<span class="tag">Alternatives</span><h3>{PROVIDERS[s]["name"]} alternatives</h3>'
-        f'<p>The best {PROVIDERS[s]["name"]} competitors, ranked and compared.</p>'
-        f'<span class="read">See alternatives →</span></div></a>'
+        f'<a class="altchip" href="{alt_url(s)}">{PROVIDERS[s]["name"]} alternatives {icon("arrow", size=13)}</a>'
         for s in ALT_TARGETS)
     body = f"""
-<section class="hero"><div class="wrap">
+<section class="hero2 hero2-slim"><div class="wrap">
   {crumbs([("Home","/"),("Comparisons","")])}
-  <span class="hero-flag">{len(VERSUS)} head-to-head matchups</span>
-  <h1>Weight-loss program comparisons</h1>
-  <p class="lede">Deciding between two programs? Each comparison breaks the matchup down to a clear, honest verdict.</p>
+  <span class="hero-flag"><span class="dot"></span> {len(VERSUS)} head-to-head matchups · Updated {UPDATED}</span>
+  <h1 class="display" style="font-size:clamp(1.9rem,3.4vw,2.6rem)">Compare two programs, head-to-head</h1>
+  <p class="lede" style="max-width:60ch">Every pairing, scored on the same rubric. Real price vs real price, our score for each, and who takes it — tap any matchup for the full round-by-round.</p>
 </div></section>
-<section class="section"><div class="wrap"><div class="post-grid">{cards}</div></div></section>
-<section class="section section-soft"><div class="wrap">
-  <h2 style="margin-top:0">Looking for alternatives?</h2>
-  <p class="lead">Shopping away from a specific brand? These round up the best competitors, ranked.</p>
-  <div class="post-grid">{alt_cards}</div>
+<section class="section"><div class="wrap">
+  <div class="vstable">
+    <div class="vsrow vsr-header"><span>Matchup</span><span>Real price / mo</span><span>Scores</span><span>Our pick</span><span></span></div>
+    {cards}
+  </div>
+  <div class="altbar"><span class="eyebrow-2">Shopping away from one brand?</span><div class="altchips">{alt_cards}</div></div>
 </div></section>
 """
     return base_page(f"Weight-Loss Program Comparisons: Head-to-Head ({YEAR}) | {SITE['name']}",
-                     "Side-by-side comparisons of the top online weight-loss programs — scores, pricing tiers and a clear verdict on each matchup.",
+                     "Every online GLP-1 program compared head-to-head — real price vs real price, independent scores, and a clear pick for each matchup.",
                      "/comparisons", body, active="/comparisons", jsonld=ld_org())
 
 def render_guides_index():
-    cards = ""
-    for a in ARTICLES:
-        cards += f"""<a class="post-card" href="{article_url(a)}"><div class="thumb"></div><div class="pc-body">
-  <span class="tag">{a['tag']}</span><h3>{a['title']}</h3><p>{a['description']}</p>
-  <span class="read">Read article →</span></div></a>"""
+    rows = ""
+    for a in sorted(ARTICLES, key=lambda x: x["date"], reverse=True):
+        rows += f"""<a class="guiderow" href="{article_url(a)}">
+      <span class="gr-tag">{a['tag']}</span>
+      <span class="gr-main"><b>{a['title']}</b><span class="gr-desc">{a['description']}</span></span>
+      <span class="gr-go">Read {icon('arrow', size=14)}</span></a>"""
     body = f"""
-<section class="hero"><div class="wrap">
+<section class="hero2 hero2-slim"><div class="wrap">
   {crumbs([("Home","/"),("Articles","")])}
-  <span class="hero-flag">{len(ARTICLES)} articles &amp; guides</span>
-  <h1>Weight-loss articles &amp; guides</h1>
-  <p class="lede">Plain-English answers to the questions people actually ask before choosing a GLP-1 program.</p>
+  <span class="hero-flag"><span class="dot"></span> {len(ARTICLES)} guides · Updated {UPDATED}</span>
+  <h1 class="display" style="font-size:clamp(1.9rem,3.4vw,2.6rem)">Guides &amp; answers</h1>
+  <p class="lede" style="max-width:60ch">The questions real buyers ask before choosing a GLP-1 program — costs, what's FDA-approved, prepay traps, and how to spot a legit clinic. No fluff.</p>
 </div></section>
-<section class="section"><div class="wrap"><div class="post-grid">{cards}</div></div></section>
+<section class="section"><div class="wrap"><div class="guidelist">{rows}</div></div></section>
 """
     return base_page(f"Weight-Loss Guides & Answers ({YEAR}) | {SITE['name']}",
                      "Clear, practical guides on GLP-1 programs, costs, prescriptions and how to choose a legitimate online weight-loss clinic.",
