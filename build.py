@@ -609,6 +609,41 @@ REPORTED = {
     "wellmedr": "Most-reported issue: first orders or refills not shipped (months 0–1).",
 }
 
+# Richer coded-review data (Oct 2026 read of public Trustpilot). The invited vs
+# unprompted gap is the headline: invited reviews run far higher, so an average
+# star rating flatters a program. We lead with the unprompted number.
+REPORTED_DATA = {
+    "embody":   {"avg": 3.7, "invited": 4.9, "unprompted": 2.7,
+                 "top": "Refills not shipped on time", "share": 72, "when": "usually around month 2"},
+    "trimrx":   {"avg": 4.5, "invited": 4.8, "unprompted": 2.1,
+                 "top": "Support goes quiet; some prepaid plans undelivered", "share": 62, "when": "months 3–7"},
+    "ro":       {"avg": 3.9, "invited": None, "unprompted": None,
+                 "top": "The $149/mo membership fee surprises people", "share": 66, "when": "at checkout"},
+    "wellmedr": {"avg": 3.8, "invited": None, "unprompted": None,
+                 "top": "Orders or refills not shipped", "share": 73, "when": "months 0–1"},
+}
+
+def reported_block(slug):
+    r = REPORTED_DATA.get(slug)
+    if not r:
+        return ""
+    n = PROVIDERS[slug]["name"]
+    gap = ""
+    if r.get("invited") and r.get("unprompted"):
+        iv, up = r["invited"], r["unprompted"]
+        gap = (f'<div class="rep-gap"><div class="rep-gapbar">'
+               f'<div class="rep-seg rep-up" style="width:{up/5*100:.0f}%"><span>Unprompted {up}★</span></div>'
+               f'<div class="rep-seg rep-iv" style="width:{(iv-up)/5*100:.0f}%"></div></div>'
+               f'<div class="rep-gaplabels"><span>Unprompted reviews <b>{up}★</b></span>'
+               f'<span>Invited reviews <b>{iv}★</b></span></div>'
+               f'<p class="rep-note">That {round(iv-up,1)}-star gap is why we don\'t rank on raw stars — '
+               f'invited reviews flatter the {r["avg"]}★ average.</p></div>')
+    return (f'<div class="repcard"><div class="repcard-head"><span class="eyebrow-2">What buyers actually report</span>'
+            f'<span class="rep-src">Public Trustpilot · read {UPDATED}</span></div>'
+            f'<div class="rep-stat"><div class="rep-big">{r["share"]}%</div>'
+            f'<div class="rep-bigl">of {n} complaints are about<br><b>{r["top"].lower()}</b>, {r["when"]}</div></div>'
+            f'{gap}</div>')
+
 def type_label(slug):
     """(label, css-suffix) for the FDA-approved / compounded / both medication tag."""
     b = has_branded(slug); c = "compounded" in PDATA[slug]["meds"].lower()
@@ -2104,11 +2139,8 @@ def render_review(slug):
              ("Insurance", d["insurance"]), ("Availability", d["avail"])]
     facts_html = "".join(f'<div><span>{k}</span><b>{val}</b></div>' for k, val in facts)
 
-    # buyer-reported watchout (coded Trustpilot) — the thing that goes wrong after month 1
-    reported_html = (f'<div class="callout callout-warn"><h3>{icon("badge")} What buyers report</h3>'
-                     f'<p>{REPORTED[slug]} Based on our Oct 2026 read of public Trustpilot reviews — '
-                     f'we weight unprompted reviews over invited ones, which run up to 2.7 stars higher.</p></div>'
-                     if slug in REPORTED else "")
+    # buyer-reported data block (coded Trustpilot) — real voice, not prose
+    reported_html = reported_block(slug)
 
     flag_html = ""
     if d.get("flag"):
@@ -2172,6 +2204,11 @@ def render_review(slug):
 <div class="wrap rev-layout">
   <main class="rev-main">
     <div class="disclosure-note">{icon('badge', size=16)} <span>We may earn a commission if you sign up through our links — at no cost to you, and with no effect on this score. <a href="/disclosure">Details</a>.</span></div>
+
+    <div class="atglance">
+      <div class="ag-head"><span class="eyebrow-2">{n} at a glance</span><span class="ag-score">{p['score']}<i>/10</i> · {score_word(p['score'])}</span></div>
+      <div class="factgrid">{facts_html}</div>
+    </div>
 
     <div class="callout" id="verdict"><h3>{icon('badge')} The bottom line</h3><p>{p['verdict']}</p>
       <p style="margin-bottom:0">{cta(slug, label=f"See {n} pricing", cls='btn btn-primary btn-sm')}</p></div>
