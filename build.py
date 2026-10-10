@@ -551,6 +551,75 @@ PDATA = {
     },
 }
 
+# --------------------------------------------------------------------------
+# Maintenance price = what buyers actually pay per month at the dose they stay
+# on — NOT the intro/promo headline. This is the number buyers tell us matters
+# (95% pay out of pocket; the sticker they see is what they pay). Each figure is
+# pulled from that provider's own pricing note above (already sourced); None
+# means the provider doesn't disclose an ongoing price. Re-verify before
+# publishing — prices change monthly.
+# --------------------------------------------------------------------------
+MAINT = {
+    "embody": 299, "ro": 298, "found": 198, "altrx": None, "medvi": 299,
+    "trimrx": 253, "healthrx": 189, "bmimd": 149, "directmeds": 297,
+    "wellmedr": 88, "shed": 199, "sprout": 249,
+}
+MAINT_BASIS = {
+    "embody": "standard maintenance dose",
+    "ro": "$149/mo membership + branded drug",
+    "found": "membership + compounded drug",
+    "medvi": "paying month-to-month",
+    "trimrx": "typical ongoing dose",
+    "healthrx": "paying month-to-month",
+    "bmimd": "paying month-to-month",
+    "directmeds": "injectable semaglutide",
+    "wellmedr": "paying month-to-month",
+    "shed": "from — rises with dose",
+    "sprout": "ongoing semaglutide",
+}
+
+def maint_price(slug):
+    return MAINT.get(slug)
+
+def maint_sort_key(slug):
+    """Sort by real monthly cost; undisclosed-maintenance providers sort last."""
+    m = MAINT.get(slug)
+    return m if m is not None else 10**6
+
+def is_membership(slug):
+    return "membership" in PDATA[slug]["struct"].lower()
+
+# What buyers actually report after month 1 — coded from public Trustpilot
+# reviews (Oct 2026 research). Shown honestly as "what buyers report", because
+# star ratings mislead (invited reviews run up to 2.7 stars higher than
+# unprompted ones). Only providers with coded data appear here.
+REPORTED = {
+    "embody": "Most-reported issue: refills not shipped on time, usually around month 2.",
+    "trimrx": "Most-reported issue: support goes quiet; some prepaid plans undelivered (months 3–7).",
+    "ro": "Most-reported issue: the $149/mo membership fee surprises people at checkout.",
+    "wellmedr": "Most-reported issue: first orders or refills not shipped (months 0–1).",
+}
+
+def real_price_block(slug, cls=""):
+    """The headline is the REAL monthly cost at maintenance, with the intro
+    rate demoted to a sub-line (never the other way round). This is the single
+    most important UX rule from buyer research: sell the price people keep
+    paying, not the '$39 first month' that triggers 'overcharged' complaints."""
+    d = PDATA[slug]
+    m = MAINT.get(slug)
+    intro = f"${d['price']}{d['unit']}"
+    if m is None:
+        amt = f'${d["price"]}<span class="rp-unit">{d["unit"]}</span>'
+        sub = "ongoing price not disclosed — confirm with provider"
+    else:
+        amt = f'${m}<span class="rp-unit">/mo</span>'
+        same_intro = (m == d["price"])
+        sub = (f'{MAINT_BASIS.get(slug, "ongoing")}'
+               + ("" if same_intro else f' · intro from {intro}'))
+    checked = f'<span class="rp-checked">{icon("check", size=11)}Checked {d["as_of"]}</span>'
+    return (f'<span class="realprice {cls}"><span class="rp-amt">{amt}</span>'
+            f'<span class="rp-sub">{sub}</span>{checked}</span>')
+
 # Real user reviews (from Trustpilot). Populated per provider as we collect them.
 # A provider with no entry simply renders no user-reviews section. Omit "rating"
 # to show quotes without an aggregate score.
@@ -1450,43 +1519,48 @@ def render_home():
     N = len(PROVIDER_ORDER)
     top = PROVIDER_ORDER[0]
 
-    n_u100 = sum(1 for s in PROVIDER_ORDER if PDATA[s]["price"] < 100)
-    n_mid = sum(1 for s in PROVIDER_ORDER if 100 <= PDATA[s]["price"] < 200)
-    n_prem = sum(1 for s in PROVIDER_ORDER if PDATA[s]["price"] >= 200)
-    n_branded = sum(1 for s in PROVIDER_ORDER if has_branded(s))
-    cheapest = sorted(PROVIDER_ORDER, key=lambda s: PDATA[s]["price"])[:2]
+    # Rank + filter by what buyers actually pay each month at maintenance.
+    by_real = sorted(PROVIDER_ORDER, key=maint_sort_key)
+    real_vals = [MAINT[s] for s in PROVIDER_ORDER if MAINT.get(s)]
+    min_real, max_real = min(real_vals), max(real_vals)
+    n_fda = sum(1 for s in PROVIDER_ORDER if has_branded(s))
+    n_compounded = sum(1 for s in PROVIDER_ORDER if "compounded" in PDATA[s]["meds"].lower())
+    n_nomember = sum(1 for s in PROVIDER_ORDER if not is_membership(s))
+    n_u200 = sum(1 for s in PROVIDER_ORDER if MAINT.get(s) and MAINT[s] < 200)
+    n_o200 = sum(1 for s in PROVIDER_ORDER if MAINT.get(s) and MAINT[s] >= 200)
+    n_video = sum(1 for s in PROVIDER_ORDER if "video" in PDATA[s]["visit"].lower())
+    cheapest = sorted((s for s in PROVIDER_ORDER if MAINT.get(s)), key=maint_sort_key)[:2]
     cheap_names = " and ".join(PROVIDERS[s]["name"] for s in cheapest)
-    # providers with a genuine live/video option and coaching, for the support question
     support_names = " and ".join(PROVIDERS[s]["name"] for s in
                                  sorted(PROVIDER_ORDER, key=lambda s: PDATA[s]["scores"]["Support"], reverse=True)[:2])
 
-    by_price = sorted(PROVIDER_ORDER, key=lambda s: PDATA[s]["price"])
-    min_p = PDATA[by_price[0]]["price"]
-    max_p = max(PDATA[s]["price"] for s in PROVIDER_ORDER)
-    n_compounded = sum(1 for s in PROVIDER_ORDER if "compounded" in PDATA[s]["meds"].lower())
+    def type_label(slug):
+        b = has_branded(slug); c = "compounded" in PDATA[slug]["meds"].lower()
+        if b and c: return "FDA-approved + compounded", "both"
+        if b: return "FDA-approved", "fda"
+        return "Compounded", "compounded"
 
-    # ---- comparison table rows (price + condition leads) ----
+    # ---- comparison table rows — the REAL monthly price leads every row ----
     ctrows = ""
-    for slug in PROVIDER_ORDER:
+    for slug in by_real:
         p, d = PROVIDERS[slug], PDATA[slug]
-        tags = f"{price_band(slug)} {'branded' if has_branded(slug) else 'compounded'} {'video' if 'video' in d['visit'].lower() else 'async'} {'insurance' if not _cashpay(slug) else 'cashpay'}"
+        tlabel, tcls = type_label(slug)
+        budget = "u200" if (MAINT.get(slug) and MAINT[slug] < 200) else "o200"
+        mem = "membership" if is_membership(slug) else "nomembership"
+        vis = "video" if "video" in d["visit"].lower() else "async"
+        offers = ("fda " if has_branded(slug) else "") + ("compounded " if "compounded" in d["meds"].lower() else "")
+        tags = f"{offers}{budget} {mem} {vis}"
         logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
         flag = f' <span class="ct-warn" title="Regulatory flag — see review">{icon("badge", size=13)}</span>' if d.get("flag") else ""
         mtype, mcls, mdrugs = med_parts(slug)
-        ctrows += f"""<div class="ctrow" data-score="{p['score']}" data-price="{d['price']}" data-tags="{tags}">
-      <div class="ct-prov"><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a>{flag}<span class="ct-tag">{d['tagline']}</span></span></div>
-      <div class="ct-price">{price_block(slug, limit=2)}</div>
-      <div class="ct-meds"><span class="med-type mt-{mcls}">{mtype}</span><span class="med-drugs">{mdrugs}</span><span class="ct-visit">{icon('clock', size=13)}{d['visit']}</span></div>
+        reported = f'<span class="ct-reported">{icon("badge", size=12)}{REPORTED[slug]}</span>' if slug in REPORTED else ""
+        ctrows += f"""<div class="ctrow" data-score="{p['score']}" data-price="{maint_sort_key(slug)}" data-tags="{tags}">
+      <div class="ct-prov"><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a>{flag}<span class="ct-type mt-{tcls}">{tlabel}</span></span></div>
+      <div class="ct-price">{real_price_block(slug)}</div>
+      <div class="ct-meds"><span class="med-drugs">{mdrugs}</span><span class="ct-visit">{icon('clock', size=13)}{d['visit']}</span>{reported}</div>
       <div class="ct-rate"><span class="ct-scorebadge">{p['score']}</span><span class="ct-ratemeta"><span class="ct-word">{score_word(p['score'])}</span><span class="ct-bar"><i style="width:{p['score']*10}%"></i></span></span></div>
       <div class="ct-act">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}<a class="ct-review" href="{review_url(slug)}">Read review</a></div>
     </div>"""
-
-    # ---- hero snapshot: the four lowest starting prices (a real data preview) ----
-    snap = "".join(
-        f'<a class="snap-row" href="{review_url(s)}"><span class="snap-name">{PROVIDERS[s]["name"]}</span>'
-        f'<span class="snap-med med-type mt-{med_parts(s)[1]}">{med_parts(s)[0]}</span>'
-        f'<span class="snap-price">${PDATA[s]["price"]}{PDATA[s]["unit"]}</span></a>'
-        for s in by_price[:4])
 
     # ---- top three: best-for / why / trade-off (compact, not giant cards) ----
     t3 = ""
@@ -1499,7 +1573,7 @@ def render_home():
       <div class="t3b-for"><span class="eyebrow-2">Best for</span><b>{p['best_for']}</b>{pick}</div>
       <div class="t3b-head"><span class="t3b-logo">{logo_img(slug) or f'<span class=ct-init>{p["name"][:2]}</span>'}</span>
         <div><a class="t3b-name" href="{review_url(slug)}">{p['name']}</a><span class="t3b-score">{p['score']}/10 · {score_word(p['score'])}</span></div></div>
-      <div class="t3b-price">{price_block(slug)}</div>
+      <div class="t3b-price">{real_price_block(slug)}</div>
       <p class="t3b-meds"><span class="med-type mt-{mcls}">{mtype}</span> {d['meds'].lower()}, {d['visit'].lower()}</p>
       <div class="t3b-note"><span class="t3b-lbl">Why it stands out</span><p>{p['pros'][0]}</p></div>
       <div class="t3b-note t3b-trade"><span class="t3b-lbl">The trade-off</span><p>{p['cons'][0]}</p></div>
@@ -1512,15 +1586,18 @@ def render_home():
         p, d = PROVIDERS[slug], PDATA[slug]
         pros = "".join(f"<li>{x}</li>" for x in p["pros"])
         cons = "".join(f"<li>{x}</li>" for x in p["cons"])
+        _m = MAINT.get(slug)
+        _real = f"${_m}/mo" if _m else f"from ${d['price']}{d['unit']}"
         specs = "".join(f'<div><span>{k}</span><b>{v}</b></div>' for k, v in [
-            ("Starts at", f"${d['price']}{d['unit']} · {price_struct_short(slug)}"),
+            ("Real price", f"{_real} · intro from ${d['price']}{d['unit']}"),
             ("Medications", d["meds"]), ("Visit type", d["visit"]),
             ("Insurance", d["insurance"]), ("Availability", d["avail"])])
+        _watch = f'<p class="rr-reported">{icon("badge", size=13)} {REPORTED[slug]}</p>' if slug in REPORTED else ""
         rest += f"""<div class="restrow">
       <button class="restrow-top" aria-expanded="false" onclick="wlrToggle(this)">
         <span class="rr-score">{p['score']}</span>
         <span class="rr-main"><span class="rr-name">{p['name']}</span><span class="rr-tag">{d['tagline']}</span></span>
-        <span class="rr-col"><em>Starts at</em>${d['price']}{d['unit']}</span>
+        <span class="rr-col"><em>Real price / mo</em>{_real}</span>
         <span class="rr-col rr-meds"><em>Medications</em>{d['meds']}</span>
         <span class="rr-chev">{icon('arrow', size=18)}</span>
       </button>
@@ -1528,6 +1605,7 @@ def render_home():
         <p>{p['summary']}</p>
         <div class="t3tiles rr-specs">{specs}</div>
         <p class="rr-pricenote muted">{d['price_note']}. <em>As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>.</em></p>
+        {_watch}
         <div class="proscons">
           <div class="box pros"><h4>Pros</h4><ul class="pros">{pros}</ul></div>
           <div class="box cons"><h4>Watchouts</h4><ul class="cons">{cons}</ul></div>
@@ -1570,16 +1648,16 @@ def render_home():
 
     # ---- framework accordion (data-driven) ----
     fw = [
-        ("01", "Budget", "dollar", "How much can you spend, monthly?",
-         f"Compounded semaglutide and tirzepatide run far cheaper than branded Wegovy or Zepbound. If cost is the priority, the lowest advertised starting rates in our table are {cheap_names} — but read the fine print: those figures usually need a prepaid multi-month plan, and month-to-month is higher."),
-        ("02", "Insurance", "shield", "Do you want to use insurance?",
-         "Insurance rarely covers compounded GLP-1s, so most compounded programs are cash-pay. If you want to try insurance for branded Wegovy or Zepbound, ro and Found both run insurance navigation — expect a branded price if it doesn't come through."),
-        ("03", "Medication", "pill", "Branded or compounded?",
-         "Branded (Wegovy, Zepbound) is FDA-approved and consistent but costs $300–$600+/mo; compounded is cheaper ($49–$299/mo) but isn't FDA-approved and supply rules shift. ro is branded-only in 2026; Found keeps both paths; most others are compounded-only."),
-        ("04", "Support level", "clipboard", "How much guidance do you want?",
-         f"If you want a real care team, coaching and clinician time, weight Support heavily — {support_names} score highest there. If you just want the medication handled, an async, questionnaire-only program will be cheaper and faster."),
-        ("05", "Visit style", "clock", "Video visit or async messaging?",
-         "Most compounded programs are async: you fill in a questionnaire, a clinician reviews it, and medication ships — no appointment. A few (ro, Found, WellMedr) offer a live video visit. Async is faster and cheaper; video gives you face time. Pick the one you'll actually use."),
+        ("01", "The real price", "dollar", "What will I actually pay each month?",
+         f"Ignore the '$39 first month' hook — it's the single biggest cause of 'overcharged' complaints. Look at the price at the dose you'll stay on: compounded programs typically run about $138/mo (most land $109–$169), branded Wegovy or Zepbound about $335/mo ($299–$450). The lowest real monthly prices we track are {cheap_names}. Membership programs bill the drug on top of the fee, so add both."),
+        ("02", "Branded or compounded", "pill", "Which type of medication is it?",
+         "Branded (Wegovy, Zepbound, the Wegovy pill, Foundayo) is FDA-approved, trial-tested and consistent, but costs more and usually needs insurance to be affordable. Compounded is a pharmacy-mixed copy — cheaper, but not FDA-approved, quality varies by pharmacy, and it's now a legal gray zone after the 2024 shortage ended. Never buy 'research peptides' sold 'not for human use'. We label every option so you always know which you're looking at."),
+        ("03", "Is there a human?", "clipboard", "Can I actually reach a real person?",
+         f"The #1 thing buyers ask for is a human who answers — and it's the #1 complaint when it's missing. Most compounded programs approve you from a form with no call. If you want real clinician time, coaching and someone to reach when a refill is late, weight support heavily: {support_names} score highest. Check the reply time and whether anyone picks up before you commit."),
+        ("04", "Before you prepay", "shield", "Am I locked in — and can I get a refund?",
+         "The cheapest headline prices almost always need a prepaid multi-month plan. That's fine until a refill is late or the drug doesn't suit you — then 'no refund' and 'can't cancel' become the complaint. Before paying for months up front, find the cancel and refund terms in writing, and prefer a provider you can cancel online."),
+        ("05", "Is it legit?", "badge", "How do I know this provider is safe?",
+         "Check five things: it's licensed to prescribe in your state; it names its pharmacy and type (503A compounds for one patient, 503B makes larger batches under tighter rules); a licensed clinician — ideally named — signs off; you can cancel online; and refunds are spelled out. The FDA sent warning letters to 55+ telehealth firms in 2026, so this matters."),
     ]
     fw_html = ""
     for j, (num, kicker, ic, q, ans) in enumerate(fw):
@@ -1590,65 +1668,127 @@ def render_home():
         f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>'
         for q, a in FAQ)
 
-    hero_logo = logo_img(top) or f'<b>{PROVIDERS[top]["name"]}</b>'
-    cheapest_price = min(PDATA[s]["price"] for s in PROVIDER_ORDER)
-
     body = f"""
+<div class="trust2"><div class="wrap">
+  <span>{icon('check-c', size=15)} {N} programs, real prices verified {UPDATED}</span>
+  <span>{icon('scale', size=15)} <a href="/methodology">How we rank</a></span>
+  <span>{icon('badge', size=15)} Affiliate links never change a score · <a href="/disclosure">disclosure</a></span>
+</div></div>
+
 <section class="hero2"><div class="wrap hero2-grid">
   <div class="hero2-copy">
     <span class="hero-flag"><span class="dot"></span> Independent research · Updated {UPDATED}</span>
-    <h1 class="display">What online GLP-1 programs actually cost.</h1>
-    <p class="lede">We check what each online weight-loss program really charges — including the fine print — then line up medications, visit type and insurance so you can choose with clear eyes. Every price is individually sourced and dated. Rankings are never bought.</p>
-    <dl class="hero-facts">
-      <div><dt>{N}</dt><dd>programs reviewed</dd></div>
-      <div><dt>${min_p}–${max_p}<span>/mo</span></dt><dd>starting price range</dd></div>
-      <div><dt>{n_branded} <span>/</span> {n_compounded}</dt><dd>branded / compounded</dd></div>
-      <div><dt>{UPDATED}</dt><dd>prices last checked</dd></div>
-    </dl>
+    <h1 class="display">Compare GLP-1 programs by what you'll actually pay.</h1>
+    <p class="lede">Most sites show you a "$39 first month" hook. We show the real monthly price at the dose people stay on — then check who actually ships on time, answers the phone, and uses a named pharmacy. Prices individually sourced and dated. Rankings are never bought.</p>
+    <ul class="hero-promises">
+      <li>{icon('check-c', size=18)}<span><b>No surprise bills.</b> We lead with the maintenance price, not the first-month teaser.</span></li>
+      <li>{icon('check-c', size=18)}<span><b>Not trapped.</b> Every option flags prepay lock-ins, cancelling and refunds before you commit.</span></li>
+      <li>{icon('check-c', size=18)}<span><b>Real &amp; legit.</b> We check the pharmacy, state licensing, and whether a human actually answers.</span></li>
+    </ul>
     <div class="hero-cta">
       <a class="btn btn-primary btn-lg" href="#compare">Compare all {N} programs →</a>
-      <a class="btn btn-ghost btn-lg" href="/methodology">How we review</a>
+      <a class="btn btn-ghost btn-lg" href="#legit">Is this provider legit?</a>
     </div>
   </div>
-  <aside class="hero2-snap" aria-label="Lowest starting prices">
-    <div class="snap-head"><span>Lowest starting prices</span><span class="snap-date">{icon('check', size=11)}Checked {UPDATED}</span></div>
-    <div class="snap-list">{snap}</div>
-    <a class="snap-all" href="#compare">See all {N} programs, sorted &amp; filtered →</a>
+  <aside class="hero2-snap" aria-label="What buyers really pay">
+    <div class="snap-head"><span>What people really pay</span><span class="snap-date">{icon('check', size=11)}Oct 2026 analysis</span></div>
+    <dl class="market-facts">
+      <div><dt>$138<span>/mo</span></dt><dd>typical compounded (most pay $109–$169)</dd></div>
+      <div><dt>$335<span>/mo</span></dt><dd>typical brand-name Wegovy / Zepbound</dd></div>
+      <div><dt>74%</dt><dd>of buyers pick tirzepatide when asked</dd></div>
+      <div><dt>$50<span>/mo</span></dt><dd>Medicare option for originals (since Jul 2026)</dd></div>
+    </dl>
+    <a class="snap-all" href="#compare">See all {N} programs by real price →</a>
   </aside>
 </div></section>
 
-<div class="trust2"><div class="wrap">
-  <span>{icon('check-c', size=15)} {N} providers reviewed</span>
-  <span>{icon('badge', size=15)} Prices individually sourced</span>
-  <span>{icon('clock', size=15)} Last checked {UPDATED}</span>
-  <span>{icon('scale', size=15)} Affiliate links don't affect scores</span>
-</div></div>
+<section class="section section-soft" id="stage"><div class="wrap">
+  <div style="text-align:center;max-width:680px;margin:0 auto 6px">
+    <span class="eyebrow-2">Start here</span>
+    <h2 style="margin:6px 0 10px">Have you taken a GLP-1 before?</h2>
+    <p class="lead">Your situation changes what matters most. Pick where you are — we'll point you to the right answer first.</p>
+  </div>
+  <div class="stage-grid">
+    <a class="stage-card" href="/guides/do-you-need-a-prescription-online">
+      <span class="stage-ico">{icon('clipboard', size=22)}</span>
+      <b>I'm new to this</b>
+      <span class="stage-need">How it works, what month 1 vs month 4 costs, and whether a real clinician is involved — no judgment.</span>
+      <span class="stage-go">New to GLP-1s {icon('arrow', size=14)}</span></a>
+    <a class="stage-card" href="#compare">
+      <span class="stage-ico">{icon('scale', size=22)}</span>
+      <b>I'm switching providers</b>
+      <span class="stage-need">Keep your current dose, pay less all-in, and find someone who actually answers — fast first shipment.</span>
+      <span class="stage-go">Compare on real price {icon('arrow', size=14)}</span></a>
+    <a class="stage-card" href="/guides/compounded-semaglutide-cost">
+      <span class="stage-ico">{icon('dollar', size=22)}</span>
+      <b>I'm 3+ months in</b>
+      <span class="stage-need">The price at your maintenance dose, 3-month plans, a named pharmacy and reliable refills — no lock-in.</span>
+      <span class="stage-go">Maintenance-dose cost {icon('arrow', size=14)}</span></a>
+    <a class="stage-card" href="/guides/what-happens-when-you-stop-glp1">
+      <span class="stage-ico">{icon('pill', size=22)}</span>
+      <b>I stopped and want to restart</b>
+      <span class="stage-need">A low starting dose, no judgment, and a price you can keep paying this time.</span>
+      <span class="stage-go">Restarting GLP-1s {icon('arrow', size=14)}</span></a>
+  </div>
+</div></section>
 
 <section class="section" id="compare"><div class="wrap">
   <div class="sec-head-row">
     <div><span class="eyebrow-2">The comparison</span>
-      <h2>Every program, real starting price first</h2></div>
+      <h2>Ranked by what you'll really pay per month</h2></div>
     <div class="cmp-sort"><span>Sort</span>
-      <button data-sort="price-asc" class="on">Price ↑</button>
-      <button data-sort="price-desc">Price ↓</button>
-      <button data-sort="rating">Rating</button></div>
+      <button data-sort="price-asc" class="on">Real price ↑</button>
+      <button data-sort="price-desc">Real price ↓</button>
+      <button data-sort="rating">Our score</button></div>
   </div>
-  <p class="lead" style="max-width:720px">Sorted by lowest starting price. Each price shows the condition that unlocks it — membership, prepay, intro rate or dose. Filter to narrow the field; tap a program for the full breakdown and source.</p>
+  <p class="lead" style="max-width:740px">The big number is the <strong>maintenance price</strong> — what you pay at the dose you stay on. The intro rate is shown underneath, because the "$39 first month" is the #1 cause of overcharged complaints. Filter to narrow the field; tap a program for the full breakdown and source.</p>
   <div class="cmp-filters" id="cmpFilters">
     <button data-filter="all" class="on">All <em>{N}</em></button>
-    <button data-filter="under100">Under $100 <em>{n_u100}</em></button>
-    <button data-filter="mid">$100–$199 <em>{n_mid}</em></button>
-    <button data-filter="premium">$200+ <em>{n_prem}</em></button>
-    <button data-filter="branded">Branded <em>{n_branded}</em></button>
-    <button data-filter="video">Video visits <em>{sum(1 for s in PROVIDER_ORDER if 'video' in PDATA[s]['visit'].lower())}</em></button>
+    <button data-filter="fda">FDA-approved <em>{n_fda}</em></button>
+    <button data-filter="compounded">Compounded <em>{n_compounded}</em></button>
+    <button data-filter="nomembership">No membership <em>{n_nomember}</em></button>
+    <button data-filter="u200">Under $200/mo <em>{n_u200}</em></button>
+    <button data-filter="video">Reaches a human (video) <em>{n_video}</em></button>
   </div>
   <div class="ctable">
-    <div class="ctrow ct-header"><div>Program</div><div>Real starting price</div><div>Medications &amp; visit</div><div>Our rating</div><div></div></div>
+    <div class="ctrow ct-header"><div>Program</div><div>What you'll really pay</div><div>Medication &amp; visit</div><div>Our score</div><div></div></div>
     <div id="ctable">{ctrows}</div>
   </div>
-  <p class="price-foot">{icon('badge', size=15)} <span>{PRICE_FOOTNOTE}</span></p>
+  <p class="price-foot">{icon('badge', size=15)} <span>Maintenance prices are what buyers typically pay at the dose they stay on, drawn from each provider's sourced pricing (see its review) and our Oct 2026 analysis of 88 price reports. Compounded GLP-1s aren't FDA-approved, insurance rarely covers them, and prices change monthly — always confirm the current number at the provider before you buy.</span></p>
   <div class="disclosure-note">{icon('badge', size=16)} <span>Some "See pricing" buttons are affiliate links — we may earn a commission when you choose a provider through them. This never affects our scoring or ranking. <a href="/disclosure">How this works</a>.</span></div>
 </div></section>
+
+<section class="section section-soft" id="truecost"><div class="wrap">
+  <div style="max-width:720px">
+    <span class="eyebrow-2">The true cost</span>
+    <h2 style="margin:6px 0 10px">What you'll pay: month 1 vs month 4 vs year one</h2>
+    <p class="lead">The headline price is almost never the price you keep paying. Here's the pattern to plan for — and the trap to avoid.</p>
+  </div>
+  <div class="truecost-grid">
+    <div class="tc-step"><span class="tc-n">Month 1</span><b>The teaser</b>
+      <p>Intro rates like "$39 first month" or "$79 to start" get you in the door. Real, but temporary.</p></div>
+    <div class="tc-step"><span class="tc-n">Month 4</span><b>The real rate</b>
+      <p>By your maintenance dose you're paying the ongoing price — often 2–5× the intro. Example: a program that starts at $39 can run ~$298/mo once membership + medication kick in.</p></div>
+    <div class="tc-step"><span class="tc-n">Year one</span><b>The number that matters</b>
+      <p>Multiply the maintenance price by 12 and add any prepay. That total — not the first month — is what decides value. Our table leads with it.</p></div>
+  </div>
+</div></section>
+
+<section class="section" id="legit"><div class="wrap"><div class="legit-wrap">
+  <div class="legit-intro">
+    <span class="eyebrow-2">Safety &amp; legitimacy</span>
+    <h2 style="margin:6px 0 10px">Is this provider legit? 5 checks before you pay</h2>
+    <p class="lead">The FDA sent warning letters to 55+ telehealth firms in 2026. Run any program past these five before you hand over a card — experienced buyers do.</p>
+    <a class="btn btn-ghost" href="/guides/how-to-spot-a-legit-online-clinic">Read the full checklist →</a>
+  </div>
+  <ol class="legit-list">
+    <li><span class="legit-k">{icon('shield', size=18)} Licensed in your state</span><span>A clinician must be licensed where you live to prescribe to you. Check your state is served.</span></li>
+    <li><span class="legit-k">{icon('badge', size=18)} Named pharmacy &amp; type</span><span>It should name its pharmacy. 503A compounds per-patient; 503B makes larger batches under tighter FDA oversight. "We won't say" is a flag.</span></li>
+    <li><span class="legit-k">{icon('clipboard', size=18)} A real clinician signs off</span><span>A licensed clinician — ideally named — should review your intake. Same-day form approval with no human is the weak spot.</span></li>
+    <li><span class="legit-k">{icon('clock', size=18)} You can cancel online</span><span>No phone-tree hostage situations. If you can't find how to cancel before paying, assume it's hard on purpose.</span></li>
+    <li><span class="legit-k">{icon('dollar', size=18)} Refunds in writing</span><span>Prepaid a bundle? Know the refund terms if a refill is late or the drug doesn't suit you. 30% of complaints are about being trapped.</span></li>
+  </ol>
+</div></div></section>
 
 <section class="section section-soft"><div class="wrap">
   <span class="eyebrow-2">Editors' picks</span>
@@ -1670,22 +1810,11 @@ def render_home():
   <p class="cmp-foot muted" style="margin-top:18px">Browse all <a href="/comparisons">head-to-head comparisons →</a></p>
 </div></section>
 
-<section class="section"><div class="wrap"><div class="method2">
-  <div class="method2-intro">
-    <span class="eyebrow-2">Methodology</span>
-    <h2 style="margin-top:6px">How we rate — and why price isn't everything</h2>
-    <p class="lead">Each program gets a 0–10 on four factors, scored from the sourced data. The overall is the weighted average. We weight trust and support above the raw sticker price.</p>
-    <a class="btn btn-ghost" href="/methodology">Read the full methodology →</a>
-  </div>
-  <table class="method2-table"><thead><tr><th>Factor</th><th>Weight</th><th>What we evaluate</th></tr></thead>
-    <tbody>{rubric_rows}</tbody></table>
-</div></div></section>
-
-<section class="section section-soft"><div class="wrap"><div class="framework-grid">
+<section class="section"><div class="wrap"><div class="framework-grid">
   <div class="fw-intro">
     <span class="eyebrow-2">Decision guide</span>
-    <h2 style="margin-top:6px">How to choose your GLP-1 provider</h2>
-    <p class="lead">Five questions, in order. Work through them and you'll narrow {N} programs down to two or three. This is provider-selection guidance — not medical advice.</p>
+    <h2 style="margin-top:6px">Five questions before you choose</h2>
+    <p class="lead">Work through these in order and you'll narrow {N} programs to two or three — built from what buyers tell us actually goes wrong. Provider-selection guidance, not medical advice.</p>
     <div class="skip-card"><span class="eyebrow-2">Skip the guide</span>
       <p>Jump straight to the ranked comparison of all {N} programs.</p>
       <a class="btn btn-primary" href="#compare">See the comparison →</a></div>
@@ -1693,8 +1822,19 @@ def render_home():
   <div class="fw-acc">{fw_html}</div>
 </div></div></section>
 
+<section class="section section-soft"><div class="wrap"><div class="method2">
+  <div class="method2-intro">
+    <span class="eyebrow-2">Methodology</span>
+    <h2 style="margin-top:6px">How we rate — and why stars mislead</h2>
+    <p class="lead">Each program gets a 0–10 on four factors from the sourced data; the overall is the weighted average. We weight trust and support above the sticker price — and we don't rank on raw Trustpilot stars, because invited reviews run up to 2.7 stars higher than unprompted ones.</p>
+    <a class="btn btn-ghost" href="/methodology">Read the full methodology →</a>
+  </div>
+  <table class="method2-table"><thead><tr><th>Factor</th><th>Weight</th><th>What we evaluate</th></tr></thead>
+    <tbody>{rubric_rows}</tbody></table>
+</div></div></section>
+
 <section class="section"><div class="wrap"><div class="watch2">
-  <div class="watch2-copy"><b>{icon('clock', size=16)} Prices change often.</b> Get one short email when a program we track changes its pricing, states or medications. A research utility, not a newsletter.</div>
+  <div class="watch2-copy"><b>{icon('clock', size=16)} Prices change monthly.</b> Get one short email when a program we track changes its price, states or medications. A research utility, not a newsletter.</div>
   <form class="watch2-form" onsubmit="return wlrWatch(this)">
     <input type="email" name="email" required placeholder="you@email.com" aria-label="Email">
     <button class="btn btn-primary btn-sm" type="submit">Notify me</button>
