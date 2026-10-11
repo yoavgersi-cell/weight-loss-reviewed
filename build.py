@@ -959,77 +959,11 @@ VERSUS = [
     },
 ]
 
-# --------------------------------------------------------------------------
-# Auto-generate the remaining head-to-head pages so every provider pairing
-# has a comparison. render_versus() builds all prose from the real PDATA
-# (prices, meds, visit type, the four scored factors), so a generated entry
-# only needs a/b plus a data-grounded "choose X if…" line for each side.
-# This captures the long tail of "<brand> vs <brand>" search demand.
-# --------------------------------------------------------------------------
-def _vs_has_branded(slug):
-    m = PDATA[slug]["meds"].lower()
-    return any(w in m for w in ("branded", "wegovy", "zepbound", "ozempic"))
-
-def _vs_is_live(slug):
-    v = PDATA[slug]["visit"].lower()
-    return ("video" in v) or ("consult" in v)
-
-def _vs_is_oral(slug):
-    f = PDATA[slug]["form"].lower()
-    return any(w in f for w in ("oral", "pill", "drops", "lozenge", "sublingual"))
-
-def _vs_pick_reasons(x, y):
-    """Ordered list of (category, phrase) for why someone picks x over y — each
-    grounded in a real difference in the data. Strongest differentiator first."""
-    dx, dy = PDATA[x], PDATA[y]
-    sx, sy = dx["scores"], dy["scores"]
-    out = []
-    if dx["price"] < dy["price"]:
-        out.append(("price", f"you want the lower entry price — ${dx['price']}{dx['unit']} vs ${dy['price']}{dy['unit']}"))
-    if _vs_has_branded(x) and not _vs_has_branded(y):
-        out.append(("branded", "you'd rather use FDA-approved branded medication (Wegovy, Zepbound) than compounded-only"))
-    if sx["Support"] - sy["Support"] >= 0.4:
-        out.append(("support", "you want stronger clinical support — more clinician time, coaching and follow-up"))
-    if _vs_is_live(x) and not _vs_is_live(y):
-        out.append(("visit", "you'd prefer live video access to a clinician rather than an async-only questionnaire"))
-    if sx["Medications"] - sy["Medications"] >= 0.4:
-        out.append(("meds", "you want the broadest medication menu and the flexibility to switch or adjust dose"))
-    if sx["Transparency"] - sy["Transparency"] >= 0.5:
-        out.append(("transparency", "clearly posted, no-surprises pricing matters most to you"))
-    if _vs_is_oral(x) and not _vs_is_oral(y):
-        out.append(("form", "you want an oral or needle-free option, not just weekly injections"))
-    if sx["Value"] - sy["Value"] >= 0.4:
-        out.append(("value", "you want the strongest value for the money on our rubric"))
-    return out
-
-def _vs_choose(x, y, avoid_cat):
-    for cat, phrase in _vs_pick_reasons(x, y):
-        if cat != avoid_cat:
-            # phrase begins lowercase ("you want…"); present as "You want…"
-            return cat, phrase[0].upper() + phrase[1:]
-    return None, None
-
-_existing_pairs = {frozenset((v["a"], v["b"])) for v in VERSUS}
-_rank = {s: i for i, s in enumerate(PROVIDER_ORDER)}
-_auto = []
-for _i in range(len(PROVIDER_ORDER)):
-    for _j in range(_i + 1, len(PROVIDER_ORDER)):
-        _x, _y = PROVIDER_ORDER[_i], PROVIDER_ORDER[_j]  # _x outranks _y
-        if frozenset((_x, _y)) in _existing_pairs:
-            continue
-        _cat_a, _pick_a = _vs_choose(_x, _y, avoid_cat=None)
-        _cat_b, _pick_b = _vs_choose(_y, _x, avoid_cat=_cat_a)
-        # Fallbacks so both sides always read cleanly.
-        if not _pick_a:
-            _pick_a = f"You want our higher-rated pick of the two ({PROVIDERS[_x]['name']}, {score_overall(_x)}/10)."
-        elif not _pick_a.endswith("."):
-            _pick_a += "."
-        if not _pick_b:
-            _pick_b = f"You prefer {PROVIDERS[_y]['name']} — {PDATA[_y]['tagline'].rstrip('.').lower()}."
-        elif not _pick_b.endswith("."):
-            _pick_b += "."
-        _auto.append({"a": _x, "b": _y, "pick_a": _pick_a, "pick_b": _pick_b})
-VERSUS.extend(_auto)
+# NOTE: We deliberately publish ONLY the hand-picked matchups above (the
+# pairings with real search demand), NOT every pairwise combination. Mass
+# programmatically-generated comparison pages read as thin/duplicate content
+# to search engines on a young domain — the opposite of what we want. Removed
+# auto-generated pairs are 301-redirected to /comparisons (see vercel.json).
 
 # --------------------------------------------------------------------------
 # Articles (long-tail). Bodies are HTML fragments; keep them original + useful.
@@ -2122,6 +2056,14 @@ def render_review(slug):
         f'<span class="vs-link-names">{PROVIDERS[v["a"]]["name"]} <em>vs</em> {PROVIDERS[v["b"]]["name"]}</span>{icon("arrow", size=16)}</span>'
         f'<span class="vs-link-meta">${PDATA[v["a"]]["price"]}{PDATA[v["a"]]["unit"]} vs ${PDATA[v["b"]]["price"]}{PDATA[v["b"]]["unit"]} · see who wins</span></a>'
         for v in related)
+    if related:
+        vs_section = (f'<h2>{n} vs the alternatives</h2>'
+                      f'<p>Not sure {n} is the one? See how it stacks up head-to-head:</p>'
+                      f'<div class="vs-grid rev-vsgrid">{rel_cards}</div>')
+    else:
+        vs_section = (f'<h2>How {n} compares</h2>'
+                      f'<p>See {n} ranked against every program on real price and score in our '
+                      f'<a href="/">full comparison</a>, or browse all <a href="/comparisons">head-to-head matchups</a>.</p>')
 
     reviews_html = render_user_reviews(slug)
     ur_navlink = '<a href="#reviews">User reviews</a>' if reviews_html else ""
@@ -2201,9 +2143,7 @@ def render_review(slug):
     <h2 id="faq">{n} FAQ</h2>
     <div class="faq" style="margin-top:16px">{provider_faq(slug)}</div>
 
-    <h2>{n} vs the alternatives</h2>
-    <p>Not sure {n} is the one? See how it stacks up head-to-head against every other program we've reviewed:</p>
-    <div class="vs-grid rev-vsgrid">{rel_cards}</div>
+    {vs_section}
 
     <div class="rev-cta">
       <div><h3>Ready to look at {n}?</h3><p>Check current pricing and plans — it only takes a minute.</p></div>
@@ -2483,14 +2423,14 @@ def render_alternatives(target):
 # matched order-independently against VERSUS; any that don't exist are skipped.
 ARTICLE_VERSUS = {
     "glp1-weight-loss-programs-compared": [("embody", "ro"), ("embody", "altrx"), ("ro", "found")],
-    "compounded-semaglutide-cost":        [("wellmedr", "altrx"), ("altrx", "trimrx"), ("embody", "altrx")],
+    "compounded-semaglutide-cost":        [("altrx", "trimrx"), ("embody", "altrx"), ("ro", "altrx")],
     "do-you-need-a-prescription-online":  [("embody", "ro"), ("ro", "found"), ("altrx", "trimrx")],
     "tirzepatide-vs-semaglutide":         [("embody", "trimrx"), ("altrx", "trimrx"), ("found", "trimrx")],
     "what-happens-when-you-stop-glp1":    [("embody", "ro"), ("ro", "found"), ("embody", "found")],
     "how-to-spot-a-legit-online-clinic":  [("embody", "ro"), ("ro", "altrx"), ("ro", "found")],
-    "what-will-i-really-pay-glp1":         [("ro", "wellmedr"), ("embody", "ro"), ("altrx", "trimrx")],
+    "what-will-i-really-pay-glp1":         [("embody", "ro"), ("altrx", "trimrx"), ("ro", "medvi")],
     "compounded-vs-brand-vs-pills":        [("ro", "altrx"), ("found", "altrx"), ("embody", "ro")],
-    "before-you-prepay-glp1":              [("trimrx", "medvi"), ("medvi", "wellmedr"), ("altrx", "trimrx")],
+    "before-you-prepay-glp1":              [("altrx", "trimrx"), ("found", "trimrx"), ("ro", "medvi")],
     "new-to-glp1-first-4-weeks":           [("embody", "ro"), ("ro", "found"), ("embody", "found")],
 }
 _VS_BY_PAIR = {frozenset((v["a"], v["b"])): v for v in VERSUS}
