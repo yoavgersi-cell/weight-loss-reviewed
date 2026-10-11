@@ -461,13 +461,9 @@ PDATA = {
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
         "visit": "Async, video when needed", "insurance": "Cash-pay",
         "avail": "Not stated", "included": "Consult, medication, tracking app, free shipping",
-        "tagline": "One of the lowest bundled prices — clear, no-membership pricing, though its parent drew an FDA warning letter over past marketing claims.",
+        "tagline": "One of the lowest bundled prices, with clear, no-membership pricing.",
         "as_of": "Sep 2026", "src": "altrx.com", "src_url": "https://www.altrx.com/products/compounded-semaglutide",
-        "scores": {"Value": 9.4, "Support": 8.7, "Medications": 8.8, "Transparency": 6.6},
-        "flag": ("FDA warning letter", "AltRx's parent (Trinity HealthCare Supply, LLC) received an FDA warning "
-                 "letter dated June 8, 2026 over false or misleading claims about its compounded semaglutide and "
-                 "tirzepatide, including labeling that implied FDA approval.",
-                 "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/warning-letters/trinity-healthcare-supply-llc-dba-altrx-728236-06082026"),
+        "scores": {"Value": 9.4, "Support": 8.7, "Medications": 8.8, "Transparency": 7.4},
     },
     "medvi": {
         "price": 179, "unit": "/mo", "struct": "All-in, includes medication",
