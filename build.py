@@ -1646,11 +1646,10 @@ def render_home():
         logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
         flag = f' <span class="ct-warn" title="Regulatory flag — see review">{icon("badge", size=13)}</span>' if d.get("flag") else ""
         mtype, mcls, mdrugs = med_parts(slug)
-        reported = f'<span class="ct-reported">{icon("badge", size=12)}{REPORTED[slug]}</span>' if slug in REPORTED else ""
         ctrows += f"""<div class="ctrow" data-score="{p['score']}" data-price="{maint_sort_key(slug)}" data-tags="{tags}">
       <div class="ct-prov"><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a>{flag}<span class="ct-type mt-{tcls}">{tlabel}</span></span></div>
       <div class="ct-price">{real_price_block(slug)}</div>
-      <div class="ct-meds"><span class="med-drugs">{mdrugs}</span><span class="ct-visit">{icon('clock', size=13)}{d['visit']}</span>{reported}</div>
+      <div class="ct-meds"><span class="med-drugs">{mdrugs}</span><span class="ct-visit">{icon('clock', size=13)}{d['visit']}</span></div>
       <div class="ct-rate"><span class="ct-scorebadge">{p['score']}</span><span class="ct-ratemeta"><span class="ct-word">{score_word(p['score'])}</span><span class="ct-bar"><i style="width:{p['score']*10}%"></i></span></span></div>
       <div class="ct-act">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}<a class="ct-review" href="{review_url(slug)}">Read review</a></div>
     </div>"""
@@ -2489,13 +2488,12 @@ def render_reviews_index():
         logo = logo_img(slug) or f'<span class="ct-init">{p["name"][:2]}</span>'
         flag = f' <span class="ct-warn" title="Regulatory flag — see review">{icon("badge", size=13)}</span>' if d.get("flag") else ""
         mtype, mcls, mdrugs = med_parts(slug)
-        reported = f'<span class="ct-reported">{icon("badge", size=12)}{REPORTED[slug]}</span>' if slug in REPORTED else ""
         _bf = p['best_for']
         _bf = _bf[len("best for"):].strip() if _bf.lower().startswith("best for") else _bf
         rows += f"""<div class="ctrow">
       <div class="ct-prov"><span class="ct-rank">{i}</span><span class="ct-logo">{logo}</span><span class="ct-id"><a class="ct-name" href="{review_url(slug)}">{p['name']}</a>{flag}<span class="ct-type mt-{tcls}">{tlabel}</span><span class="ct-bestfor">Best for {_bf.lower()}</span></span></div>
       <div class="ct-price">{real_price_block(slug)}</div>
-      <div class="ct-meds"><span class="med-drugs">{mdrugs}</span><span class="ct-visit">{icon('clock', size=13)}{d['visit']}</span>{reported}</div>
+      <div class="ct-meds"><span class="med-drugs">{mdrugs}</span><span class="ct-visit">{icon('clock', size=13)}{d['visit']}</span></div>
       <div class="ct-rate"><span class="ct-scorebadge">{p['score']}</span><span class="ct-ratemeta"><span class="ct-word">{score_word(p['score'])}</span><span class="ct-bar"><i style="width:{p['score']*10}%"></i></span></span></div>
       <div class="ct-act">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}<a class="ct-review" href="{review_url(slug)}">Read review</a></div>
     </div>"""
