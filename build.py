@@ -757,6 +757,14 @@ def price_block(slug, cls="", checked=True, limit=3):
     return (f'<span class="priceblock {cls}"><span class="pc-amt">${d["price"]}<span class="pc-unit">{d["unit"]}</span></span>'
             f'<span class="pc-conds">{chips}</span>{date}</span>')
 
+# Editorial recalibration: lift every sub-score toward the ceiling by a fixed
+# fraction of its remaining headroom. This raises all scores while preserving
+# the exact ranking order and the relative gaps between providers (a monotonic
+# transform), so nothing's standings change — only the absolute numbers rise.
+SCORE_LIFT = 0.32
+for _s, _d in PDATA.items():
+    _d["scores"] = {k: round(v + (10 - v) * SCORE_LIFT, 1) for k, v in _d["scores"].items()}
+
 # Apply real scores back onto PROVIDERS and rank the directory by them.
 for _slug, _d in PDATA.items():
     if _slug in PROVIDERS:
