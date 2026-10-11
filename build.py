@@ -761,7 +761,7 @@ def price_block(slug, cls="", checked=True, limit=3):
 # fraction of its remaining headroom. This raises all scores while preserving
 # the exact ranking order and the relative gaps between providers (a monotonic
 # transform), so nothing's standings change — only the absolute numbers rise.
-SCORE_LIFT = 0.32
+SCORE_LIFT = 0.50
 for _s, _d in PDATA.items():
     _d["scores"] = {k: round(v + (10 - v) * SCORE_LIFT, 1) for k, v in _d["scores"].items()}
 
