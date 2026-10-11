@@ -1520,7 +1520,7 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Lora:ital,wght@1,500;1,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="/assets/style.css?v={ASSET_VER}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Ctext x='16' y='22' font-size='15' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EWR%3C/text%3E%3C/svg%3E">
 {ld}
@@ -1743,41 +1743,6 @@ def render_home():
       <div class="t3b-cta">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}<a class="btn btn-ghost btn-sm" href="{review_url(slug)}">Read review</a></div>
     </article>"""
 
-    # ---- the rest (expandable rows) ----
-    rest = ""
-    for slug in PROVIDER_ORDER[3:]:
-        p, d = PROVIDERS[slug], PDATA[slug]
-        pros = "".join(f"<li>{x}</li>" for x in p["pros"])
-        cons = "".join(f"<li>{x}</li>" for x in p["cons"])
-        _m = MAINT.get(slug)
-        _real = f"${_m}/mo" if _m else f"from ${d['price']}{d['unit']}"
-        specs = "".join(f'<div><span>{k}</span><b>{v}</b></div>' for k, v in [
-            ("Real price", f"{_real} · intro from ${d['price']}{d['unit']}"),
-            ("Medications", d["meds"]), ("Visit type", d["visit"]),
-            ("Insurance", d["insurance"]), ("Availability", d["avail"])])
-        _watch = f'<p class="rr-reported">{icon("badge", size=13)} {REPORTED[slug]}</p>' if slug in REPORTED else ""
-        rest += f"""<div class="restrow">
-      <button class="restrow-top" aria-expanded="false" onclick="wlrToggle(this)">
-        <span class="rr-score">{p['score']}</span>
-        <span class="rr-main"><span class="rr-name">{p['name']}</span><span class="rr-tag">{d['tagline']}</span></span>
-        <span class="rr-col"><em>Real price / mo</em>{_real}</span>
-        <span class="rr-col rr-meds"><em>Medications</em>{d['meds']}</span>
-        <span class="rr-chev">{icon('arrow', size=18)}</span>
-      </button>
-      <div class="restrow-body" hidden>
-        <p>{p['summary']}</p>
-        <div class="t3tiles rr-specs">{specs}</div>
-        <p class="rr-pricenote muted">{d['price_note']}. <em>As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>.</em></p>
-        {_watch}
-        <div class="proscons">
-          <div class="box pros"><h4>Pros</h4><ul class="pros">{pros}</ul></div>
-          <div class="box cons"><h4>Watchouts</h4><ul class="cons">{cons}</ul></div>
-        </div>
-        <p style="margin:0;display:flex;gap:10px;flex-wrap:wrap">{cta(slug, label='See pricing', cls='btn btn-primary btn-sm')}
-          <a class="btn btn-ghost btn-sm" href="{review_url(slug)}">Read full review</a></p>
-      </div>
-    </div>"""
-
     # ---- methodology as a transparent research table ----
     rubric_rows = "".join(
         f'<tr><td class="rt-factor">{k}</td><td class="rt-weight">{int(w*100)}%</td><td class="rt-what">{RUBRIC[k]}</td></tr>'
@@ -1955,17 +1920,13 @@ def render_home():
 
 <section class="section section-soft"><div class="wrap">
   <span class="eyebrow-2">Editors' picks</span>
-  <h2 style="margin-top:6px">Three programs worth a closer look</h2>
-  <p class="lead" style="max-width:720px">Not "the winners" — the three that best fit distinct needs, each with the trade-off we'd want a friend to know before signing up.</p>
+  <h2 style="margin-top:6px">Three worth a closer look</h2>
+  <p class="lead" style="max-width:680px">Not "the winners" — the three that best fit distinct needs, each with the trade-off we'd flag to a friend.</p>
   <div class="top3b">{t3}</div>
+  <p class="cmp-foot muted" style="margin-top:16px">See all {N} ranked in the <a href="#compare">comparison above</a> or on the <a href="/reviews">reviews page</a>.</p>
 </div></section>
 
 <section class="section"><div class="wrap">
-  <div class="rest-head"><span class="eyebrow-2">The rest</span><span class="muted">{N-3} more programs, ranked</span></div>
-  <div class="restlist">{rest}</div>
-</div></section>
-
-<section class="section section-soft"><div class="wrap">
   <span class="eyebrow-2">Head-to-head</span>
   <h2 style="margin-top:6px">Compare two programs directly</h2>
   <p class="lead" style="max-width:720px">Real price against real price, plus the one difference that usually decides it. Each comparison weighs the trade-offs in full.</p>
