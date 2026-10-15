@@ -9,7 +9,7 @@ Content model is data-first: edit the dicts below (PROVIDERS, VERSUS, ARTICLES)
 and re-run. Every provider's outbound CTA comes from AFFILIATE_LINKS — swap the
 "#" placeholders for your real affiliate/tracking URLs and rebuild.
 """
-import os, re, html, datetime, shutil
+import os, re, html, datetime, shutil, json
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1449,6 +1449,8 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <title>{html.escape(title)}</title>
 <meta name="description" content="{html.escape(description)}">
 <link rel="canonical" href="{canonical}">
+<link rel="alternate" hreflang="en-us" href="{canonical}">
+<link rel="alternate" hreflang="x-default" href="{canonical}">
 <meta property="og:type" content="{og_type}">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(description)}">
@@ -1482,25 +1484,71 @@ def crumbs(items):
 # --------------------------------------------------------------------------
 # JSON-LD builders
 # --------------------------------------------------------------------------
+def _ld(obj):
+    return json.dumps(obj, separators=(",", ":"), ensure_ascii=False)
+
 def ld_org():
-    return ('{"@context":"https://schema.org","@type":"Organization","name":"%s",'
-            '"url":"%s","description":"Editorial reviews and rankings of online weight-loss programs."}'
-            % (SITE["name"], SITE["domain"]))
+    return _ld({
+        "@context": "https://schema.org", "@type": "Organization",
+        "name": SITE["name"], "alternateName": "weightlossreviewed.com",
+        "url": SITE["domain"], "email": SITE["email"],
+        "description": "Independent editorial reviews and rankings of online GLP-1 weight-loss "
+                       "programs, scored on value, support, medications and transparency.",
+        "areaServed": {"@type": "Country", "name": "United States"},
+        "knowsAbout": ["GLP-1 weight-loss medication", "semaglutide", "tirzepatide",
+                       "compounded GLP-1", "online weight-loss programs", "telehealth"],
+    })
 
 def ld_website():
     # Helps Google/social show the site name as "Weight Loss Reviewed".
-    return ('{"@context":"https://schema.org","@type":"WebSite","name":"%s",'
-            '"alternateName":"weightlossreviewed.com","url":"%s"}'
-            % (SITE["name"], SITE["domain"]))
+    return _ld({
+        "@context": "https://schema.org", "@type": "WebSite", "name": SITE["name"],
+        "alternateName": "weightlossreviewed.com", "url": SITE["domain"],
+        "inLanguage": "en-US",
+        "publisher": {"@type": "Organization", "name": SITE["name"], "url": SITE["domain"]},
+    })
 
 def ld_product(p, slug):
-    return ('{"@context":"https://schema.org","@type":"Product","name":"%s",'
-            '"description":"%s","review":{"@type":"Review",'
-            '"datePublished":"%s","dateModified":"%s",'
-            '"reviewRating":{"@type":"Rating","ratingValue":"%s","bestRating":"10"},'
-            '"author":{"@type":"Organization","name":"%s"}}}'
-            % (p["name"], p["summary"].replace('"', "'"),
-               TODAY.isoformat(), TODAY.isoformat(), p["score"], SITE["name"]))
+    d = PDATA[slug]
+    price = MAINT.get(slug) or d["price"]
+    return _ld({
+        "@context": "https://schema.org", "@type": "Product", "name": p["name"],
+        "description": p["summary"],
+        "brand": {"@type": "Brand", "name": p["name"]},
+        "category": "Online weight-loss program",
+        "offers": {
+            "@type": "Offer", "priceCurrency": "USD", "price": str(price),
+            "url": SITE["domain"] + review_url(slug), "availability": "https://schema.org/InStock",
+            "description": f"Typical real cost about ${price}/mo at a maintenance dose; "
+                           f"from ${d['price']}{d['unit']} to start.",
+        },
+        "review": {
+            "@type": "Review", "datePublished": TODAY.isoformat(), "dateModified": TODAY.isoformat(),
+            "reviewBody": p["summary"],
+            "reviewRating": {"@type": "Rating", "ratingValue": str(p["score"]), "bestRating": "10", "worstRating": "0"},
+            "author": {"@type": "Organization", "name": SITE["name"], "url": SITE["domain"]},
+        },
+        "publisher": {"@type": "Organization", "name": SITE["name"], "url": SITE["domain"]},
+    })
+
+def ld_itemlist(name="Best online GLP-1 weight-loss programs, ranked"):
+    return _ld({
+        "@context": "https://schema.org", "@type": "ItemList", "name": name,
+        "numberOfItems": len(PROVIDER_ORDER), "itemListOrder": "https://schema.org/ItemListOrderDescending",
+        "itemListElement": [
+            {"@type": "ListItem", "position": i, "url": SITE["domain"] + review_url(s),
+             "name": f"{PROVIDERS[s]['name']} — {PROVIDERS[s]['score']}/10"}
+            for i, s in enumerate(PROVIDER_ORDER, 1)],
+    })
+
+def ld_breadcrumb(crumbs):
+    el = []
+    for i, (name, path) in enumerate(crumbs, 1):
+        item = {"@type": "ListItem", "position": i, "name": name}
+        if path:
+            item["item"] = SITE["domain"] + path
+        el.append(item)
+    return _ld({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": el})
 
 def ld_article(a):
     return ('{"@context":"https://schema.org","@type":"Article","headline":"%s",'
@@ -1517,7 +1565,7 @@ FAQ = [
     ("Who qualifies for a GLP-1 weight-loss medication?",
      "Eligibility is a clinical decision, but these medications are generally considered for adults with a higher body-mass index, or a slightly lower BMI alongside a weight-related condition. A licensed clinician weighs your full health history, current medications and any contraindications. No legitimate program can promise a prescription before that review."),
     ("How much do these programs cost?",
-     "It varies widely by provider, medication (branded vs compounded), and your dose. Rather than publish prices that go stale within weeks, we show a relative tier ($–$$$) and link you to each provider's current offer. When comparing, always look at the total monthly cost at your expected maintenance dose — not just the intro price."),
+     "It varies by provider, medication (branded vs compounded) and your dose. Typical real cost is roughly $138/mo for compounded GLP-1s and about $335/mo for branded Wegovy or Zepbound without insurance. We show each program's real monthly price at a maintenance dose — not just the intro teaser — because the '$39 first month' is the single biggest cause of overcharged complaints. Always compare the price at your expected maintenance dose, and confirm the current number at checkout."),
     ("Is it safe to get weight-loss medication online?",
      "It can be, when there is a genuine clinical evaluation by a licensed prescriber, clear medication and pharmacy information, and a real way to reach someone about side effects. Be wary of any service that ‘guarantees’ a prescription with no meaningful review. Every program we rank is scored partly on exactly these safety signals."),
     ("Semaglutide or tirzepatide — which is better?",
@@ -1911,7 +1959,7 @@ def render_home():
     return base_page(
         f"Online GLP-1 Weight-Loss Providers Compared — Real 2026 Prices | {SITE['name']}",
         f"Real 2026 starting prices, medications and visit types for {len(PROVIDER_ORDER)} online GLP-1 weight-loss providers (semaglutide & tirzepatide), independently scored. Every figure sourced.",
-        "/", body, active="/", jsonld=[ld_website(), ld_org(), ld_faq()])
+        "/", body, active="/", jsonld=[ld_website(), ld_org(), ld_faq(), ld_itemlist()])
 
 
 # --------------------------------------------------------------------------
@@ -2161,7 +2209,8 @@ def render_review(slug):
     return base_page(
         f"{n} GLP-1 Review ({YEAR}): Real Cost & Honest Verdict | {SITE['name']}",
         f"An independent {n} review — the real monthly cost ({maint_headline(slug)[0]}, not just the ${d['price']}{d['unit']} intro), {d['meds'].lower()}, what buyers report, and an honest {p['score']}/10. Updated {UPDATED}.",
-        review_url(slug), body, active="/reviews", jsonld=ld_product(p, slug))
+        review_url(slug), body, active="/reviews",
+        jsonld=[ld_product(p, slug), ld_org(), ld_breadcrumb([("Home","/"),("Reviews","/reviews"),(n+" Review", review_url(slug))])])
 
 # --------------------------------------------------------------------------
 # Page: Versus / battle
@@ -2362,7 +2411,8 @@ def render_versus(v):
 """
     ttl = f"{An} vs {Bn} ({YEAR}): Cost &amp; Which Is Better | {SITE['name']}"
     desc = f"{An} (from ${da['price']}{da['unit']}) vs {Bn} (from ${db['price']}{db['unit']}) — real prices, medications, visit types and support compared, with a scored verdict."
-    return base_page(ttl, desc, versus_url(v), body, active="/comparisons", jsonld=ld_faq_custom(vfaq))
+    return base_page(ttl, desc, versus_url(v), body, active="/comparisons",
+                     jsonld=[ld_faq_custom(vfaq), ld_breadcrumb([("Home","/"),("Comparisons","/comparisons"),(f"{An} vs {Bn}", versus_url(v))])])
 
 # --------------------------------------------------------------------------
 # Page: Alternatives to <brand>
@@ -2416,7 +2466,8 @@ def render_alternatives(target):
 """
     ttl = f"{len(alts)} Best {Tn} Alternatives ({YEAR}) — Compared &amp; Ranked | {SITE['name']}"
     desc = f"Looking for a {Tn} alternative? We ranked the {len(alts)} best competitors on clinician support, medication access, value and transparency."
-    return base_page(ttl, desc, alt_url(target), body, active="/comparisons", jsonld=ld_org())
+    return base_page(ttl, desc, alt_url(target), body, active="/comparisons",
+                     jsonld=[ld_org(), ld_breadcrumb([("Home","/"),("Comparisons","/comparisons"),(f"{Tn} alternatives", alt_url(target))])])
 
 # --------------------------------------------------------------------------
 # Page: Article
@@ -2483,7 +2534,7 @@ def render_article(a):
 """
     return base_page(f"{a['title']} | {SITE['name']}", a["description"],
                      article_url(a), body, active="/guides",
-                     jsonld=ld_article(a), article_meta=True)
+                     jsonld=[ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])], article_meta=True)
 
 # --------------------------------------------------------------------------
 # Index pages
@@ -2527,7 +2578,8 @@ def render_reviews_index():
 """
     return base_page(f"Online Weight-Loss Program Reviews ({YEAR}) — Ranked | {SITE['name']}",
                      "Every major online GLP-1 program scored and ranked on value, support, medications and transparency, with the real monthly price and what buyers report.",
-                     "/reviews", body, active="/reviews", jsonld=ld_org())
+                     "/reviews", body, active="/reviews",
+                     jsonld=[ld_org(), ld_itemlist(), ld_breadcrumb([("Home","/"),("Reviews","/reviews")])])
 
 def render_versus_index():
     cards = ""
@@ -2570,7 +2622,8 @@ def render_versus_index():
 """
     return base_page(f"Weight-Loss Program Comparisons: Head-to-Head ({YEAR}) | {SITE['name']}",
                      "Every online GLP-1 program compared head-to-head — real price vs real price, independent scores, and a clear pick for each matchup.",
-                     "/comparisons", body, active="/comparisons", jsonld=ld_org())
+                     "/comparisons", body, active="/comparisons",
+                     jsonld=[ld_org(), ld_breadcrumb([("Home","/"),("Comparisons","/comparisons")])])
 
 def render_guides_index():
     rows = ""
@@ -2590,7 +2643,8 @@ def render_guides_index():
 """
     return base_page(f"Weight-Loss Guides & Answers ({YEAR}) | {SITE['name']}",
                      "Clear, practical guides on GLP-1 programs, costs, prescriptions and how to choose a legitimate online weight-loss clinic.",
-                     "/guides", body, active="/guides", jsonld=ld_org())
+                     "/guides", body, active="/guides",
+                     jsonld=[ld_org(), ld_breadcrumb([("Home","/"),("Guides","/guides")])])
 
 # --------------------------------------------------------------------------
 # Static pages
@@ -2699,7 +2753,53 @@ def build_sitemap(urls):
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + items + '</urlset>\n')
 
 def robots():
-    return (f"User-agent: *\nAllow: /\n\nSitemap: {SITE['domain']}/sitemap.xml\n")
+    # Explicitly welcome the major AI answer-engine crawlers (GEO): we WANT
+    # ChatGPT, Perplexity, Google AI, Claude, etc. to read and cite the site.
+    ai_bots = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "PerplexityBot", "Perplexity-User",
+               "ClaudeBot", "Claude-User", "Claude-SearchBot", "Google-Extended",
+               "Applebot-Extended", "CCBot", "Amazonbot", "Bytespider", "meta-externalagent"]
+    lines = ["User-agent: *", "Allow: /", ""]
+    for b in ai_bots:
+        lines += [f"User-agent: {b}", "Allow: /", ""]
+    lines += [f"Sitemap: {SITE['domain']}/sitemap.xml", ""]
+    return "\n".join(lines)
+
+def build_llms_txt(review_slugs, guide_slugs):
+    """llms.txt — an emerging GEO convention: a clean, factual map of the site
+    for AI answer engines, so they can summarise and cite us accurately."""
+    L = []
+    L.append(f"# {SITE['name']}")
+    L.append("")
+    L.append(f"> {SITE['tagline']} Independent, data-first comparison of online GLP-1 "
+             "(semaglutide & tirzepatide) weight-loss programs in the United States. "
+             "Every program is scored 0–10 on value, support, medications and transparency, "
+             "and we lead with the real monthly price at a maintenance dose — not the intro teaser. "
+             f"Prices verified {UPDATED}; confirm at the provider before buying. Not medical advice.")
+    L.append("")
+    L.append("## Key facts (Oct 2026)")
+    L.append("- Compounded GLP-1 is not FDA-approved; branded Wegovy/Zepbound are FDA-approved.")
+    L.append("- Typical compounded cost ≈ $138/mo; typical branded ≈ $335/mo without insurance.")
+    L.append("- Insurance rarely covers compounded GLP-1s; most buyers pay cash.")
+    L.append("- The advertised '$39 first month' is usually an intro rate; the maintenance price is higher.")
+    L.append("")
+    L.append("## Programs ranked (name — our score /10 — real price/mo)")
+    for i, s in enumerate(PROVIDER_ORDER, 1):
+        p, d = PROVIDERS[s], PDATA[s]
+        m = MAINT.get(s)
+        price = f"${m}/mo" if m else f"from ${d['price']}{d['unit']}"
+        tl = type_label(s)[0]
+        L.append(f"{i}. [{p['name']}]({SITE['domain']}{review_url(s)}) — {p['score']}/10 — {price} — {tl}")
+    L.append("")
+    L.append("## Guides")
+    for a in ARTICLES:
+        L.append(f"- [{a['title']}]({SITE['domain']}{article_url(a)}): {a['description']}")
+    L.append("")
+    L.append("## Methodology & disclosure")
+    L.append(f"- [How we rank]({SITE['domain']}/methodology): four weighted factors, scored from sourced data; "
+             "rankings are never bought.")
+    L.append(f"- [Disclosure]({SITE['domain']}/disclosure): affiliate-supported; commissions never change scores.")
+    L.append("")
+    return "\n".join(L)
 
 # --------------------------------------------------------------------------
 # Writer + main
@@ -2738,6 +2838,7 @@ def main():
     urls = [u for _, u in written]
     write("sitemap.xml", build_sitemap(urls))
     write("robots.txt", robots())
+    write("llms.txt", build_llms_txt([s for s in PROVIDER_ORDER], [a["slug"] for a in ARTICLES]))
     print(f"Built {len(written)} pages + sitemap + robots.")
     for _, u in written:
         print("  ", u)
