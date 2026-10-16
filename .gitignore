@@ -1,0 +1,6 @@
+# Python bytecode cache (created when seo_check.py imports build.py)
+__pycache__/
+*.pyc
+
+# Local dev artifacts
+.DS_Store
