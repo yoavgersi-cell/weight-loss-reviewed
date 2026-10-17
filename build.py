@@ -1539,13 +1539,60 @@ def ld_product(p, slug):
     })
 
 def ld_itemlist(name="Best online GLP-1 weight-loss programs, ranked"):
+    # Each item embeds the Product (real price via Offer + our editorial rating)
+    # so answer engines can lift the whole ranking as structured data, not just
+    # names. This is the single most-cited asset on the site.
+    els = []
+    for i, s in enumerate(PROVIDER_ORDER, 1):
+        p, d = PROVIDERS[s], PDATA[s]
+        price = MAINT.get(s) or d["price"]
+        els.append({
+            "@type": "ListItem", "position": i,
+            "item": {
+                "@type": "Product", "name": p["name"], "url": SITE["domain"] + review_url(s),
+                "description": p["best_for"],
+                "category": "Online weight-loss program",
+                "offers": {"@type": "Offer", "priceCurrency": "USD", "price": str(price),
+                           "url": SITE["domain"] + review_url(s), "availability": "https://schema.org/InStock"},
+                "review": {"@type": "Review",
+                           "reviewRating": {"@type": "Rating", "ratingValue": str(p["score"]),
+                                            "bestRating": "10", "worstRating": "0"},
+                           "author": {"@type": "Organization", "name": SITE["name"]}},
+            }})
     return _ld({
         "@context": "https://schema.org", "@type": "ItemList", "name": name,
+        "description": ("Online GLP-1 weight-loss programs ranked by our editorial score (value, support, "
+                        "medications, transparency). Price shown is the typical real monthly cost at a "
+                        f"maintenance dose, verified {UPDATED}."),
         "numberOfItems": len(PROVIDER_ORDER), "itemListOrder": "https://schema.org/ItemListOrderDescending",
-        "itemListElement": [
-            {"@type": "ListItem", "position": i, "url": SITE["domain"] + review_url(s),
-             "name": f"{PROVIDERS[s]['name']} — {PROVIDERS[s]['score']}/10"}
-            for i, s in enumerate(PROVIDER_ORDER, 1)],
+        "itemListElement": els,
+    })
+
+# Canonical entity grounding for the two GLP-1 drugs every page discusses, so
+# answer engines reliably link our content to the real drug entities. sameAs
+# point to authoritative, stable references.
+def ld_drug_entities():
+    drugs = [
+        {"name": "Semaglutide",
+         "alternateName": ["Wegovy", "Ozempic"],
+         "sameAs": ["https://en.wikipedia.org/wiki/Semaglutide",
+                    "https://www.drugbank.ca/drugs/DB13928",
+                    "https://medlineplus.gov/druginfo/meds/a618008.html"]},
+        {"name": "Tirzepatide",
+         "alternateName": ["Zepbound", "Mounjaro"],
+         "sameAs": ["https://en.wikipedia.org/wiki/Tirzepatide",
+                    "https://www.drugbank.ca/drugs/DB15171",
+                    "https://medlineplus.gov/druginfo/meds/a623035.html"]},
+    ]
+    return _ld([{"@context": "https://schema.org", "@type": "Drug", **dr} for dr in drugs])
+
+# A WebPage node carrying speakable selectors — flags the concise, quotable
+# parts of a page for voice assistants and generative engines.
+def ld_speakable(path, selectors):
+    return _ld({
+        "@context": "https://schema.org", "@type": "WebPage",
+        "url": SITE["domain"] + (path if path != "/" else "/"),
+        "speakable": {"@type": "SpeakableSpecification", "cssSelector": selectors},
     })
 
 def ld_breadcrumb(crumbs):
@@ -1658,6 +1705,10 @@ FAQ = [
      "Sometimes. Coverage for GLP-1 medications varies a lot by plan and by whether the drug is branded or compounded. Some programs help you check and navigate insurance; many members pay out of pocket, which is part of why compounded options are popular. Check current coverage with the provider and your insurer."),
     ("How is this different from seeing my own doctor?",
      "The medicine and the need for a prescription are the same — the difference is convenience and structure. Online programs handle the visit, prescription, pharmacy and follow-up in one place, often with coaching built in. If you have a complex medical history, a provider with deeper clinical oversight (or your own physician) may be the better route."),
+    ("What is the cheapest GLP-1 weight-loss program online?",
+     "Among the programs we track, the lowest real monthly cost at a maintenance dose is about $129/mo, for compounded-semaglutide programs such as embody, bmiMD and WellMedr; AltRx advertises an even lower start (from $89/mo) but doesn't publish a maintenance price, so confirm it before committing. Compounded GLP-1s are cheaper than branded Wegovy or Zepbound (which typically run $300+/mo without insurance) but are not FDA-approved. Watch the maintenance price, not the '$39 first month' intro, and confirm the current figure at the provider."),
+    ("Which online weight-loss program is the best?",
+     "There's no single best for everyone — it depends on whether you want branded or compounded medication, how much clinician and coaching support you need, and your budget. By our editorial score (value, support, medications and transparency), ro rates highest among the programs we review, with Found and embody close behind. Our ranked comparison shows the real price and medication type for each so you can match a program to your situation."),
 ]
 
 def ld_faq():
@@ -2041,7 +2092,9 @@ def render_home():
     return base_page(
         f"Online GLP-1 Weight-Loss Providers Compared — Real 2026 Prices | {SITE['name']}",
         f"Real 2026 starting prices, medications and visit types for {len(PROVIDER_ORDER)} online GLP-1 weight-loss providers (semaglutide & tirzepatide), independently scored. Every figure sourced.",
-        "/", body, active="/", jsonld=[ld_website(), ld_org(), ld_faq(), ld_itemlist()])
+        "/", body, active="/", jsonld=[ld_website(), ld_org(), ld_faq(), ld_itemlist(),
+                                       ld_drug_entities(),
+                                       ld_speakable("/", [".hero2-copy h1", ".hero2-copy .lede", ".hero-promises"])])
 
 
 # --------------------------------------------------------------------------
@@ -2449,7 +2502,9 @@ def render_review(slug):
         f"{n} GLP-1 Review ({YEAR}): Real Cost & Honest Verdict | {SITE['name']}",
         f"An independent {n} review — the real monthly cost ({maint_headline(slug)[0]}, not just the ${d['price']}{d['unit']} intro), {d['meds'].lower()}, what buyers report, and an honest {p['score']}/10. Updated {UPDATED}.",
         review_url(slug), body, active="/reviews",
-        jsonld=[ld_product(p, slug), ld_org(), ld_breadcrumb([("Home","/"),("Reviews","/reviews"),(n+" Review", review_url(slug))])])
+        jsonld=[ld_product(p, slug), ld_org(), ld_drug_entities(),
+                ld_speakable(review_url(slug), [".rv-rating", ".rv-bottomline", ".rv-priceline-main"]),
+                ld_breadcrumb([("Home","/"),("Reviews","/reviews"),(n+" Review", review_url(slug))])])
 
 # --------------------------------------------------------------------------
 # Page: Versus / battle
@@ -2773,13 +2828,55 @@ def render_article(a):
     See how the leading programs stack up in our <a href="/">ranked comparison</a>, or browse all <a href="/comparisons">head-to-head comparisons</a>.</p>
 </div>
 """
+    # Medication-focused guides get drug-entity grounding too.
+    DRUG_GUIDES = {"tirzepatide-vs-semaglutide", "compounded-vs-brand-vs-pills",
+                   "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared"}
+    jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
+    if a["slug"] in DRUG_GUIDES:
+        jl.append(ld_drug_entities())
     return base_page(f"{a['title']} | {SITE['name']}", a["description"],
-                     article_url(a), body, active="/guides",
-                     jsonld=[ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])], article_meta=True)
+                     article_url(a), body, active="/guides", jsonld=jl, article_meta=True)
 
 # --------------------------------------------------------------------------
 # Index pages
 # --------------------------------------------------------------------------
+def quick_answer_stats():
+    """Hard, honest numbers for the extractable 'quick answer' capsule, computed
+    from the live data so they can never drift from the table below."""
+    top = PROVIDER_ORDER[0]
+    known = [(s, MAINT[s]) for s in PROVIDER_ORDER if MAINT.get(s) is not None]
+    cheap_slug, cheap_price = min(known, key=lambda x: x[1])
+    fda = [s for s in PROVIDER_ORDER if has_branded(s)]
+    cheap_fda = min(((s, MAINT.get(s) or PDATA[s]["price"]) for s in fda), key=lambda x: x[1])
+    maint_vals = sorted(v for _, v in known)
+    mid = maint_vals[len(maint_vals)//2]
+    return {"top": top, "top_score": PROVIDERS[top]["score"],
+            "cheap": cheap_slug, "cheap_price": cheap_price,
+            "cheap_fda": cheap_fda[0], "cheap_fda_price": cheap_fda[1],
+            "n": len(PROVIDER_ORDER), "n_fda": len(fda), "median": mid}
+
+def render_quick_answer():
+    q = quick_answer_stats()
+    N = lambda s: PROVIDERS[s]["name"]
+    rows = [
+        ("Best overall (our score)", f'<a href="{review_url(q["top"])}">{N(q["top"])}</a> — {q["top_score"]}/10'),
+        ("Lowest real monthly price", f'<a href="{review_url(q["cheap"])}">{N(q["cheap"])}</a> — about ${q["cheap_price"]}/mo at a maintenance dose'),
+        ("Cheapest FDA-approved option", f'<a href="{review_url(q["cheap_fda"])}">{N(q["cheap_fda"])}</a> — from ${q["cheap_fda_price"]}/mo'),
+        ("Programs compared", f'{q["n"]} ({q["n_fda"]} offer FDA-approved branded GLP-1s)'),
+        ("Typical real cost", f'around ${q["median"]}/mo (median at a maintenance dose; compounded runs lower, branded Wegovy/Zepbound higher)'),
+    ]
+    items = "".join(f'<div class="qa-row"><span class="qa-k">{k}</span><span class="qa-v">{v}</span></div>' for k, v in rows)
+    return f"""<section class="section" style="padding-top:28px;padding-bottom:0"><div class="wrap narrow">
+  <div class="qa-card">
+    <div class="qa-head">{icon('spark', size=18)} Quick answer</div>
+    <p class="qa-lede">As of {UPDATED}, we rank {q['n']} online GLP-1 weight-loss programs on value, support,
+    medications and transparency. {PROVIDERS[q['top']]['name']} leads at {q['top_score']}/10; the lowest real
+    maintenance price is {PROVIDERS[q['cheap']]['name']} at about ${q['cheap_price']}/mo.</p>
+    <div class="qa-grid">{items}</div>
+    <p class="qa-foot">Prices are the real monthly cost at a maintenance dose, individually sourced and dated — not intro teasers. Confirm the current figure at the provider before buying. Not medical advice.</p>
+  </div>
+</div></section>"""
+
 def render_reviews_index():
     rows = ""
     for i, slug in enumerate(PROVIDER_ORDER, 1):
@@ -2809,6 +2906,7 @@ def render_reviews_index():
   <span>{icon('badge', size=15)} Real prices, not intro teasers</span>
   <span>{icon('scale', size=15)} Affiliate links never change a score</span>
 </div></div>
+{render_quick_answer()}
 <section class="section"><div class="wrap">
   <div class="ctable">
     <div class="ctrow ct-header"><div>Program</div><div>Real price / mo</div><div>Medication &amp; visit</div><div>Our score</div><div></div></div>
@@ -3022,6 +3120,14 @@ def build_llms_txt(review_slugs, guide_slugs):
     L.append("- Typical compounded cost ≈ $138/mo; typical branded ≈ $335/mo without insurance.")
     L.append("- Insurance rarely covers compounded GLP-1s; most buyers pay cash.")
     L.append("- The advertised '$39 first month' is usually an intro rate; the maintenance price is higher.")
+    L.append("")
+    q = quick_answer_stats()
+    L.append("## Quick answers")
+    L.append(f"- Best overall by our editorial score: {PROVIDERS[q['top']]['name']} ({q['top_score']}/10).")
+    L.append(f"- Lowest real monthly price at a maintenance dose: {PROVIDERS[q['cheap']]['name']}, about ${q['cheap_price']}/mo (compounded semaglutide).")
+    L.append(f"- Cheapest option that offers FDA-approved branded GLP-1s: {PROVIDERS[q['cheap_fda']]['name']}, from ${q['cheap_fda_price']}/mo.")
+    L.append(f"- Programs compared: {q['n']} ({q['n_fda']} offer FDA-approved branded medication; the rest are compounded).")
+    L.append(f"- Median real cost across the ranking: about ${q['median']}/mo at a maintenance dose.")
     L.append("")
     L.append("## Programs ranked (name — our score /10 — real price/mo)")
     for i, s in enumerate(PROVIDER_ORDER, 1):

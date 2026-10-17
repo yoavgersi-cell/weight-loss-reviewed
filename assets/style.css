@@ -1382,6 +1382,22 @@ a.vsrow:hover { background: #EDF2F8; }
 .art-srcs { margin-top: 40px; border-top: 1px solid var(--line); padding-top: 22px; }
 .art-srcs-note { margin: 16px 0 0; font-size: .85rem; color: var(--ink-soft); line-height: 1.55; }
 
+/* Quick-answer capsule (GEO: dense, extractable) */
+.qa-card { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 14px; padding: 22px 24px; box-shadow: var(--shadow-sm, 0 1px 2px rgba(16,42,71,.05)); }
+.qa-head { display: inline-flex; align-items: center; gap: 7px; font-weight: 800; font-size: .78rem; letter-spacing: .07em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.qa-lede { margin: 0 0 16px; font-size: 1.02rem; line-height: 1.6; color: var(--ink); }
+.qa-grid { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.qa-row { display: grid; grid-template-columns: minmax(170px, 34%) 1fr; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.qa-k { font-weight: 600; color: var(--ink-soft); font-size: .92rem; }
+.qa-v { font-weight: 600; color: var(--ink); font-size: .95rem; }
+.qa-v a { color: var(--accent); text-decoration: none; }
+.qa-v a:hover { text-decoration: underline; }
+.qa-foot { margin: 14px 0 0; font-size: .82rem; color: var(--ink-soft); line-height: 1.5; }
+@media (max-width: 640px){
+  .qa-row { grid-template-columns: 1fr; gap: 2px; padding: 9px 0; }
+  .qa-k { font-size: .82rem; }
+}
+
 @media (max-width: 640px){
   .medopts { grid-template-columns: 1fr; }
   .ver-grid { grid-template-columns: 1fr; }
