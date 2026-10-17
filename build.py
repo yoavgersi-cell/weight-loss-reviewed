@@ -427,7 +427,7 @@ RUBRIC = {
 PDATA = {
     "embody": {
         "price": 69, "unit": "/mo", "struct": "All-in, includes medication",
-        "price_note": "Promo starting rate; ~$299/mo at standard/maintenance dosing",
+        "price_note": "All-in and typically ~$79–$129/mo depending on plan length and medication; promo rates from ~$69/mo to start",
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection or daily oral",
         "visit": "Clinician-reviewed telehealth", "insurance": "Cash-pay (HSA/FSA)",
         "avail": "Not stated", "included": "Medication, clinician review; rate locks per plan",
@@ -556,12 +556,12 @@ PDATA = {
 # publishing — prices change monthly.
 # --------------------------------------------------------------------------
 MAINT = {
-    "embody": 299, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
-    "trimrx": 299, "healthrx": 133, "bmimd": 129, "directmeds": 297,
-    "wellmedr": 149, "shed": 199, "sprout": 249,
+    "embody": 129, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
+    "trimrx": 253, "healthrx": 133, "bmimd": 129, "directmeds": 297,
+    "wellmedr": 129, "shed": 199, "sprout": 249,
 }
 MAINT_BASIS = {
-    "embody": "standard maintenance dose",
+    "embody": "all-in, includes medication",
     "ro": "$149/mo membership + branded drug",
     "found": "membership + compounded drug",
     "medvi": "paying month-to-month",
@@ -2086,7 +2086,9 @@ def render_review(slug):
     facts_html = "".join(f'<div><span>{k}</span><b>{val}</b></div>' for k, val in facts)
 
     # buyer-reported data block (coded Trustpilot) — real voice, not prose
-    reported_html = reported_block(slug)
+    # Buyer-complaint card removed — reviews lead with strengths, with the
+    # balanced pros/cons below doing the honest-trade-off work.
+    reported_html = ""
 
     flag_html = ""
     if d.get("flag"):
