@@ -9,28 +9,31 @@
 /* Clinical data-tool system: cool white ground, medical blue, slate navy.
    Sans-serif throughout. Precise, trustworthy, health-tech — not editorial. */
 :root {
-  --paper: #F3F6FB;         /* cool clinical off-white — page ground */
+  /* TreatmentsHub house palette (matched from the network's design system):
+     brand blue #0C4B75, near-black #191919, warm off-white #F8F8F8, amber
+     stars #FDB515. Keeps the whole network visually consistent. */
+  --paper: #F8F8F8;         /* warm off-white — page ground */
   --surface: #FFFFFF;       /* cards */
-  --surface-2: #EBF1F8;     /* cool gray-blue — alt sections, table header */
-  --forest: #0E2A47;        /* deep clinical navy — dark sections, footer */
-  --forest-2: #0A2038;
-  --ink: #0F1B2D;           /* slate ink */
-  --ink-soft: #35445C;
-  --muted: #647189;
-  --line: #DBE3EE;          /* cool hairline */
-  --line-soft: #E7EDF5;
-  --accent: #0B6BCB;        /* medical blue — links, CTAs */
-  --accent-dark: #0A579E;
-  --accent-tint: #E2EDFB;   /* light blue — fills, chips */
+  --surface-2: #F7F8FA;     /* soft gray — panels, info boxes, alt sections */
+  --forest: #0C4B75;        /* brand blue — dark banners, score badges, footer */
+  --forest-2: #093D61;      /* brand blue, hover/darker */
+  --ink: #191919;           /* near-black ink */
+  --ink-soft: #374151;      /* body text */
+  --muted: #57606f;         /* muted labels (AA-safe) */
+  --line: #E5E7EB;          /* hairline */
+  --line-soft: #F0F1F3;
+  --accent: #0C4B75;        /* brand blue — links, CTAs */
+  --accent-dark: #093D61;
+  --accent-tint: #E8EFF5;   /* light blue — fills, chips */
   --coral: #C2410C;         /* alert orange-red — warnings only */
   --coral-dark: #9A3412;
   --coral-tint: #FBE8DE;
-  --gold: #CA8A04;          /* stars */
-  --good: #15803D;          /* positive — score bars */
+  --gold: #FDB515;          /* amber stars */
+  --good: #047857;          /* emerald — positive, checks, score bars */
   --bad: #B42318;
 
-  --serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --serif: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   --radius: 8px;
   --radius-sm: 6px;
@@ -1277,11 +1280,13 @@ a.vsrow:hover { background: #EDF2F8; }
 .rv-updated { display: inline-flex; align-items: center; gap: 6px; font-size: .88rem; color: var(--muted); font-weight: 600; margin: 0 0 .5em; }
 .rv-rating { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .rv-stars { letter-spacing: 1px; font-size: 1.2rem; }
-.rv-star { color: #d7dce3; } .rv-star.on { color: #F2B01E; }
+.rv-star { color: #d7dce3; } .rv-star.on { color: #FDB515; }
 .rv-rating b { font-family: var(--sans); font-weight: 800; font-size: 1.3rem; color: var(--ink); }
 .rv-word { color: var(--muted); font-weight: 600; }
 .rv-reviewer { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); margin-bottom: 18px; }
-.rv-rev-ava { width: 42px; height: 42px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--accent-tint); color: var(--accent-dark); }
+.rv-rev-ava { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--accent-tint); color: var(--accent-dark); overflow: hidden; }
+.rv-rev-ava img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+.rv-rev-by .rb-li { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 4px; background: #0a66c2; color: #fff; font-size: .65rem; font-weight: 800; text-decoration: none; text-transform: lowercase; vertical-align: middle; }
 .rv-rev-by { display: block; font-size: .95rem; color: var(--ink); } .rv-rev-by svg { color: #15803D; vertical-align: -2px; margin-right: 4px; }
 .rv-rev-meta { display: block; font-size: .82rem; color: var(--muted); }
 .btn.rv-visit { background: var(--forest); border-color: var(--forest); color: #fff; }
@@ -1385,91 +1390,98 @@ a.vsrow:hover { background: #EDF2F8; }
 /* ============================================================
    Homepage v3 — stacked provider cards (TreatmentsHub house style)
    ============================================================ */
-.addisc { background: var(--surface-2); border-bottom: 1px solid var(--line); font-size: .8rem; color: var(--ink-soft); text-align: center; line-height: 1.5; }
+.addisc { background: #f0f4f8; border-bottom: 1.5px solid #cdd7e1; font-size: .81rem; color: #525c6b; text-align: center; line-height: 1.5; }
 .addisc .wrap { padding: 9px 16px; }
-.addisc a { color: var(--accent); font-weight: 600; }
+.addisc b, .addisc a { color: var(--ink); font-weight: 700; }
+.addisc a { text-decoration: underline; text-underline-offset: 2px; }
+.addisc a:hover { color: var(--accent); }
 
-.homehero { background: var(--surface-2); border-bottom: 1px solid var(--line); }
-.homehero .wrap { padding: 34px 16px 30px; }
-.hh-updated { display: inline-flex; align-items: center; gap: 7px; font-size: .9rem; font-weight: 600; color: #0f7a43; margin-bottom: 14px; }
-.hh-updated svg { color: #0f7a43; }
-.hh-title { font-size: clamp(1.9rem, 5vw, 2.9rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1.08; margin: 0 0 14px; color: var(--forest); }
-.hh-sub { font-size: 1.08rem; line-height: 1.55; color: var(--ink-soft); max-width: 62ch; margin: 0 0 20px; }
-.hh-pills { display: flex; flex-wrap: wrap; gap: 20px 26px; }
+.homehero { background: var(--surface); border-bottom: 1px solid var(--line); }
+.homehero .wrap { padding: 36px 16px 32px; }
+.hh-updated { display: inline-flex; align-items: center; gap: 7px; font-size: .9rem; font-weight: 600; color: var(--good); margin-bottom: 14px; }
+.hh-updated svg { color: var(--good); }
+.hh-title { font-size: clamp(1.95rem, 5.2vw, 3rem); font-weight: 800; letter-spacing: -0.028em; line-height: 1.07; margin: 0 0 14px; color: var(--ink); }
+.hh-sub { font-size: 1.08rem; line-height: 1.55; color: var(--ink-soft); max-width: 60ch; margin: 0 0 20px; }
+.hh-pills { display: flex; flex-wrap: wrap; gap: 14px 26px; }
 .hh-pills span { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: .95rem; color: var(--ink); }
 .hh-pills svg { color: var(--accent); }
 
 .reviewer-byline { background: var(--surface); border-bottom: 1px solid var(--line); }
-.reviewer-byline .wrap { padding: 16px; display: flex; align-items: center; gap: 14px; }
+.reviewer-byline .wrap { padding: 14px 16px; display: flex; align-items: center; gap: 13px; }
 .rb-avatar { flex: 0 0 auto; }
-.rb-photo { border-radius: 50%; object-fit: cover; display: block; }
+.rb-photo { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; display: block; border: 1px solid var(--line); }
 .rb-initials { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; font-size: 1.05rem; }
-.rb-top { font-size: 1rem; line-height: 1.45; color: var(--ink); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.rb-top svg { color: #0f7a43; }
-.rb-li { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4px; background: #0a66c2; color: #fff; font-size: .7rem; font-weight: 800; text-decoration: none; text-transform: lowercase; }
-.rb-sub { font-size: .9rem; color: var(--ink-soft); margin-top: 3px; }
+.rb-top { font-size: 1rem; line-height: 1.4; color: var(--ink); display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.rb-top svg { color: var(--good); flex: 0 0 auto; }
+.rb-li { display: inline-flex; align-items: center; justify-content: center; width: 19px; height: 19px; border-radius: 4px; background: #0a66c2; color: #fff; font-size: .68rem; font-weight: 800; text-decoration: none; text-transform: lowercase; }
+.rb-sub { font-size: .88rem; color: var(--muted); margin-top: 3px; }
 .rb-sub a { color: var(--accent); font-weight: 600; }
 
+/* ---- provider cards (exact TreatmentsHub rich-comparison-card spec) ---- */
 .homecards { background: var(--paper); }
-.hc-grid { display: grid; gap: 26px; }
-.hcard { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(16,42,71,.06); }
-.hcard.is-popular { border-color: var(--forest); box-shadow: 0 6px 24px rgba(14,42,71,.12); }
-.hc-pop { background: var(--forest); color: #fff; font-weight: 800; font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; padding: 11px 22px; display: flex; align-items: center; gap: 8px; }
-.hc-pop svg { color: #7fd1a8; }
-.hc-body { padding: 22px 24px 24px; }
-.hc-top { display: flex; align-items: center; gap: 14px; }
-.hc-rank { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: var(--forest); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; }
-.hc-logo { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; }
-.hc-logo-img, .hc-logo img { height: 34px; width: auto; max-width: 160px; object-fit: contain; object-position: left center; }
-.hc-logo .ct-init { font-weight: 800; font-size: 1.2rem; color: var(--forest); }
-.hc-score { flex: 0 0 auto; text-align: center; }
-.hc-stars { color: #d7dde6; font-size: 1.05rem; letter-spacing: 1px; line-height: 1; }
-.hc-star.on { color: #F2B01E; }
-.hc-word { font-size: .72rem; font-weight: 800; letter-spacing: .05em; color: var(--accent); margin-top: 3px; }
-.hc-badge { flex: 0 0 auto; background: var(--forest); color: #fff; border-radius: 10px; padding: 8px 12px; text-align: center; line-height: 1; }
-.hc-badge b { font-size: 1.5rem; font-weight: 900; display: block; }
-.hc-badge span { font-size: .6rem; letter-spacing: .06em; opacity: .85; }
-.hc-headline { font-size: 1.18rem; font-weight: 800; line-height: 1.3; margin: 18px 0 12px; color: var(--ink); }
-.hc-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
-.hc-pill { display: inline-flex; align-items: center; gap: 6px; background: #e9f7ef; color: #0f7a43; border: 1px solid #bfe6cf; border-radius: 999px; padding: 6px 13px; font-size: .86rem; font-weight: 600; }
-.hc-pill svg { color: #0f7a43; }
-.hc-box { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
-.hc-box-lbl { font-size: .72rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-soft); }
-.hc-meds { margin: 7px 0 0; font-size: .95rem; line-height: 1.5; color: var(--ink); }
-.hc-box hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
-.hc-price { display: flex; align-items: baseline; gap: 5px; margin-top: 7px; }
-.hc-price b { font-size: 1.9rem; font-weight: 900; color: var(--ink); }
-.hc-price span { font-size: 1rem; color: var(--ink-soft); font-weight: 600; }
-.hc-real { margin: 8px 0 0; font-size: .9rem; color: var(--ink-soft); }
-.hc-real b { color: var(--ink); }
-.hc-fda { margin: 7px 0 0; font-size: .8rem; color: var(--ink-soft); }
-.hc-benefits { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 11px; }
-.hc-benefits li { display: flex; align-items: flex-start; gap: 10px; font-size: .96rem; line-height: 1.45; color: var(--ink); }
-.hc-benefits svg { color: #0f7a43; flex: 0 0 auto; margin-top: 2px; }
-.hc-cta { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 20px; }
-.hc-from { font-size: .92rem; color: var(--ink-soft); white-space: nowrap; }
-.hc-from b { font-size: 1.3rem; color: var(--ink); font-weight: 900; }
-.hc-cta-btns { text-align: center; }
-.btn.hc-visit { background: var(--forest); color: #fff; padding: 14px 30px; font-size: 1.02rem; }
-.btn.hc-visit:hover { background: #0a2038; }
-.hc-readfull { display: block; margin-top: 9px; color: var(--accent); font-weight: 700; font-size: .95rem; text-decoration: none; }
+.hc-grid { display: grid; gap: 22px; }
+.hcard { position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-sm); }
+.hcard.is-popular { box-shadow: 0 8px 30px rgba(12,75,117,.14); }
+.hc-pop { display: flex; align-items: center; gap: 6px; background: var(--forest); color: #fff; font-weight: 700; font-size: .75rem; letter-spacing: .03em; text-transform: uppercase; padding: 7px 20px; }
+.hc-pop svg { color: #fff; }
+.hc-body { padding: 18px; }
+@media (min-width:640px){ .hc-body { padding: 28px; } }
+.hc-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hc-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.hc-rank { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: .8rem; }
+.hc-logo { display: flex; align-items: center; height: 44px; max-width: 180px; overflow: hidden; }
+.hc-logo-img, .hc-logo img { height: 40px; width: auto; max-width: 180px; object-fit: contain; object-position: left center; }
+.hc-logo .ct-init { font-weight: 800; font-size: 1.3rem; color: var(--ink); }
+.hc-rate { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
+.hc-rate-stars { text-align: right; }
+.hc-stars { display: flex; justify-content: flex-end; gap: 2px; color: #e5e7eb; font-size: .95rem; line-height: 1; }
+.hc-star.on { color: var(--gold); }
+.hc-word { margin-top: 3px; font-size: .68rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--accent); }
+.hc-badge { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--forest); color: #fff; border-radius: 12px; padding: 7px 13px; line-height: 1; }
+.hc-badge b { font-size: 1.5rem; font-weight: 800; }
+.hc-badge span { margin-top: 3px; font-size: .55rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: rgba(255,255,255,.72); }
+.hc-headline { margin: 16px 0 0; font-size: 1.18rem; font-weight: 700; line-height: 1.32; color: var(--ink); }
+.hc-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.hc-pill { display: inline-flex; align-items: center; gap: 6px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; border-radius: 999px; padding: 4px 12px; font-size: .78rem; font-weight: 600; }
+.hc-pill svg { color: #047857; }
+.hc-main { display: flex; flex-direction: column; gap: 18px; margin-top: 20px; }
+@media (min-width:1024px){ .hc-main { flex-direction: row; align-items: flex-start; gap: 20px; } }
+.hc-facts { flex: 1 1 auto; min-width: 0; }
+.hc-box { background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 12px; padding: 16px; }
+.hc-box-lbl { font-size: .7rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.hc-meds { margin: 4px 0 0; font-size: .9rem; line-height: 1.45; color: #374151; }
+.hc-box hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
+.hc-price { display: flex; align-items: baseline; gap: 6px; margin-top: 4px; }
+.hc-price b { font-size: 1.35rem; font-weight: 800; color: var(--ink); }
+.hc-price span { font-size: .85rem; color: var(--muted); font-weight: 600; }
+.hc-real { margin: 5px 0 0; font-size: .85rem; font-weight: 600; color: var(--accent); }
+.hc-real b { color: var(--accent); }
+.hc-fda { margin: 6px 0 0; font-size: .72rem; line-height: 1.4; color: var(--muted); }
+.hc-benefits { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 7px; }
+@media (min-width:640px){ .hc-benefits { grid-template-columns: 1fr 1fr; gap: 8px 20px; } }
+.hc-benefits li { display: flex; align-items: flex-start; gap: 8px; font-size: .85rem; line-height: 1.4; color: #374151; }
+.hc-benefits svg { color: #10b981; flex: 0 0 auto; margin-top: 2px; }
+.hc-rail { flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px; }
+@media (min-width:1024px){ .hc-rail { width: 220px; background: var(--surface-2); border-radius: 12px; padding: 16px; } }
+.hc-rail-price { text-align: center; line-height: 1.2; }
+.hc-rail-price span { display: block; font-size: .8rem; color: var(--muted); }
+.hc-rail-price b { font-size: 1.4rem; font-weight: 800; color: var(--ink); }
+.btn.hc-visit { display: flex; align-items: center; justify-content: center; gap: 6px; height: 50px; width: 100%; background: var(--forest); border-color: var(--forest); color: #fff; font-size: .98rem; font-weight: 700; border-radius: 12px; padding: 0; }
+.btn.hc-visit:hover { background: var(--forest-2); border-color: var(--forest-2); color: #fff; }
+.hc-readfull { text-align: center; color: var(--accent); font-weight: 600; font-size: .82rem; text-decoration: none; }
 .hc-readfull:hover { text-decoration: underline; }
-.hc-tp { display: flex; align-items: center; gap: 7px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .95rem; color: var(--ink); }
-.hc-tp svg { color: #00b67a; }
-.hc-tp b { font-weight: 800; }
-.hc-tp span { color: var(--ink-soft); }
-.hc-blurb { margin: 14px 0 0; font-size: .95rem; line-height: 1.55; color: var(--ink-soft); }
-.hc-blurb a { color: var(--accent); font-weight: 600; white-space: nowrap; }
+.hc-tp { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 2px; padding-top: 10px; border-top: 1px solid var(--line); font-size: .78rem; color: var(--muted); }
+.hc-tp-star { color: #00b67a; font-size: .95rem; line-height: 1; }
+.hc-tp b { font-weight: 700; color: #374151; }
+.hc-intro { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+.hc-intro p { margin: 0; font-size: .9rem; line-height: 1.6; color: #4b5563; }
+.hc-intro a { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-size: .85rem; font-weight: 600; color: var(--accent); text-decoration: none; }
+.hc-intro a:hover { text-decoration: underline; }
 .hc-visitors { margin: 22px auto 0; max-width: max-content; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; font-size: .9rem; color: var(--ink-soft); display: flex; align-items: center; gap: 8px; }
 .hc-visitors b { color: var(--ink); font-weight: 800; }
 .hc-visitors svg { color: var(--accent); }
-@media (max-width: 560px){
-  .hc-top { flex-wrap: wrap; }
-  .hc-score { order: 3; }
-  .hc-badge { order: 2; margin-left: auto; }
-  .hc-cta { flex-direction: column; align-items: stretch; }
-  .hc-cta-btns .btn { display: block; }
-  .hc-from { order: 2; text-align: center; }
+@media (max-width:420px){
+  .hc-rate-stars { display: none; }
 }
 
 /* Quick-answer capsule (GEO: dense, extractable) */
