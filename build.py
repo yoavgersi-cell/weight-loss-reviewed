@@ -1820,6 +1820,23 @@ REVIEWER = {
 # (as a string, e.g. "12,400") once you have analytics; left blank = badge hidden.
 HOME_VISITORS = ""
 
+# Short, punchy card headlines (1-2 lines, like the reference) — each a
+# condensed take on the provider's real highlight/best-for. No new claims.
+CARD_TAGLINE = {
+    "ro":         "Most established brand — full FDA-approved GLP-1 suite",
+    "found":      "Branded + compounded GLP-1 with real coaching built in",
+    "embody":     "Compounded GLP-1, injection or daily oral — from $69/mo",
+    "altrx":      "One of the lowest-cost compounded GLP-1 programs",
+    "bmimd":      "Low flat pricing with unlimited provider messaging",
+    "shed":       "Compounded GLP-1 with a full care team behind it",
+    "medvi":      "Flat cash pricing across all 50 states",
+    "healthrx":   "Same price at every dose, with a money-back guarantee",
+    "directmeds": "LegitScript-certified, with next-day shipping",
+    "wellmedr":   "Among the lowest advertised compounded rates",
+    "sprout":     "Simple intro pricing with monthly clinician check-ins",
+    "trimrx":     "No-appointment async — compounded and branded options",
+}
+
 def home_pills(slug):
     """Two honest benefit pills per card, derived from real attributes."""
     d = PDATA[slug]; out = []
@@ -1858,7 +1875,7 @@ def render_home_card(slug, i, popular=False):
     tp = (f'<div class="hc-tp"><span class="hc-tp-star">★</span><b>{r["rating"]}</b> {r.get("source","Trustpilot")} '
           f'<span>({r.get("count","")})</span></div>') if r and r.get("rating") else ""
     pop = f'<div class="hc-pop">{icon("badge", size=15)} OUR MOST POPULAR</div>' if popular else ""
-    headline = sentence1(p.get("highlight") or p["best_for"])
+    headline = CARD_TAGLINE.get(slug) or sentence1(p.get("highlight") or p["best_for"])
     unit_long = d["unit"].replace("/mo", "/month")
     return f"""<article class="hcard{' is-popular' if popular else ''}" id="card-{slug}">
   {pop}
