@@ -1340,6 +1340,10 @@ _IC = {
     "pill": '<rect x="3.5" y="8.5" width="17" height="7" rx="3.5" stroke-width="1.8"/><path d="M12 8.5v7" stroke-width="1.8"/>',
     "clock": '<circle cx="12" cy="12" r="9" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke-width="1.8"/>',
     "arrow": '<path d="M5 12h14M13 6l6 6-6 6" stroke-width="2"/>',
+    "book": '<path d="M4 5a2 2 0 012-2h13v15H6a2 2 0 00-2 2V5z" stroke-width="1.7"/><path d="M4 20a2 2 0 012-2h13" stroke-width="1.7"/>',
+    "stethoscope": '<path d="M5 3v5a4 4 0 008 0V3" stroke-width="1.7"/><path d="M9 14v1a5 5 0 0010 0v-2" stroke-width="1.7"/><circle cx="19" cy="11" r="2" stroke-width="1.7"/><circle cx="5" cy="3" r="0.6" fill="currentColor"/><circle cx="13" cy="3" r="0.6" fill="currentColor"/>',
+    "chat": '<path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v9a1 1 0 01-1 1H9l-5 4V5z" stroke-width="1.7"/>',
+    "ext": '<path d="M14 5h5v5M19 5l-8 8M12 5H6a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1v-6" stroke-width="1.7"/>',
 }
 
 def icon(name, cls="", size=24):
@@ -1529,6 +1533,9 @@ def ld_product(p, slug):
             "author": {"@type": "Organization", "name": SITE["name"], "url": SITE["domain"]},
         },
         "publisher": {"@type": "Organization", "name": SITE["name"], "url": SITE["domain"]},
+        "citation": [
+            {"@type": "CreativeWork", "name": title, "url": url}
+            for title, _pub, url in MED_REFERENCES],
     })
 
 def ld_itemlist(name="Best online GLP-1 weight-loss programs, ranked"):
@@ -2075,6 +2082,72 @@ def render_user_reviews(slug):
     <p class="tp-disc">Rating and reviews from {r.get("source","Trustpilot")}, captured {UPDATED}. We show a representative mix — including critical reviews — and quotes are only lightly trimmed for length. <a href="{r.get("url","#")}" rel="nofollow" target="_blank">Verify on {r.get("source","Trustpilot")} →</a></p>
   </div>"""
 
+# Real medical & regulatory references. The GLP-1 drugs are the same across
+# providers, so these authoritative sources (peer-reviewed trials, FDA, NIH)
+# apply to every review. These are genuine editorial citations — linked
+# dofollow — not affiliate links. Verified stable URLs.
+MED_REFERENCES = [
+    ("Once-Weekly Semaglutide in Adults with Overweight or Obesity (STEP 1 trial)",
+     "New England Journal of Medicine, 2021",
+     "https://www.nejm.org/doi/full/10.1056/NEJMoa2032183"),
+    ("Tirzepatide Once Weekly for the Treatment of Obesity (SURMOUNT-1 trial)",
+     "New England Journal of Medicine, 2022",
+     "https://www.nejm.org/doi/full/10.1056/NEJMoa2206038"),
+    ("FDA Approves New Drug Treatment for Chronic Weight Management (semaglutide / Wegovy)",
+     "U.S. Food & Drug Administration, 2021",
+     "https://www.fda.gov/news-events/press-announcements/fda-approves-new-drug-treatment-chronic-weight-management-first-2014"),
+    ("FDA Approves New Medication for Chronic Weight Management (tirzepatide / Zepbound)",
+     "U.S. Food & Drug Administration, 2023",
+     "https://www.fda.gov/news-events/press-announcements/fda-approves-new-medication-chronic-weight-management"),
+    ("Medications Containing Semaglutide Marketed for Type 2 Diabetes or Weight Loss",
+     "U.S. Food & Drug Administration",
+     "https://www.fda.gov/drugs/postmarket-drug-safety-information-patients-and-providers/medications-containing-semaglutide-marketed-type-2-diabetes-or-weight-loss"),
+    ("Human Drug Compounding (503A pharmacy standards)",
+     "U.S. Food & Drug Administration",
+     "https://www.fda.gov/drugs/guidance-compliance-regulatory-information/human-drug-compounding"),
+    ("Semaglutide Injection — drug information",
+     "MedlinePlus, U.S. National Library of Medicine (NIH)",
+     "https://medlineplus.gov/druginfo/meds/a618008.html"),
+]
+
+def render_methodology_sources(slug):
+    """'How we built this review' + a numbered list of real medical/regulatory
+    references. Reusable across all reviews — gives each page genuine E-E-A-T
+    and citeable authority for AI answer engines, with no fabricated data."""
+    n = PROVIDERS[slug]["name"]
+    d = PDATA[slug]
+    refs = "".join(
+        f'<li><a href="{url}" target="_blank" rel="noopener">{title} '
+        f'{icon("ext", size=13)}</a> <span class="srcs-pub">— {pub}</span></li>'
+        for title, pub, url in MED_REFERENCES)
+    return f"""
+  <section id="sources">
+    <div class="rv-card rv-method">
+      <h2 class="rv-h2" style="margin-top:0">How we built this {n} review</h2>
+      <p class="rv-sub" style="margin-top:0">We built this review from {n}'s own published pricing, plans and
+      policies, cross-checked against regulatory and peer-reviewed medical references, and read alongside real
+      customer feedback. We verify claims rather than take a provider's word for them.</p>
+      <div class="method-grid">
+        <div class="method-item">
+          <div class="method-head">{icon('clipboard', size=18)} Provider information</div>
+          <p>Pricing, plans, shipping and policies as published on {n}'s own site — checked {d['as_of']}.</p>
+        </div>
+        <div class="method-item">
+          <div class="method-head">{icon('chat', size=18)} Customer &amp; community feedback</div>
+          <p>Third-party signals we report but never fold into our own score: verified Trustpilot ratings and public customer reviews. We say what these sources say — we don't launder them into our rating.</p>
+        </div>
+        <div class="method-item">
+          <div class="method-head">{icon('stethoscope', size=18)} Medical &amp; regulatory references</div>
+          <p>Treatment facts are grounded in FDA guidance and peer-reviewed research (listed below). This is information, not medical advice — always consult a licensed clinician.</p>
+        </div>
+      </div>
+      <div class="srcs">
+        <div class="srcs-head">{icon('book', size=18)} Sources &amp; medical references</div>
+        <ol class="srcs-list">{refs}</ol>
+      </div>
+    </div>
+  </section>"""
+
 def render_review(slug):
     p = PROVIDERS[slug]
     d = PDATA[slug]
@@ -2284,6 +2357,8 @@ def render_review(slug):
     <div class="faq" style="margin-top:12px">{provider_faq(slug)}</div></div></section>
 
   <section>{vs_section}</section>
+
+  {render_methodology_sources(slug)}
 
   <div class="rv-card rv-finalcta">
     <h3>Interested in {n}?</h3>

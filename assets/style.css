@@ -1364,10 +1364,27 @@ a.vsrow:hover { background: #EDF2F8; }
 .rv-finalcta h3 { font-size: 1.3rem; font-weight: 800; margin: 0 0 6px; }
 .rv-finalcta p { color: var(--ink-soft); margin: 0 0 16px; }
 
+/* How we built this review + sources */
+.rv-method .method-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin: 18px 0 6px; }
+.rv-method .method-item { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.rv-method .method-head { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: .95rem; color: var(--forest); margin-bottom: 8px; }
+.rv-method .method-head svg { color: var(--accent); flex: 0 0 auto; }
+.rv-method .method-item p { margin: 0; font-size: .92rem; line-height: 1.55; color: var(--ink-soft); }
+.srcs { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 18px; }
+.srcs-head { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; color: var(--forest); margin-bottom: 12px; }
+.srcs-head svg { color: var(--accent); }
+.srcs-list { margin: 0; padding-left: 1.4em; display: grid; gap: 11px; }
+.srcs-list li { line-height: 1.5; font-size: .95rem; }
+.srcs-list a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.srcs-list a:hover { text-decoration: underline; }
+.srcs-list a svg { display: inline; vertical-align: -1px; opacity: .65; }
+.srcs-pub { color: var(--ink-soft); font-size: .9rem; }
+
 @media (max-width: 640px){
   .medopts { grid-template-columns: 1fr; }
   .ver-grid { grid-template-columns: 1fr; }
   .rv-card { padding: 20px; }
   .rv-hero-top { grid-template-columns: 1fr; gap: 12px; }
   .rv-hero-logo { width: auto; justify-content: flex-start; }
+  .rv-method .method-grid { grid-template-columns: 1fr; }
 }
