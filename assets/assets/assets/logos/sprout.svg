@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 70">
+  <!-- stem -->
+  <path d="M185 58 Q183 48 182 38" stroke="#2d4a3e" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- left leaf -->
+  <path d="M182 38 Q170 20 158 14 Q168 10 180 20 Q186 28 182 38Z" fill="#2d4a3e"/>
+  <!-- right leaf -->
+  <path d="M182 36 Q190 16 200 8 Q206 12 198 28 Q192 34 182 36Z" fill="#2d4a3e"/>
+  <!-- text -->
+  <text x="95" y="58" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',sans-serif" font-size="42" font-weight="800" fill="#2d4a3e">Sprout</text>
+</svg>
