@@ -1464,7 +1464,7 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="/assets/style.css?v={ASSET_VER}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Ctext x='16' y='22' font-size='15' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EWR%3C/text%3E%3C/svg%3E">
 {ld}
@@ -1810,8 +1810,9 @@ REVIEWER = {
     "name": "Francheska Capistrano, RMT, MPH",
     "short": "Francheska Capistrano",
     "credential": "RMT, MPH",
-    "linkedin": "",          # e.g. https://www.linkedin.com/in/...
-    "photo": "",             # e.g. /assets/reviewer.jpg
+    "title": "Medical Content Reviewer",
+    "linkedin": "https://www.linkedin.com/in/francheskacapistrano/",
+    "photo": "/assets/reviewer.webp",
     "date": "October 4, 2026",
 }
 
@@ -1854,7 +1855,7 @@ def render_home_card(slug, i, popular=False):
     bullets = p.get("bullets") or p["pros"][:4]
     bl = "".join(f'<li>{icon("check", size=16)}<span>{b}</span></li>' for b in bullets)
     r = USER_REVIEWS.get(slug)
-    tp = (f'<div class="hc-tp">{icon("spark", size=15)}<b>{r["rating"]}</b> {r.get("source","Trustpilot")} '
+    tp = (f'<div class="hc-tp"><span class="hc-tp-star">★</span><b>{r["rating"]}</b> {r.get("source","Trustpilot")} '
           f'<span>({r.get("count","")})</span></div>') if r and r.get("rating") else ""
     pop = f'<div class="hc-pop">{icon("badge", size=15)} OUR MOST POPULAR</div>' if popular else ""
     headline = sentence1(p.get("highlight") or p["best_for"])
@@ -1863,35 +1864,44 @@ def render_home_card(slug, i, popular=False):
   {pop}
   <div class="hc-body">
     <div class="hc-top">
-      <span class="hc-rank">{i}</span>
-      <span class="hc-logo">{logo}</span>
-      <div class="hc-score">
-        <div class="hc-stars">{stars_html}</div>
-        <div class="hc-word">{score_word(p['score']).upper()}</div>
+      <div class="hc-id">
+        <span class="hc-rank">{i}</span>
+        <span class="hc-logo">{logo}</span>
       </div>
-      <div class="hc-badge"><b>{p['score']}</b><span>OUT OF 10</span></div>
+      <div class="hc-rate">
+        <div class="hc-rate-stars">
+          <div class="hc-stars">{stars_html}</div>
+          <div class="hc-word">{score_word(p['score']).upper()}</div>
+        </div>
+        <div class="hc-badge"><b>{p['score']}</b><span>OUT OF 10</span></div>
+      </div>
     </div>
     <h3 class="hc-headline">{headline}</h3>
     <div class="hc-pills">{pills}</div>
-    <div class="hc-box">
-      <div class="hc-box-lbl">Treatments offered</div>
-      <p class="hc-meds">{d['meds']}</p>
-      <hr>
-      <div class="hc-box-lbl">Starting price</div>
-      <div class="hc-price"><b>${d['price']}</b><span>{unit_long}</span></div>
-      {real_line}
-      {fda_note}
-    </div>
-    <ul class="hc-benefits">{bl}</ul>
-    <div class="hc-cta">
-      <div class="hc-from">from <b>${d['price']}</b>{unit_long}</div>
-      <div class="hc-cta-btns">
-        <a class="btn btn-primary btn-lg hc-visit" {cta_attrs(slug)}>Visit site {icon('arrow', size=16)}</a>
+    <div class="hc-main">
+      <div class="hc-facts">
+        <div class="hc-box">
+          <div class="hc-box-lbl">Treatments offered</div>
+          <p class="hc-meds">{d['meds']}</p>
+          <hr>
+          <div class="hc-box-lbl">Starting price</div>
+          <div class="hc-price"><b>${d['price']}</b><span>{unit_long}</span></div>
+          {real_line}
+          {fda_note}
+        </div>
+        <ul class="hc-benefits">{bl}</ul>
+      </div>
+      <div class="hc-rail">
+        <div class="hc-rail-price"><span>Pricing starts at</span><b>${d['price']}</b>{unit_long}</div>
+        <a class="btn hc-visit" {cta_attrs(slug)}>Visit site {icon('ext', size=16)}</a>
         <a class="hc-readfull" href="{review_url(slug)}">Read full review</a>
+        {tp}
       </div>
     </div>
-    {tp}
-    <p class="hc-blurb">{sentence1(p['summary'])} <a href="{review_url(slug)}">Read full {n} review →</a></p>
+    <div class="hc-intro">
+      <p>{sentence1(p['summary'])}</p>
+      <a href="{review_url(slug)}">Read full {n} review {icon('ext', size=13)}</a>
+    </div>
   </div>
 </article>"""
 
@@ -2390,9 +2400,9 @@ def render_review(slug):
     </div>
   </div>
   <div class="rv-reviewer">
-    <span class="rv-rev-ava">{icon('user-check', size=20)}</span>
-    <div><span class="rv-rev-by">{icon('shield', size=15)} Reviewed by the <b>{SITE['name']} editorial team</b></span>
-      <span class="rv-rev-meta">Updated {UPDATED} · <a href="/methodology">How we review</a></span></div>
+    <span class="rv-rev-ava">{(f'<img src="{REVIEWER["photo"]}" alt="{REVIEWER["short"]}" width="44" height="44">' if REVIEWER.get("photo") else icon('user-check', size=20))}</span>
+    <div><span class="rv-rev-by">{icon('shield', size=15)} Reviewed for medical accuracy by <b>{REVIEWER['name']}</b>{(f' <a class="rb-li" href="{REVIEWER["linkedin"]}" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>' if REVIEWER.get("linkedin") else "")}</span>
+      <span class="rv-rev-meta">Reviewed {REVIEWER['date']} · <a href="/methodology">How we review</a></span></div>
   </div>
   {big_cta}
   <p class="rv-disc">We may earn a commission from links on this page — it never affects our rankings (<a href="/disclosure">how we stay objective</a>).</p>
