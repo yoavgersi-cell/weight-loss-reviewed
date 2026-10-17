@@ -1803,6 +1803,112 @@ def ring(score):
 def price_struct_short(slug):
     return "+ medication" if "Membership" in PDATA[slug]["struct"] else "all-in"
 
+# Medical reviewer, shared across the TreatmentsHub network of sites. Supply the
+# real photo (assets/reviewer.jpg) and LinkedIn URL to light up the avatar and
+# the LinkedIn chip; until then the byline shows initials + name + credential.
+REVIEWER = {
+    "name": "Francheska Capistrano, RMT, MPH",
+    "short": "Francheska Capistrano",
+    "credential": "RMT, MPH",
+    "linkedin": "",          # e.g. https://www.linkedin.com/in/...
+    "photo": "",             # e.g. /assets/reviewer.jpg
+    "date": "October 4, 2026",
+}
+
+# Honest monthly-traffic figure for the social-proof badge. Set to a real number
+# (as a string, e.g. "12,400") once you have analytics; left blank = badge hidden.
+HOME_VISITORS = ""
+
+def home_pills(slug):
+    """Two honest benefit pills per card, derived from real attributes."""
+    d = PDATA[slug]; out = []
+    out.append("FDA-approved options" if has_branded(slug) else "Compounded GLP-1")
+    if not is_membership(slug):
+        out.append("No membership fee")
+    elif "concierge" in d["insurance"].lower() or "insurance" in d["insurance"].lower():
+        out.append("Insurance help")
+    if len(out) < 2:
+        if "video" in d["visit"].lower():
+            out.append("Talk to a clinician")
+        elif "cash" in d["insurance"].lower():
+            out.append("No insurance required")
+        else:
+            out.append("Fully online")
+    return out[:2]
+
+def render_home_card(slug, i, popular=False):
+    p, d = PROVIDERS[slug], PDATA[slug]
+    n = p["name"]
+    gold = round(p["score"] / 2)
+    stars_html = "".join(f'<span class="hc-star{" on" if k < gold else ""}">★</span>' for k in range(5))
+    logo = logo_img(slug, cls="hc-logo-img") or f'<span class="ct-init">{n[:2]}</span>'
+    pills = "".join(f'<span class="hc-pill">{icon("shield", size=13)}{x}</span>' for x in home_pills(slug))
+    m = MAINT.get(slug)
+    if m and m != d["price"]:
+        real_line = f'<p class="hc-real">Real cost about <b>${m}/mo</b> at a maintenance dose.</p>'
+    elif m is None:
+        real_line = '<p class="hc-real">Ongoing maintenance price not published — confirm before you buy.</p>'
+    else:
+        real_line = f'<p class="hc-real">Flat <b>${m}/mo</b> — same at a maintenance dose.</p>'
+    fda_note = '<p class="hc-fda">*Compounded medications are not FDA-approved.</p>' if "compounded" in d["meds"].lower() else ""
+    bullets = p.get("bullets") or p["pros"][:4]
+    bl = "".join(f'<li>{icon("check", size=16)}<span>{b}</span></li>' for b in bullets)
+    r = USER_REVIEWS.get(slug)
+    tp = (f'<div class="hc-tp">{icon("spark", size=15)}<b>{r["rating"]}</b> {r.get("source","Trustpilot")} '
+          f'<span>({r.get("count","")})</span></div>') if r and r.get("rating") else ""
+    pop = f'<div class="hc-pop">{icon("badge", size=15)} OUR MOST POPULAR</div>' if popular else ""
+    headline = sentence1(p.get("highlight") or p["best_for"])
+    unit_long = d["unit"].replace("/mo", "/month")
+    return f"""<article class="hcard{' is-popular' if popular else ''}" id="card-{slug}">
+  {pop}
+  <div class="hc-body">
+    <div class="hc-top">
+      <span class="hc-rank">{i}</span>
+      <span class="hc-logo">{logo}</span>
+      <div class="hc-score">
+        <div class="hc-stars">{stars_html}</div>
+        <div class="hc-word">{score_word(p['score']).upper()}</div>
+      </div>
+      <div class="hc-badge"><b>{p['score']}</b><span>OUT OF 10</span></div>
+    </div>
+    <h3 class="hc-headline">{headline}</h3>
+    <div class="hc-pills">{pills}</div>
+    <div class="hc-box">
+      <div class="hc-box-lbl">Treatments offered</div>
+      <p class="hc-meds">{d['meds']}</p>
+      <hr>
+      <div class="hc-box-lbl">Starting price</div>
+      <div class="hc-price"><b>${d['price']}</b><span>{unit_long}</span></div>
+      {real_line}
+      {fda_note}
+    </div>
+    <ul class="hc-benefits">{bl}</ul>
+    <div class="hc-cta">
+      <div class="hc-from">from <b>${d['price']}</b>{unit_long}</div>
+      <div class="hc-cta-btns">
+        <a class="btn btn-primary btn-lg hc-visit" {cta_attrs(slug)}>Visit site {icon('arrow', size=16)}</a>
+        <a class="hc-readfull" href="{review_url(slug)}">Read full review</a>
+      </div>
+    </div>
+    {tp}
+    <p class="hc-blurb">{sentence1(p['summary'])} <a href="{review_url(slug)}">Read full {n} review →</a></p>
+  </div>
+</article>"""
+
+def render_reviewer_byline():
+    rv = REVIEWER
+    av = (f'<img class="rb-photo" src="{rv["photo"]}" alt="{rv["short"]}" width="52" height="52">'
+          if rv.get("photo") else f'<span class="rb-initials">{"".join(w[0] for w in rv["short"].split()[:2])}</span>')
+    li = (f' <a class="rb-li" href="{rv["linkedin"]}" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>'
+          if rv.get("linkedin") else "")
+    return f"""<div class="reviewer-byline"><div class="wrap">
+  <span class="rb-avatar">{av}</span>
+  <div class="rb-text">
+    <div class="rb-top">{icon('shield', size=16)} Reviewed for medical accuracy by <b>{rv['name']}</b>{li}</div>
+    <div class="rb-sub">Reviewed {rv['date']} · <a href="/methodology">How we review</a></div>
+  </div>
+</div></div>"""
+
 def render_home():
     N = len(PROVIDER_ORDER)
     top = PROVIDER_ORDER[0]
@@ -1821,6 +1927,14 @@ def render_home():
     cheap_names = " and ".join(PROVIDERS[s]["name"] for s in cheapest)
     support_names = " and ".join(PROVIDERS[s]["name"] for s in
                                  sorted(PROVIDER_ORDER, key=lambda s: PDATA[s]["scores"]["Support"], reverse=True)[:2])
+
+    # ---- stacked provider cards (homepage centerpiece, TreatmentsHub style) ----
+    home_cards = "".join(render_home_card(slug, i, popular=(i == 1))
+                         for i, slug in enumerate(PROVIDER_ORDER, 1))
+    min_start = min(PDATA[s]["price"] for s in PROVIDER_ORDER)
+    visitors_badge = (f'<div class="hc-visitors">{icon("chart", size=15)} '
+                      f'<b>{HOME_VISITORS}</b> people researched GLP-1 providers here this month</div>'
+                      if HOME_VISITORS else "")
 
     # ---- comparison table rows — the REAL monthly price leads every row ----
     ctrows = ""
@@ -1915,93 +2029,26 @@ def render_home():
         for q, a in FAQ)
 
     body = f"""
-<div class="trust2"><div class="wrap">
-  <span>{icon('check-c', size=15)} {N} programs, real prices verified {UPDATED}</span>
-  <span>{icon('scale', size=15)} <a href="/methodology">How we rank</a></span>
-  <span>{icon('badge', size=15)} Affiliate links never change a score · <a href="/disclosure">disclosure</a></span>
-</div></div>
+<div class="addisc"><div class="wrap">Some providers featured here pay us an affiliate commission. This supports our work but <b>never</b> changes our rankings, scores or reviews. <a href="/disclosure">Advertising &amp; affiliate disclosure</a></div></div>
 
-<section class="hero2"><div class="wrap hero2-grid">
-  <div class="hero2-copy">
-    <span class="hero-flag"><span class="dot"></span> Independent research · Updated {UPDATED}</span>
-    <h1 class="display">Compare GLP-1 programs by what you'll actually pay.</h1>
-    <p class="lede">Most sites show you a "$39 first month" hook. We show the real monthly price at the dose people stay on — then check who actually ships on time, answers the phone, and uses a named pharmacy. Prices individually sourced and dated. Rankings are never bought.</p>
-    <ul class="hero-promises">
-      <li>{icon('check-c', size=18)}<span><b>No surprise bills.</b> We lead with the maintenance price, not the first-month teaser.</span></li>
-      <li>{icon('check-c', size=18)}<span><b>Not trapped.</b> Every option flags prepay lock-ins, cancelling and refunds before you commit.</span></li>
-      <li>{icon('check-c', size=18)}<span><b>Real &amp; legit.</b> We check the pharmacy, state licensing, and whether a human actually answers.</span></li>
-    </ul>
-    <div class="hero-cta">
-      <a class="btn btn-primary btn-lg" href="#compare">Compare all {N} programs →</a>
-      <a class="btn btn-ghost btn-lg" href="#legit">Is this provider legit?</a>
-    </div>
-  </div>
-  <aside class="hero2-snap" aria-label="What buyers really pay">
-    <div class="snap-head"><span>What people really pay</span><span class="snap-date">{icon('check', size=11)}Oct 2026 analysis</span></div>
-    <dl class="market-facts">
-      <div><dt>$138<span>/mo</span></dt><dd>typical compounded (most pay $109–$169)</dd></div>
-      <div><dt>$335<span>/mo</span></dt><dd>typical brand-name Wegovy / Zepbound</dd></div>
-      <div><dt>74%</dt><dd>of buyers pick tirzepatide when asked</dd></div>
-      <div><dt>$50<span>/mo</span></dt><dd>Medicare option for originals (since Jul 2026)</dd></div>
-    </dl>
-    <a class="snap-all" href="#compare">See all {N} programs by real price →</a>
-  </aside>
-</div></section>
-
-<section class="section section-soft" id="stage"><div class="wrap">
-  <div style="text-align:center;max-width:680px;margin:0 auto 6px">
-    <span class="eyebrow-2">Start here</span>
-    <h2 style="margin:6px 0 10px">Have you taken a GLP-1 before?</h2>
-    <p class="lead">Your situation changes what matters most. Pick where you are — we'll point you to the right answer first.</p>
-  </div>
-  <div class="stage-grid">
-    <a class="stage-card" href="/guides/new-to-glp1-first-4-weeks">
-      <span class="stage-ico">{icon('clipboard', size=22)}</span>
-      <b>I'm new to this</b>
-      <span class="stage-need">How approval works, the low starting dose, early side effects, and whether a real clinician is involved — no judgment.</span>
-      <span class="stage-go">The first 4 weeks {icon('arrow', size=14)}</span></a>
-    <a class="stage-card" href="#compare">
-      <span class="stage-ico">{icon('scale', size=22)}</span>
-      <b>I'm switching providers</b>
-      <span class="stage-need">Keep your current dose, pay less all-in, and find someone who actually answers — fast first shipment.</span>
-      <span class="stage-go">Compare on real price {icon('arrow', size=14)}</span></a>
-    <a class="stage-card" href="/guides/what-will-i-really-pay-glp1">
-      <span class="stage-ico">{icon('dollar', size=22)}</span>
-      <b>I'm 3+ months in</b>
-      <span class="stage-need">The price at your maintenance dose, year-one math, a named pharmacy and reliable refills — no lock-in.</span>
-      <span class="stage-go">What you'll really pay {icon('arrow', size=14)}</span></a>
-    <a class="stage-card" href="/guides/what-happens-when-you-stop-glp1">
-      <span class="stage-ico">{icon('pill', size=22)}</span>
-      <b>I stopped and want to restart</b>
-      <span class="stage-need">A low starting dose, no judgment, and a price you can keep paying this time.</span>
-      <span class="stage-go">Restarting GLP-1s {icon('arrow', size=14)}</span></a>
+<section class="homehero"><div class="wrap">
+  <span class="hh-updated">{icon('check-c', size=16)} Last updated: {UPDATED}</span>
+  <h1 class="hh-title">Best GLP-1 Weight-Loss Providers of {YEAR}</h1>
+  <p class="hh-sub">Licensed online GLP-1 clinics, independently ranked and scored on value, support, medications and transparency — with the real monthly cost, not just the intro teaser. Starting from ${min_start}/mo.</p>
+  <div class="hh-pills">
+    <span>{icon('stethoscope', size=16)} Licensed providers</span>
+    <span>{icon('spark', size=16)} Top-rated options</span>
+    <span>{icon('clock', size=16)} Fast online process</span>
   </div>
 </div></section>
 
-<section class="section" id="compare"><div class="wrap">
-  <div class="sec-head-row">
-    <div><span class="eyebrow-2">The comparison</span>
-      <h2>Ranked by what you'll really pay per month</h2></div>
-    <div class="cmp-sort"><span>Sort</span>
-      <button data-sort="price-asc" class="on">Real price ↑</button>
-      <button data-sort="price-desc">Real price ↓</button>
-      <button data-sort="rating">Our score</button></div>
-  </div>
-  <p class="lead" style="max-width:740px">The big number is the <strong>maintenance price</strong> — what you pay at the dose you stay on. The intro rate is shown underneath, because the "$39 first month" is the #1 cause of overcharged complaints. Filter to narrow the field; tap a program for the full breakdown and source.</p>
-  <div class="cmp-filters" id="cmpFilters">
-    <button data-filter="all" class="on">All <em>{N}</em></button>
-    <button data-filter="fda">FDA-approved <em>{n_fda}</em></button>
-    <button data-filter="compounded">Compounded <em>{n_compounded}</em></button>
-    <button data-filter="nomembership">No membership <em>{n_nomember}</em></button>
-    <button data-filter="u200">Under $200/mo <em>{n_u200}</em></button>
-    <button data-filter="video">Reaches a human (video) <em>{n_video}</em></button>
-  </div>
-  <div class="ctable">
-    <div class="ctrow ct-header"><div>Program</div><div>What you'll really pay</div><div>Medication &amp; visit</div><div>Our score</div><div></div></div>
-    <div id="ctable">{ctrows}</div>
-  </div>
-  <p class="price-foot">{icon('badge', size=15)} <span>Maintenance prices are what buyers typically pay at the dose they stay on, drawn from each provider's sourced pricing (see its review) and our Oct 2026 analysis of 88 price reports. Compounded GLP-1s aren't FDA-approved, insurance rarely covers them, and prices change monthly — always confirm the current number at the provider before you buy.</span></p>
-  <div class="disclosure-note">{icon('badge', size=16)} <span>Some "See pricing" buttons are affiliate links — we may earn a commission when you choose a provider through them. This never affects our scoring or ranking. <a href="/disclosure">How this works</a>.</span></div>
+{render_reviewer_byline()}
+
+<section class="section homecards" id="compare"><div class="wrap narrow">
+  <div class="hc-grid">{home_cards}</div>
+  {visitors_badge}
+  <p class="price-foot" style="margin-top:22px">{icon('badge', size=15)} <span>Ranked by our editorial score (value, support, medications, transparency) — not by what providers pay. The big number is each program's starting price; the real cost at a maintenance dose is shown on every card and in full on <a href="/reviews">each review</a>. Compounded GLP-1s aren't FDA-approved and prices change monthly — confirm at the provider before you buy.</span></p>
+  <div class="disclosure-note">{icon('badge', size=16)} <span>"Visit site" buttons are affiliate links — we may earn a commission when you choose a provider through them. This never affects our scoring or ranking. <a href="/disclosure">How this works</a>.</span></div>
 </div></section>
 
 <section class="section section-soft" id="truecost"><div class="wrap">
@@ -2035,14 +2082,6 @@ def render_home():
     <li><span class="legit-k">{icon('dollar', size=18)} Refunds in writing</span><span>Prepaid a bundle? Know the refund terms if a refill is late or the drug doesn't suit you. 30% of complaints are about being trapped.</span></li>
   </ol>
 </div></div></section>
-
-<section class="section section-soft"><div class="wrap">
-  <span class="eyebrow-2">Editors' picks</span>
-  <h2 style="margin-top:6px">Three worth a closer look</h2>
-  <p class="lead" style="max-width:680px">Not "the winners" — the three that best fit distinct needs, each with the trade-off we'd flag to a friend.</p>
-  <div class="top3b">{t3}</div>
-  <p class="cmp-foot muted" style="margin-top:16px">See all {N} ranked in the <a href="#compare">comparison above</a> or on the <a href="/reviews">reviews page</a>.</p>
-</div></section>
 
 <section class="section"><div class="wrap">
   <span class="eyebrow-2">Head-to-head</span>
@@ -2094,7 +2133,7 @@ def render_home():
         f"Real 2026 starting prices, medications and visit types for {len(PROVIDER_ORDER)} online GLP-1 weight-loss providers (semaglutide & tirzepatide), independently scored. Every figure sourced.",
         "/", body, active="/", jsonld=[ld_website(), ld_org(), ld_faq(), ld_itemlist(),
                                        ld_drug_entities(),
-                                       ld_speakable("/", [".hero2-copy h1", ".hero2-copy .lede", ".hero-promises"])])
+                                       ld_speakable("/", [".hh-title", ".hh-sub", ".hcard.is-popular .hc-headline"])])
 
 
 # --------------------------------------------------------------------------
