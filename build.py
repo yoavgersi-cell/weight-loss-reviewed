@@ -1308,6 +1308,21 @@ def logo_img(slug, cls="plogo"):
     name = PROVIDERS[slug]["name"]
     return f'<img class="{cls}" src="{src}" alt="{name} logo" loading="lazy">'
 
+def logo_icon_src(slug):
+    """Square icon logo for round thumbnails (sidebar). Falls back to the
+    wordmark, then to nothing (caller shows initials)."""
+    p = os.path.join(ROOT, f"assets/logos/{slug}-icon.svg")
+    if os.path.exists(p):
+        return f"/assets/logos/{slug}-icon.svg"
+    return logo_src(slug)
+
+def logo_icon(slug):
+    src = logo_icon_src(slug)
+    name = PROVIDERS[slug]["name"]
+    if not src:
+        return f'<span class="sb-rev-init">{name[:2]}</span>'
+    return f'<img src="{src}" alt="{name}" loading="lazy">'
+
 TIER_MEANING = {"$": "Budget", "$$": "Mid-range", "$$$": "Premium"}
 
 def review_url(slug):  return f"/reviews/{slug}"
@@ -1922,6 +1937,58 @@ def render_home_card(slug, i, popular=False):
   </div>
 </article>"""
 
+def render_home_sidebar():
+    """Desktop-only sticky sidebar (TreatmentsHub style): trust badge, editorial
+    reviews (top 5), ranking methodology bars, market facts, disclosure."""
+    top5 = PROVIDER_ORDER[:5]
+    rev_items = "".join(
+        f'<a class="sb-rev-row" href="{review_url(s)}">'
+        f'<span class="sb-rev-logo">{logo_icon(s)}</span>'
+        f'<span class="sb-rev-txt"><b>{PROVIDERS[s]["name"]}</b><span>{PROVIDERS[s]["score"]}/10 · Read review</span></span></a>'
+        for s in top5)
+    # Real ranking weights, shown as bars (0-100 scaled from the 0-10 weighting).
+    bars = "".join(
+        f'<div class="sb-bar-row"><span>{k}</span>'
+        f'<span class="sb-bar"><i style="width:{int(w*100)}%"></i></span>'
+        f'<em>{int(w*100)}%</em></div>'
+        for k, w in SCORE_WEIGHTS.items())
+    return f"""<aside class="home-sidebar" aria-label="More on how we rank">
+  <div class="sb-sticky">
+    <div class="sb-card sb-trust">
+      <span class="sb-ico sb-ico-green">{icon('shield', size=22)}</span>
+      <div><p class="sb-trust-t">Independent &amp; ad-free rankings</p>
+      <p class="sb-trust-s">Our scores are never bought — affiliate links don't change the order.</p></div>
+    </div>
+
+    <div class="sb-card sb-reviews">
+      <h3>Editorial reviews</h3>
+      <div class="sb-rev-list">{rev_items}</div>
+      <a class="sb-all" href="/reviews">Read all {len(PROVIDER_ORDER)} reviews →</a>
+    </div>
+
+    <div class="sb-card sb-method">
+      <div class="sb-method-head"><span class="sb-ico sb-ico-amber">{icon('badge', size=20)}</span>
+        <div><p class="sb-trust-t">How we score</p><p class="sb-trust-s">Every provider, four weighted factors:</p></div></div>
+      <div class="sb-bars">{bars}</div>
+      <a class="sb-all" href="/methodology">Our full methodology →</a>
+    </div>
+
+    <div class="sb-card sb-facts">
+      <h3>What people really pay</h3>
+      <dl class="sb-facts-list">
+        <div><dt>~$138<span>/mo</span></dt><dd>typical compounded GLP-1 (most pay $109–$169)</dd></div>
+        <div><dt>~$335<span>/mo</span></dt><dd>typical branded Wegovy / Zepbound, no insurance</dd></div>
+      </dl>
+      <p class="sb-facts-note">From our Oct 2026 analysis of 88 sourced price reports.</p>
+    </div>
+
+    <div class="sb-card sb-disc">
+      {icon('badge', size=15)}
+      <p>We may earn a commission from some providers featured here. Rankings and reviews are decided independently by our editorial team. <a href="/disclosure">Disclosure</a>.</p>
+    </div>
+  </div>
+</aside>"""
+
 def render_reviewer_byline():
     rv = REVIEWER
     av = (f'<img class="rb-photo" src="{rv["photo"]}" alt="{rv["short"]}" width="52" height="52">'
@@ -2071,11 +2138,16 @@ def render_home():
 
 {render_reviewer_byline()}
 
-<section class="section homecards" id="compare"><div class="wrap narrow">
-  <div class="hc-grid">{home_cards}</div>
-  {visitors_badge}
-  <p class="price-foot" style="margin-top:22px">{icon('badge', size=15)} <span>Ranked by our editorial score (value, support, medications, transparency) — not by what providers pay. The big number is each program's starting price; the real cost at a maintenance dose is shown on every card and in full on <a href="/reviews">each review</a>. Compounded GLP-1s aren't FDA-approved and prices change monthly — confirm at the provider before you buy.</span></p>
-  <div class="disclosure-note">{icon('badge', size=16)} <span>"Visit site" buttons are affiliate links — we may earn a commission when you choose a provider through them. This never affects our scoring or ranking. <a href="/disclosure">How this works</a>.</span></div>
+<section class="section homecards" id="compare"><div class="wrap">
+  <div class="home-layout">
+    <div class="home-main">
+      <div class="hc-grid">{home_cards}</div>
+      {visitors_badge}
+      <p class="price-foot" style="margin-top:22px">{icon('badge', size=15)} <span>Ranked by our editorial score (value, support, medications, transparency) — not by what providers pay. The big number is each program's starting price; the real cost at a maintenance dose is shown on every card and in full on <a href="/reviews">each review</a>. Compounded GLP-1s aren't FDA-approved and prices change monthly — confirm at the provider before you buy.</span></p>
+      <div class="disclosure-note">{icon('badge', size=16)} <span>"Visit site" buttons are affiliate links — we may earn a commission when you choose a provider through them. This never affects our scoring or ranking. <a href="/disclosure">How this works</a>.</span></div>
+    </div>
+    {render_home_sidebar()}
+  </div>
 </div></section>
 
 <section class="section section-soft" id="truecost"><div class="wrap">
