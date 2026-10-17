@@ -1379,6 +1379,8 @@ a.vsrow:hover { background: #EDF2F8; }
 .srcs-list a:hover { text-decoration: underline; }
 .srcs-list a svg { display: inline; vertical-align: -1px; opacity: .65; }
 .srcs-pub { color: var(--ink-soft); font-size: .9rem; }
+.art-srcs { margin-top: 40px; border-top: 1px solid var(--line); padding-top: 22px; }
+.art-srcs-note { margin: 16px 0 0; font-size: .85rem; color: var(--ink-soft); line-height: 1.55; }
 
 @media (max-width: 640px){
   .medopts { grid-template-columns: 1fr; }

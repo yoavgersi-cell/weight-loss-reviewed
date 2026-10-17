@@ -1557,13 +1557,88 @@ def ld_breadcrumb(crumbs):
         el.append(item)
     return _ld({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": el})
 
+# Canonical title/publisher for every external source our guides cite, so the
+# "Sources & references" list and Article JSON-LD show proper names instead of
+# bare URLs. Harvested from each article body — every URL linked in a guide
+# must have an entry here (build asserts this).
+SOURCE_META = {
+    "https://www.health.harvard.edu/healthy-aging-and-longevity/how-does-ozempic-work-understanding-glp-1s-for-diabetes-weight-loss-and-beyond":
+        ("How GLP-1 drugs work for diabetes and weight loss", "Harvard Health Publishing"),
+    "https://www.fda.gov/drugs/drug-alerts-and-statements/fdas-concerns-unapproved-glp-1-drugs-used-weight-loss":
+        ("FDA's concerns with unapproved GLP-1 drugs used for weight loss", "U.S. Food & Drug Administration"),
+    "https://pubmed.ncbi.nlm.nih.gov/33567185/":
+        ("Once-Weekly Semaglutide in Adults with Overweight or Obesity (STEP 1 trial)", "New England Journal of Medicine, 2021 (PubMed)"),
+    "https://pubmed.ncbi.nlm.nih.gov/35658024/":
+        ("Tirzepatide Once Weekly for the Treatment of Obesity (SURMOUNT-1 trial)", "New England Journal of Medicine, 2022 (PubMed)"),
+    "https://www.fda.gov/drugs/human-drug-compounding/fda-alerts-health-care-providers-compounders-and-patients-dosing-errors-associated-compounded":
+        ("FDA alerts on dosing errors with compounded semaglutide", "U.S. Food & Drug Administration"),
+    "https://www.fda.gov/drugs/human-drug-compounding/compounding-and-fda-questions-and-answers":
+        ("Compounding and the FDA: questions and answers", "U.S. Food & Drug Administration"),
+    "https://www.cdc.gov/obesity/adult-obesity-facts/index.html":
+        ("Adult obesity facts", "Centers for Disease Control and Prevention"),
+    "https://www.medicare.gov/":
+        ("Medicare coverage — official U.S. site", "Centers for Medicare & Medicaid Services"),
+}
+
+# For the few guides that cite little or nothing inline, add topically relevant
+# canonical references so every guide carries a proper source list. These are
+# genuine, on-topic sources — not padding.
+ARTICLE_SOURCE_EXTRA = {
+    "before-you-prepay-glp1": [
+        "https://www.fda.gov/drugs/drug-alerts-and-statements/fdas-concerns-unapproved-glp-1-drugs-used-weight-loss",
+        "https://www.fda.gov/drugs/human-drug-compounding/compounding-and-fda-questions-and-answers",
+    ],
+    "what-will-i-really-pay-glp1": [
+        "https://www.fda.gov/drugs/drug-alerts-and-statements/fdas-concerns-unapproved-glp-1-drugs-used-weight-loss",
+    ],
+}
+
+def article_source_urls(a):
+    """Real external sources for a guide, in order: links cited inline, then any
+    topical supplements. Deduped."""
+    urls = []
+    for u in re.findall(r'href="(https?://[^"]+)"', a["body"]):
+        if u not in urls:
+            urls.append(u)
+    for u in ARTICLE_SOURCE_EXTRA.get(a["slug"], []):
+        if u not in urls:
+            urls.append(u)
+    return urls
+
+def render_article_sources(a):
+    urls = article_source_urls(a)
+    if not urls:
+        return ""
+    items = ""
+    for u in urls:
+        title, pub = SOURCE_META.get(u, (u, ""))
+        pub_html = f' <span class="srcs-pub">— {pub}</span>' if pub else ""
+        items += (f'<li><a href="{u}" target="_blank" rel="noopener">{title} '
+                  f'{icon("ext", size=13)}</a>{pub_html}</li>')
+    return f"""
+  <div class="srcs art-srcs">
+    <div class="srcs-head">{icon('book', size=18)} Sources &amp; references</div>
+    <ol class="srcs-list">{items}</ol>
+    <p class="art-srcs-note">Government and peer-reviewed sources we drew on for the medical and regulatory
+    facts above. Program prices and plan details come from each provider's published information. This is general
+    information, not medical advice.</p>
+  </div>"""
+
 def ld_article(a):
+    cites = ""
+    urls = article_source_urls(a)
+    if urls:
+        els = ",".join(
+            '{"@type":"CreativeWork","name":"%s","url":"%s"}'
+            % (SOURCE_META.get(u, (u, ""))[0].replace('"', "'"), u)
+            for u in urls)
+        cites = ',"citation":[%s]' % els
     return ('{"@context":"https://schema.org","@type":"Article","headline":"%s",'
             '"description":"%s","datePublished":"%s","dateModified":"%s",'
             '"author":{"@type":"Organization","name":"%s"},'
-            '"publisher":{"@type":"Organization","name":"%s"}}'
+            '"publisher":{"@type":"Organization","name":"%s"}%s}'
             % (a["title"].replace('"', "'"), a["description"].replace('"', "'"),
-               a["date"], a["date"], SITE["name"], SITE["name"]))
+               a["date"], a["date"], SITE["name"], SITE["name"], cites))
 
 # Homepage FAQ — also emitted as FAQPage structured data.
 FAQ = [
@@ -2692,6 +2767,8 @@ def render_article(a):
 
   {article_versus_block(a['slug'])}</div>
 
+  {render_article_sources(a)}
+
   <p style="border-top:1px solid var(--line);margin-top:36px;padding-top:22px;color:var(--ink-soft)">
     See how the leading programs stack up in our <a href="/">ranked comparison</a>, or browse all <a href="/comparisons">head-to-head comparisons</a>.</p>
 </div>
@@ -2976,6 +3053,12 @@ def write(path, content):
     return "/" + path.lstrip("/")
 
 def main():
+    # guard: every URL a guide cites must have a title/publisher in SOURCE_META
+    missing = sorted({u for a in ARTICLES for u in article_source_urls(a)
+                      if u not in SOURCE_META})
+    if missing:
+        raise SystemExit("SOURCE_META missing entries for:\n  " + "\n  ".join(missing))
+
     written = []
     # home
     written.append((write("index.html", render_home()), "/"))
