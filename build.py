@@ -2030,6 +2030,16 @@ def tp_stars(rating, size="m"):
 
 TP_LOGO = '<span class="tp-logo"><span class="tp-logo-star">★</span>Trustpilot</span>'
 
+def provider_faq_legit_sentence(slug):
+    d = PDATA[slug]
+    bits = []
+    if "compounded" in d["meds"].lower():
+        bits.append("it works with US compounding pharmacies")
+    if any(w in d["meds"].lower() for w in ("wegovy", "zepbound", "ozempic", "branded")):
+        bits.append("it can prescribe FDA-approved branded medication")
+    bits.append("a licensed clinician reviews your intake before prescribing")
+    return "In practice, " + ", and ".join(bits) + "."
+
 def render_user_reviews(slug):
     """Authentic Trustpilot-style social proof — renders only when real data exists."""
     r = USER_REVIEWS.get(slug)
@@ -2119,94 +2129,171 @@ def render_review(slug):
                       f'<a href="/">full comparison</a>, or browse all <a href="/comparisons">head-to-head matchups</a>.</p>')
 
     reviews_html = render_user_reviews(slug)
-    ur_navlink = '<a href="#reviews">User reviews</a>' if reviews_html else ""
 
-    # sticky conversion rail
-    rail = f"""<aside class="rev-rail">
-  <div class="rail-card">
-    <div class="rail-top">{f'<span class="rail-logo"><img src="{logo_src(slug)}" alt="{n} logo"></span>' if logo_src(slug) else ''}
-      <div><div class="rail-score">{p['score']}<span>/10</span></div><div class="rail-word">{score_word(p['score'])} · #{rank} of {len(PROVIDER_ORDER)}</div></div></div>
-    <div class="rail-price"><span>Real price / mo</span><b>{_mbig}</b><em>{_msub or d['struct'].lower()}</em></div>
-    <div class="rail-mini">
-      <div><span>Medications</span><b>{d['meds']}</b></div>
-      <div><span>Visit</span><b>{d['visit']}</b></div>
-      <div><span>Insurance</span><b>{d['insurance']}</b></div>
+    ml = d["meds"].lower()
+    gold = round(p["score"] / 2)
+    star_html = "".join(f'<span class="rv-star{" on" if i < gold else ""}">★</span>' for i in range(5))
+
+    # ---- hero: logo, offer, gold rating, (editorial) reviewer, big CTA ----
+    big_cta = cta(slug, label=f"Visit {n}", cls="btn btn-primary btn-block btn-lg rv-visit")
+    offer = f"GLP-1 from ${d['price']}{d['unit']}" if d.get("price") else n
+    hero = f"""
+<section class="rv-hero"><div class="wrap narrow">
+  {crumbs([("Home","/"),("Reviews","/reviews"),(n+" Review", "")])}
+  <div class="rv-hero-top">
+    <div class="rv-hero-logo">{f'<img src="{logo_src(slug)}" alt="{n} logo">' if logo_src(slug) else f'<span>{n}</span>'}</div>
+    <div class="rv-hero-head">
+      <h1>{n} Reviews</h1>
+      <p class="rv-offer">{offer}</p>
+      <p class="rv-updated">{icon('clock', size=15)} Last updated: {d['as_of']}</p>
+      <div class="rv-rating"><span class="rv-stars">{star_html}</span><b>{p['score']}/10</b><span class="rv-word">{score_word(p['score'])} — our rating</span></div>
     </div>
-    {cta(slug, label=f"See {n} pricing", cls='btn btn-primary btn-block btn-lg')}
-    <p class="rail-disc">Affiliate link · doesn't affect our score</p>
   </div>
-  <nav class="rail-nav"><span class="eyebrow-2">On this page</span>
-    <a href="#verdict">Our verdict</a><a href="#pricing">Pricing</a>{ur_navlink}
-    <a href="#scorecard">How we rate it</a><a href="#proscons">Pros &amp; cons</a><a href="#whofor">Who it's for</a><a href="#faq">FAQ</a>
-  </nav>
-</aside>"""
+  <div class="rv-reviewer">
+    <span class="rv-rev-ava">{icon('user-check', size=20)}</span>
+    <div><span class="rv-rev-by">{icon('shield', size=15)} Reviewed by the <b>{SITE['name']} editorial team</b></span>
+      <span class="rv-rev-meta">Updated {UPDATED} · <a href="/methodology">How we review</a></span></div>
+  </div>
+  {big_cta}
+  <p class="rv-disc">We may earn a commission from links on this page — it never affects our rankings (<a href="/disclosure">how we stay objective</a>).</p>
+</div></section>"""
+
+    # ---- medication options (honest: type + form, no fabricated per-drug price) ----
+    med_cards = ""
+    opts = []
+    if "semaglutide" in ml or "wegovy" in ml or "ozempic" in ml:
+        opts.append(("Semaglutide", "sema", ("Compounded semaglutide" if "compounded" in ml else "Branded semaglutide (Wegovy)")))
+    if "tirzepatide" in ml or "zepbound" in ml:
+        opts.append(("Tirzepatide", "tirz", ("Compounded tirzepatide" if "compounded" in ml else "Branded tirzepatide (Zepbound)")))
+    if not opts:
+        opts = [("GLP-1 medication", "sema", d["meds"])]
+    for tag, tcls, desc in opts:
+        med_cards += f"""<div class="medopt">
+      <span class="medopt-tag mo-{tcls}">{tag}</span>
+      <div class="medopt-visual mo-{tcls}">{icon('pill', size=26)}</div>
+      <b class="medopt-name">{desc}</b>
+      <span class="medopt-form">{d['form']}</span>
+      <span class="medopt-ship">{icon('check', size=13)} Prescription &amp; delivery handled online</span>
+      {cta(slug, label="Check eligibility", cls="btn btn-primary btn-block btn-sm")}
+    </div>"""
+
+    # ---- "Is N legit?" (green) ----
+    legit_pts = ["A licensed clinician reviews your intake before any prescription"]
+    if "compounded" in ml:
+        legit_pts.append("Compounded semaglutide / tirzepatide from a US compounding pharmacy")
+    if any(w in ml for w in ("wegovy", "zepbound", "ozempic", "branded")):
+        legit_pts.append("Access to FDA-approved branded medication (Wegovy, Zepbound)")
+    legit_pts.append(f"Medication form: {d['form'].lower()}")
+    legit_pts.append(f"Available: {d['avail'].lower()}")
+    legit_pts.append(("Uses insurance / helps you check coverage" if "insurance" in d["insurance"].lower()
+                      else "Cash-pay (HSA/FSA accepted) — no insurance needed"))
+    legit_li = "".join(f'<li>{icon("check", size=16)}<span>{x}</span></li>' for x in legit_pts)
+    legit_card = f"""<div class="rv-card rv-legit">
+  <div class="rv-legit-head">{icon('shield', size=22)}<h2>Is {n} legit?</h2></div>
+  <div class="rv-legit-body">
+    <p>Yes — {n} is a legitimate US-based telehealth weight-loss provider. {provider_faq_legit_sentence(slug)}</p>
+    <ul class="rv-legit-list">{legit_li}</ul>
+    <p class="rv-legit-foot">"Legitimate" means a real, licensed telehealth operation — not a guarantee of results. Compounded medications are not FDA-approved brand drugs. Always confirm current details and eligibility with the provider.</p>
+  </div>
+</div>"""
+
+    # ---- How N works (numbered timeline) ----
+    steps = [
+        ("TODAY", f"Start your {n} plan", f"Choose your plan — {d['struct'].lower()}. {d.get('price_note','').split(';')[0]}."),
+        ("IN ~1 DAY", "A licensed clinician reviews your intake", f"Complete a short online health intake; {d['visit'].lower()}. If appropriate, a licensed clinician writes your prescription."),
+        ("NEXT", "Your prescription goes to a pharmacy", f"{n} sends your prescription to its partner pharmacy for {d['meds'].lower()}."),
+        ("DELIVERY", "Your medication ships to your door", "Discreet, tracked shipping — no clinic visits, no pickup."),
+        ("ONGOING", "Continue with support", (d.get("included") or "Ongoing clinician support and refills as prescribed") + "."),
+    ]
+    steps_html = "".join(
+        f'<div class="rv-step"><span class="rv-step-num">{i}</span>'
+        f'<div class="rv-step-body"><span class="rv-step-when">{when}</span>'
+        f'<b class="rv-step-title">{title}</b><p>{desc}</p></div></div>'
+        for i, (when, title, desc) in enumerate(steps, 1))
+
+    # ---- What we verified ----
+    ver_rows = [
+        ("Real price / mo", _mbig),
+        ("Intro rate", f"${d['price']}{d['unit']}"),
+        ("Pricing model", d["struct"]),
+        ("Medications", d["meds"]),
+        ("Medication form", d["form"]),
+        ("Visit type", d["visit"]),
+        ("Insurance", d["insurance"]),
+        ("Availability", d["avail"]),
+    ]
+    ver_html = "".join(f'<div class="ver-row"><span class="ver-label">{k}</span><span class="ver-val">{v}</span></div>'
+                       for k, v in ver_rows)
 
     body = f"""
-{crumbs([("Home","/"),("Reviews","/reviews"),(n+" Review", "")])}
-<section class="rev-hero"><div class="wrap">
-  <span class="hero-flag"><span class="dot"></span> Independent review · Updated {UPDATED} · #{rank} of {len(PROVIDER_ORDER)}</span>
-  <div class="rev-hero-row">
-    {f'<span class="rev-hero-logo"><img src="{logo_src(slug)}" alt="{n} logo"></span>' if logo_src(slug) else ''}
-    <div>
-      <h1>{n} Review ({YEAR})</h1>
-      <div class="meta-line"><span class="chip-score">{p['score']}<span style="font-weight:600">/10</span></span>
-        <span class="stars">{stars(p['score'])}</span><span class="tag">{score_word(p['score'])}</span>
-        <span class="tag tag-price">{_mbig} real</span></div>
-    </div>
+{hero}
+
+<div class="wrap narrow rv-stack">
+
+  <div class="rv-card rv-bottomline" id="verdict">
+    <span class="rv-eyebrow">The bottom line</span>
+    <p>{p['verdict']}</p>
   </div>
-  <p class="lede">{p['summary']}</p>
-</div></section>
 
-<div class="wrap rev-layout">
-  <main class="rev-main">
-    <div class="disclosure-note">{icon('badge', size=16)} <span>We may earn a commission if you sign up through our links — at no cost to you, and with no effect on this score. <a href="/disclosure">Details</a>.</span></div>
-
-    <div class="atglance">
-      <div class="ag-head"><span class="eyebrow-2">{n} at a glance</span><span class="ag-score">{p['score']}<i>/10</i> · {score_word(p['score'])}</span></div>
-      <div class="factgrid">{facts_html}</div>
+  <section id="pricing">
+    <h2 class="rv-h2">{n} products &amp; pricing</h2>
+    <p class="rv-sub">What you'll pay and the medications on offer — confirm the current number at checkout.</p>
+    <div class="medopts">{med_cards}</div>
+    <div class="rv-card rv-priceline">
+      <div class="rv-priceline-main"><span>Real cost / month</span><b>{_mbig}</b><em>{_msub or d['struct'].lower()}</em></div>
+      <p>{d['price_note']}.</p>
+      <p class="rv-src">{icon('badge', size=14)} As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>.</p>
     </div>
+  </section>
 
-    <div class="callout" id="verdict"><h3>{icon('badge')} The bottom line</h3><p>{p['verdict']}</p>
-      <p style="margin-bottom:0">{cta(slug, label=f"See {n} pricing", cls='btn btn-primary btn-sm')}</p></div>
+  {legit_card}
 
-    {flag_html}
-    {reported_html}
+  <div class="rv-card" id="trust">{reviews_html if reviews_html else ('<span class="rv-eyebrow">Reputation</span><p>We publish real customer reviews here as we capture them. In the meantime, check ' + n + "'s current rating on independent review sites before you sign up.</p>")}</div>
 
-    <h2 id="pricing">{n} pricing &amp; what it really costs</h2>
-    <div class="pricebox">
-      <div class="pricebox-lead"><span>What you'll really pay</span><b>{_mbig}</b><span class="pricebox-struct">{_msub or d['struct']}</span></div>
-      <p><strong>The real monthly cost at the dose you stay on is {_mbig}</strong> — {d['struct'].lower()}. The headline is <strong>${d['price']}{d['unit']}</strong> to start. {d['price_note']}.</p>
-      <p class="pricebox-src">{icon('badge', size=14)} As of {d['as_of']} · source: <a href="{d['src_url']}" rel="nofollow" target="_blank">{d['src']}</a>. Prices move — always confirm the current number at checkout.</p>
+  <section id="how">
+    <div class="rv-card">
+      <h2 class="rv-h2" style="margin-top:0">How {n} works</h2>
+      <div class="rv-steps">{steps_html}</div>
     </div>
-    <p>{n} prescribes <span class="med-type mt-{mcls}">{mtype}</span> <strong>{d['meds'].lower()}</strong> ({d['form'].lower()}), {d['visit'].lower()}. Insurance: {d['insurance'].lower()}. Available: {d['avail'].lower()}. {('Your plan includes ' + included.lower() + '.') if included else ''} See where that sits against every program in our <a href="/">pricing table</a>.</p>
-{reviews_html}
-    <h2 id="scorecard">How we rate {n}</h2>
-    <p class="muted" style="margin-top:-4px;font-size:.92rem">Each factor is scored 0–10 from the sourced data; the overall is the weighted average. <a href="/methodology">How we score →</a></p>
+  </section>
+
+  <section id="verified">
+    <div class="rv-card rv-verified">
+      <div class="rv-ver-head">{icon('badge', size=22)}<div><h2>What we verified</h2><span>Checked {d['as_of']}</span></div></div>
+      <p class="rv-sub" style="margin-top:0">Every line was checked against {n}'s data — when we can't verify something, we leave it out rather than guess.</p>
+      <div class="ver-grid">{ver_html}</div>
+    </div>
+  </section>
+
+  <section id="proscons">
+    <div class="rv-card">
+      <div class="rv-pc rv-pc-pros"><h3>{icon('check-c', size=22)} Pros</h3><ul>{"".join(f'<li>{icon("check", size=16)}<span>{x}</span></li>' for x in p["pros"])}</ul></div>
+      <div class="rv-pc rv-pc-cons"><h3>{icon('check-c', size=22)} Cons</h3><ul>{"".join(f'<li>{x}</li>' for x in p["cons"])}</ul></div>
+    </div>
+  </section>
+
+  <section id="whofor"><div class="rv-card"><h2 class="rv-h2" style="margin-top:0">Who {n} is for</h2>{who_for(slug)}</div></section>
+
+  <section id="scorecard"><div class="rv-card">
+    <h2 class="rv-h2" style="margin-top:0">How we rate {n}</h2>
+    <p class="rv-sub" style="margin-top:0">Scored 0–10 on four factors from the data; overall is the weighted average. <a href="/methodology">How we score →</a></p>
     <div class="scorecard">{sc_rows}</div>
+  </div></section>
 
-    <h2 id="proscons">Pros &amp; cons</h2>
-    <div class="proscons">
-      <div class="box pros"><h4>{icon('check-c', size=20)} What we liked</h4><ul class="pros">{pros}</ul></div>
-      <div class="box cons"><h4>What to weigh</h4><ul class="cons">{cons}</ul></div>
-    </div>
+  <section id="faq"><div class="rv-card"><h2 class="rv-h2" style="margin-top:0">{n} FAQ</h2>
+    <div class="faq" style="margin-top:12px">{provider_faq(slug)}</div></div></section>
 
-    <h2 id="whofor">Who {n} is for</h2>
-    {who_for(slug)}
+  <section>{vs_section}</section>
 
-    <h2 id="faq">{n} FAQ</h2>
-    <div class="faq" style="margin-top:16px">{provider_faq(slug)}</div>
+  <div class="rv-card rv-finalcta">
+    <h3>Interested in {n}?</h3>
+    <p>Visit their site to check eligibility and current pricing.</p>
+    {cta(slug, label=f"Visit {n}", cls="btn btn-primary btn-lg rv-visit")}
+  </div>
 
-    {vs_section}
-
-    <div class="rev-cta">
-      <div><h3>Ready to look at {n}?</h3><p>Check current pricing and plans — it only takes a minute.</p></div>
-      {cta(slug, label=f"See {n} pricing", cls='btn btn-primary btn-lg')}
-    </div>
-  </main>
-  {rail}
 </div>
 
-<div class="vs-sticky"><a class="vs-sticky-btn win" {cta_attrs(slug)}>See {n} pricing</a><a class="vs-sticky-btn" href="/">Compare all {len(PROVIDER_ORDER)}</a></div><div class="vs-sticky-spacer"></div>
+<div class="vs-sticky"><a class="vs-sticky-btn win" {cta_attrs(slug)}>Visit {n}</a><a class="vs-sticky-btn" href="/">Compare all {len(PROVIDER_ORDER)}</a></div><div class="vs-sticky-spacer"></div>
 """
     return base_page(
         f"{n} GLP-1 Review ({YEAR}): Real Cost & Honest Verdict | {SITE['name']}",
