@@ -1168,7 +1168,7 @@ ARTICLES = [
 <p>To find your month-four number, add three things: the medication cost at a maintenance dose, any membership or visit fee, and anything billed separately (labs, shipping). That total — not the first-month figure — is what you're really signing up for.</p>
 
 <h2 id="yearone">Year one: the number that decides value</h2>
-<p>Multiply your month-four cost by twelve, then add any prepaid bundle you paid up front. Year-one cost is where programs that looked cheap can lose to ones that were honest, because a low teaser attached to a plan that climbs with dose often overtakes a flat, all-in price. It's also where prepay matters: a six-month bundle lowers the monthly rate, but you're betting the provider ships reliably for all six months — so weigh the refund terms before you commit.</p>
+<p>Multiply your month-four cost by twelve, then add any prepaid bundle you paid up front. Year-one cost is where programs that looked cheap can lose to ones that were honest, because a low teaser attached to a plan that climbs with dose often overtakes a flat, all-in price. It's also where prepay matters: a six-month bundle lowers the monthly rate, but you're betting the provider ships reliably for all six months — so weigh the refund terms before you commit. Provider prices also move from month to month; our sister site Treatments Hub keeps a <a href="https://www.treatmentshub.com/weight-loss/glp1-price-changes">dated log of verified GLP-1 price changes</a>.</p>
 
 <h2 id="insurance">Where insurance and Medicare change the math</h2>
 <p>Insurance rarely covers compounded GLP-1s, so most compounded buyers pay cash. It sometimes covers branded Wegovy or Zepbound for weight loss, usually with prior authorization that's often denied — if it comes through, a maker savings card can bring the cost down sharply. If you're on Medicare, there are newer lower-cost routes to the original branded drugs worth checking on <a href="https://www.medicare.gov/" target="_blank" rel="noopener">medicare.gov</a> before you default to cash-pay compounded. Rules here change often, so confirm current coverage rather than trusting a year-old forum post.</p>
@@ -1660,6 +1660,8 @@ def article_source_urls(a):
     topical supplements. Deduped."""
     urls = []
     for u in re.findall(r'href="(https?://[^"]+)"', a["body"]):
+        if "treatmentshub.com" in u:
+            continue  # sister-site link, not a source
         if u not in urls:
             urls.append(u)
     for u in ARTICLE_SOURCE_EXTRA.get(a["slug"], []):
@@ -3176,6 +3178,7 @@ def render_about():
 <div class="wrap narrow article-body" style="padding-top:26px">
   <p>The online weight-loss market exploded, and the marketing got very good at making every program look identical and every promise look guaranteed. It's genuinely hard to tell a careful, clinician-led program from one that's just moving product.</p>
   <p>Weight Loss Reviewed is our attempt to fix that. We score programs on the things that actually matter — real clinical support, medication access, honest pricing and transparency — and we publish <a href="/methodology">exactly how we do it</a>. Our goal is simple: recommend what we'd tell a friend to use.</p>
+  <p>Weight Loss Reviewed is published by the team behind <a href="https://www.treatmentshub.com">Treatments Hub</a>, which covers weight loss, hair loss, HRT, TRT and online therapy.</p>
   <h2>How we make money</h2>
   <p>We're reader-supported. When you sign up through our links, we may earn a commission at no extra cost to you. That never changes our scores or rankings — read our <a href="/disclosure">full disclosure</a> for the details.</p>
   <h2>A note on medical advice</h2>
