@@ -1359,6 +1359,7 @@ _IC = {
     "stethoscope": '<path d="M5 3v5a4 4 0 008 0V3" stroke-width="1.7"/><path d="M9 14v1a5 5 0 0010 0v-2" stroke-width="1.7"/><circle cx="19" cy="11" r="2" stroke-width="1.7"/><circle cx="5" cy="3" r="0.6" fill="currentColor"/><circle cx="13" cy="3" r="0.6" fill="currentColor"/>',
     "chat": '<path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v9a1 1 0 01-1 1H9l-5 4V5z" stroke-width="1.7"/>',
     "ext": '<path d="M14 5h5v5M19 5l-8 8M12 5H6a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1v-6" stroke-width="1.7"/>',
+    "users": '<circle cx="9" cy="8" r="3.2" stroke-width="1.7"/><path d="M2.8 20a6.2 6.2 0 0112.4 0" stroke-width="1.7"/><path d="M16 5.2a3.2 3.2 0 010 5.6M17.5 20a6.2 6.2 0 00-2.6-5.05" stroke-width="1.7"/>',
 }
 
 def icon(name, cls="", size=24):
@@ -1833,9 +1834,11 @@ REVIEWER = {
     "date": "October 4, 2026",
 }
 
-# Honest monthly-traffic figure for the social-proof badge. Set to a real number
-# (as a string, e.g. "12,400") once you have analytics; left blank = badge hidden.
-HOME_VISITORS = ""
+# Social-proof visitor figure (shared with the TreatmentsHub network, per the
+# publisher). Shown in the sidebar block and as a mobile badge under the cards.
+SOCIAL_PROOF = {"number": "18,400+",
+                "text": "people compared weight-loss programs here this month"}
+HOME_VISITORS = SOCIAL_PROOF["number"]
 
 # Short, punchy card headlines (1-2 lines, like the reference) — each a
 # condensed take on the provider's real highlight/best-for. No new claims.
@@ -1954,8 +1957,14 @@ def render_home_sidebar():
         f'<span class="sb-bar"><i style="width:{int(w*100)}%"></i></span>'
         f'<em>{int(w*100)}%</em></div>'
         for k, w in SCORE_WEIGHTS.items())
+    social = (f"""<div class="sb-card sb-social">
+      <span class="sb-ico sb-ico-blue">{icon('users', size=22)}</span>
+      <div><p class="sb-social-n">{SOCIAL_PROOF['number']}</p>
+      <p class="sb-trust-s">{SOCIAL_PROOF['text']}</p></div>
+    </div>""" if SOCIAL_PROOF.get("number") else "")
     return f"""<aside class="home-sidebar" aria-label="More on how we rank">
   <div class="sb-sticky">
+    {social}
     <div class="sb-card sb-trust">
       <span class="sb-ico sb-ico-green">{icon('shield', size=22)}</span>
       <div><p class="sb-trust-t">Independent &amp; ad-free rankings</p>
@@ -2028,9 +2037,9 @@ def render_home():
     home_cards = "".join(render_home_card(slug, i, popular=(i == 1))
                          for i, slug in enumerate(PROVIDER_ORDER, 1))
     min_start = min(PDATA[s]["price"] for s in PROVIDER_ORDER)
-    visitors_badge = (f'<div class="hc-visitors">{icon("chart", size=15)} '
-                      f'<b>{HOME_VISITORS}</b> people researched GLP-1 providers here this month</div>'
-                      if HOME_VISITORS else "")
+    visitors_badge = (f'<div class="hc-visitors">{icon("users", size=15)} '
+                      f'<b>{SOCIAL_PROOF["number"]}</b> {SOCIAL_PROOF["text"]}</div>'
+                      if SOCIAL_PROOF.get("number") else "")
 
     # ---- comparison table rows — the REAL monthly price leads every row ----
     ctrows = ""
