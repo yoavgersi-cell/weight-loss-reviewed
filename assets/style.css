@@ -397,6 +397,13 @@ table.cmp tbody tr:hover td.attr { background: #E0EAF7; }
 .article-body ul, .article-body ol { padding-left: 1.3em; margin: 0 0 1.2em; }
 .article-body li { margin-bottom: .5em; }
 .article-body a { text-decoration: underline; text-decoration-color: #C6D7EC; text-underline-offset: 2px; }
+.article-body h3 { font-size: 1.22rem; font-weight: 700; color: var(--ink); margin: 1.6em 0 .4em; }
+.prose-table { margin: 1.6em 0; overflow-x: auto; }
+.prose-table table { width: 100%; border-collapse: collapse; font-size: .95rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.prose-table th, .prose-table td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink); }
+.prose-table thead th { background: var(--surface-2); font-weight: 700; font-size: .82rem; letter-spacing: .02em; color: var(--forest); }
+.prose-table tbody tr:last-child td { border-bottom: 0; }
+.prose-table figcaption { margin-top: 8px; font-size: .82rem; color: var(--muted); line-height: 1.5; }
 .meta-line { color: var(--muted); font-size: .9rem; margin-bottom: 6px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .toc { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 18px 22px; margin: 22px 0 30px; }
 .toc strong { font-family: var(--sans); display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 8px; }
