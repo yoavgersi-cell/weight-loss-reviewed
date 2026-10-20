@@ -10,6 +10,7 @@ and re-run. Every provider's outbound CTA comes from AFFILIATE_LINKS — swap th
 "#" placeholders for your real affiliate/tracking URLs and rebuild.
 """
 import os, re, html, datetime, shutil, json
+from pillar import PILLAR_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -974,6 +975,15 @@ VERSUS = [
 # --------------------------------------------------------------------------
 ARTICLES = [
     {
+        "slug": "glp1-weight-loss-online-complete-guide",
+        "title": f"GLP-1 Weight Loss Online: The Complete {YEAR} Guide",
+        "tag": "Guides",
+        "date": "2026-10-20",
+        "description": "The complete, independent guide to GLP-1 weight loss online — semaglutide vs tirzepatide, branded vs compounded, what it really costs, how to choose a safe program, side effects, dosing and what to expect. Evidence-based, with primary sources.",
+        "dek": "Everything that actually matters about getting semaglutide or tirzepatide through a telehealth program: the science, the real prices, the safety checks, and how to pick a program you'll actually stay on.",
+        "body": PILLAR_BODY,
+    },
+    {
         "slug": "glp1-weight-loss-programs-compared",
         "title": f"GLP-1 Weight-Loss Programs Compared ({YEAR}): What Actually Matters",
         "tag": "Guides",
@@ -1641,6 +1651,22 @@ SOURCE_META = {
         ("Adult obesity facts", "Centers for Disease Control and Prevention"),
     "https://www.medicare.gov/":
         ("Medicare coverage — official U.S. site", "Centers for Medicare & Medicaid Services"),
+    "https://www.fda.gov/news-events/press-announcements/fda-approves-new-drug-treatment-chronic-weight-management-first-2014":
+        ("FDA approves semaglutide (Wegovy) for chronic weight management", "U.S. Food & Drug Administration, 2021"),
+    "https://www.fda.gov/news-events/press-announcements/fda-approves-new-medication-chronic-weight-management":
+        ("FDA approves tirzepatide (Zepbound) for chronic weight management", "U.S. Food & Drug Administration, 2023"),
+    "https://medlineplus.gov/druginfo/meds/a618008.html":
+        ("Semaglutide injection — drug information", "MedlinePlus, U.S. National Library of Medicine"),
+    "https://medlineplus.gov/druginfo/meds/a623035.html":
+        ("Tirzepatide injection — drug information", "MedlinePlus, U.S. National Library of Medicine"),
+    "https://www.fda.gov/drugs/guidance-compliance-regulatory-information/human-drug-compounding":
+        ("Human drug compounding (503A / 503B standards)", "U.S. Food & Drug Administration"),
+    "https://www.fda.gov/drugs/postmarket-drug-safety-information-patients-and-providers/medications-containing-semaglutide-marketed-type-2-diabetes-or-weight-loss":
+        ("Medications containing semaglutide marketed for type 2 diabetes or weight loss", "U.S. Food & Drug Administration"),
+    "https://www.niddk.nih.gov/health-information/weight-management/prescription-medications-treat-overweight-obesity":
+        ("Prescription medications to treat overweight and obesity", "National Institute of Diabetes and Digestive and Kidney Diseases (NIH)"),
+    "https://pubmed.ncbi.nlm.nih.gov/37952131/":
+        ("Semaglutide and Cardiovascular Outcomes in Obesity without Diabetes (SELECT trial)", "New England Journal of Medicine, 2023 (PubMed)"),
 }
 
 # For the few guides that cite little or nothing inline, add topically relevant
@@ -1736,6 +1762,20 @@ def ld_faq():
         for q, a in FAQ
     )
     return '{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[%s]}' % items
+
+def extract_faq_pairs(body):
+    """Pull <h3>question?</h3><p>answer</p> pairs from a guide's FAQ section
+    (everything under an <h2 id="faq"> up to the next <h2>) for FAQPage schema."""
+    m = re.search(r'<h2 id="faq".*?>.*?</h2>(.*?)(?:<h2 |\Z)', body, re.S)
+    if not m:
+        return []
+    section = m.group(1)
+    pairs = []
+    for q, a in re.findall(r'<h3>(.*?)</h3>\s*<p>(.*?)</p>', section, re.S):
+        q = re.sub(r'<[^>]+>', '', q).strip()
+        if q.endswith('?'):
+            pairs.append((q, a.strip()))
+    return pairs
 
 def ld_faq_custom(pairs):
     items = ",".join(
@@ -2979,10 +3019,15 @@ def render_article(a):
 """
     # Medication-focused guides get drug-entity grounding too.
     DRUG_GUIDES = {"tirzepatide-vs-semaglutide", "compounded-vs-brand-vs-pills",
-                   "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared"}
+                   "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared",
+                   "glp1-weight-loss-online-complete-guide"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
+    # Emit FAQPage schema from the Q&A pairs inside the guide's FAQ section.
+    faq_pairs = extract_faq_pairs(a["body"])
+    if len(faq_pairs) >= 3:
+        jl.append(ld_faq_custom(faq_pairs))
     return base_page(f"{a['title']} | {SITE['name']}", a["description"],
                      article_url(a), body, active="/guides", jsonld=jl, article_meta=True)
 
