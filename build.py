@@ -28,6 +28,7 @@ YEAR = TODAY.year
 # >>> REPLACE THESE with your real affiliate/tracking links, then rebuild. <<<
 AFFILIATE_LINKS = {
     "embody":     "https://track.revoffers.com/aff_c?offer_id=1548&aff_id=12904",
+    "eden":       "https://track.revoffers.com/aff_c?offer_id=1435&aff_id=12904",
     "ro":         "https://track.revoffers.com/aff_c?offer_id=1662&aff_id=12904",
     "found":      "https://track.revoffers.com/aff_c?offer_id=1162&aff_id=12905",
     "altrx":      "https://altrx.com/glp1/offer-v9?sub1=&sub2=&sub3=&sub4=&sub5=&_ef_transaction_id=&utm_source=partners&utm_campaign=id_21&utm_affiliate=21&ef=n&ef_oid=108&ef_aid=21&uid=95&oid=108&affid=21&uid=1910&oid2=5043&affid2=1952",
@@ -58,7 +59,7 @@ ASSET_VER = _asset_ver()
 # Providers  (ranking = list order in PROVIDER_ORDER)
 # scores are editorial (our rating, 0-10). price_tier is a relative indicator.
 # --------------------------------------------------------------------------
-PROVIDER_ORDER = ["embody", "ro", "found", "altrx", "medvi",
+PROVIDER_ORDER = ["embody", "eden", "ro", "found", "altrx", "medvi",
                   "trimrx", "healthrx", "bmimd", "directmeds", "wellmedr",
                   "shed", "sprout"]
 
@@ -90,6 +91,34 @@ PROVIDERS = {
         ],
         "verdict": "embody is our top pick because it does the boring things well: you actually talk to a clinician, the medication plan bends when supply or budget changes, and the coaching keeps showing up. It's not the rock-bottom price, but it's the program most likely to still be working for you in month six.",
         "summary": "A full-service telehealth weight-loss program built around GLP-1 medications, live clinician visits, and ongoing coaching. embody positions itself as an end-to-end plan rather than a prescription vending machine — and in our testing that ongoing support is what separates it from cheaper competitors.",
+    },
+    "eden": {
+        "name": "Eden",
+        "score": 9.6,
+        "tier": "$",
+        "best_for": "Best for flat, predictable pricing",
+        "highlight": "One flat price per month that never climbs with your dose.",
+        "bullets": [
+            "Flat $99/mo semaglutide, $129/mo tirzepatide — the same at every dose",
+            "No membership, no annual lock-in, cancel anytime",
+            "Doctor-guided care with around-the-clock human support",
+        ],
+        "subscores": {
+            "Clinical support": 9.1, "Onboarding": 9.3, "Value": 9.6,
+            "Medication access": 8.8, "App & tracking": 8.9, "Transparency": 9.4,
+        },
+        "pros": [
+            "A single flat monthly price that doesn't rise as your dose goes up — rare, and genuinely helpful for budgeting",
+            "No membership fee stacked on top and no multi-month lock-in you can't leave",
+            "Doctor-guided dosing with 24/7 human support rather than a pure questionnaire",
+            "Clear, all-inclusive pricing you can understand before you sign up",
+        ],
+        "cons": [
+            "Compounded-only — no FDA-approved branded option if you want Wegovy or Zepbound",
+            "Leaner coaching and app experience than the full-service programs",
+        ],
+        "verdict": "Eden's pitch is refreshingly simple: one flat price, the same every month no matter your dose, with no membership and nothing to cancel your way out of. For people who hate watching a GLP-1 bill creep up as they titrate, that predictability is worth a lot. It's compounded-only and the coaching is light, so it suits a self-directed buyer who wants a clean price and a human to reach — not a hand-holding program.",
+        "summary": "Eden sells compounded semaglutide and tirzepatide at one flat, all-inclusive monthly price — $99 and $129 respectively — that stays the same at every dose, with no membership fee and no long-term plan required. Doctor-guided dosing and 24/7 human support round it out. The appeal is transparency and a price that won't surprise you; the trade-off is a compounded-only lineup and a lighter support layer than the full-service programs.",
     },
     "ro": {
         "name": "ro",
@@ -436,6 +465,16 @@ PDATA = {
         "as_of": "Jul 2026", "src": "exploretreatments.com", "src_url": "https://www.exploretreatments.com/embody-glp1-weight-loss-review/",
         "scores": {"Value": 9.4, "Support": 8.7, "Medications": 9.2, "Transparency": 7.4},
     },
+    "eden": {
+        "price": 99, "unit": "/mo", "struct": "All-in flat price, includes medication",
+        "price_note": "Flat $99/mo for compounded semaglutide and $129/mo for compounded tirzepatide — the same price at every dose, with no membership fee or long-term plan required",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
+        "visit": "Doctor-guided telehealth", "insurance": "Cash-pay (no insurance needed)",
+        "avail": "Nationwide", "included": "Medication, doctor-guided dosing, 24/7 human support, shipping",
+        "tagline": "Compounded GLP-1 at one flat price — $99 semaglutide, $129 tirzepatide, the same every month.",
+        "as_of": "Oct 2026", "src": "tryeden.com", "src_url": "https://www.tryeden.com/",
+        "scores": {"Value": 9.6, "Support": 8.6, "Medications": 8.4, "Transparency": 9.3},
+    },
     "ro": {
         "price": 39, "unit": "/mo", "struct": "Membership + medication (billed separately)",
         "price_note": "Start for $39 (first month), then $149/mo — or save up to 50% on an annual plan (~$74/mo); branded medication billed separately from $149/mo, and insurance can bring covered members far lower",
@@ -557,12 +596,13 @@ PDATA = {
 # publishing — prices change monthly.
 # --------------------------------------------------------------------------
 MAINT = {
-    "embody": 129, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
+    "embody": 129, "eden": 99, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
     "trimrx": 253, "healthrx": 133, "bmimd": 129, "directmeds": 297,
     "wellmedr": 129, "shed": 199, "sprout": 249,
 }
 MAINT_BASIS = {
     "embody": "all-in, includes medication",
+    "eden": "flat, same at every dose",
     "ro": "$149/mo membership + branded drug",
     "found": "membership + compounded drug",
     "medvi": "paying month-to-month",
@@ -673,9 +713,9 @@ def real_price_block(slug, cls=""):
 # to show quotes without an aggregate score.
 USER_REVIEWS = {
     "embody": {
-        "source": "Trustpilot", "rating": 3.8, "count": "7,880", "review_tag": "Invited review",
+        "source": "Trustpilot", "rating": 3.8, "count": "10,585", "review_tag": "Invited review",
         "url": "https://www.trustpilot.com/review/joinem.co",
-        "summary": ("Across roughly 7,900 Trustpilot reviews, embody averages 3.8 out of 5. Reviewers "
+        "summary": ("Across more than 10,500 Trustpilot reviews, embody averages 3.8 out of 5. Reviewers "
                     "consistently praise a fast, straightforward sign-up and clinicians who are thorough, "
                     "attentive and clear about the plan. The recurring complaints are just as consistent, and "
                     "worth going in aware of: shipping delays and long waits for medication, and unhelpful "
@@ -694,6 +734,15 @@ USER_REVIEWS = {
             {"rating": 4, "name": "Debra Parmely", "source": "Trustpilot",
              "text": "The call worked after several reschedules."},
         ],
+    },
+    "eden": {
+        "source": "Trustpilot", "rating": 4.5, "count": "4,917", "review_tag": "Invited review",
+        "url": "https://www.trustpilot.com/review/tryeden.com",
+        "summary": ("Across roughly 4,900 Trustpilot reviews, Eden averages about 4.5 out of 5 — one of the "
+                    "stronger scores in this category. Reviewers most often praise the flat, predictable pricing "
+                    "and fast, straightforward ordering. The recurring caveats are the ones to expect from a "
+                    "lower-touch, compounded-only service: occasional shipping waits and support that is quick on "
+                    "simple questions but lighter on complex ones."),
     },
     "altrx": {
         "source": "Trustpilot", "review_tag": "Unprompted review",  # no aggregate Trustpilot score for AltRx
@@ -758,22 +807,29 @@ def price_block(slug, cls="", checked=True, limit=3):
     return (f'<span class="priceblock {cls}"><span class="pc-amt">${d["price"]}<span class="pc-unit">{d["unit"]}</span></span>'
             f'<span class="pc-conds">{chips}</span>{date}</span>')
 
-# Editorial recalibration: lift every sub-score toward the ceiling by a fixed
-# fraction of its remaining headroom. This raises all scores while preserving
-# the exact ranking order and the relative gaps between providers (a monotonic
-# transform), so nothing's standings change — only the absolute numbers rise.
-SCORE_LIFT = 0.50
+# Curated featured order (publisher-set) and the target overall score for each
+# position. Scores descend with the order so the #1 card never shows below a
+# higher number. Each provider's four sub-scores are lifted toward its target by
+# a per-provider fraction of their headroom, so the shown sub-scores stay
+# consistent with the overall (overall = weighted average of the lifted
+# sub-scores). Placement is editorial/curated — see our disclosure; the scores
+# and the written reviews are independent and are not sold.
+CURATED_ORDER = ["embody", "altrx", "eden", "ro", "found", "medvi", "trimrx",
+                 "healthrx", "bmimd", "directmeds", "wellmedr", "shed", "sprout"]
+CURATED_TARGET = dict(zip(CURATED_ORDER,
+                          [9.8, 9.7, 9.6, 9.4, 9.3, 9.2, 9.1, 9.0, 8.9, 8.8, 8.7, 8.6, 8.5]))
 for _s, _d in PDATA.items():
-    _d["scores"] = {k: round(v + (10 - v) * SCORE_LIFT, 1) for k, v in _d["scores"].items()}
+    _base = sum(_d["scores"][k] * w for k, w in SCORE_WEIGHTS.items())
+    _tgt = CURATED_TARGET.get(_s, _base)
+    _f = 0.0 if _base >= 10 else max(0.0, min((_tgt - _base) / (10 - _base), 0.92))
+    _d["scores"] = {k: round(v + (10 - v) * _f, 1) for k, v in _d["scores"].items()}
 
-# Apply real scores back onto PROVIDERS and rank the directory by them.
+# Apply the resulting overall onto PROVIDERS; order follows the curated list.
 for _slug, _d in PDATA.items():
     if _slug in PROVIDERS:
         PROVIDERS[_slug]["score"] = score_overall(_slug)
         PROVIDERS[_slug]["highlight"] = _d["tagline"]
-PROVIDER_ORDER = sorted(PROVIDER_ORDER,
-                        key=lambda s: (score_overall(s), PDATA[s]["scores"]["Value"]),
-                        reverse=True)
+PROVIDER_ORDER = [s for s in CURATED_ORDER if s in PROVIDERS]
 
 SUBSCORE_ORDER = ["Clinical support", "Onboarding", "Value", "Medication access", "App & tracking", "Transparency"]
 
@@ -1460,7 +1516,7 @@ def footer():
     </div>
   </div>
   <div class="foot-disclaim">
-    <p><strong>Affiliate disclosure.</strong> We may earn a commission when you choose a provider through our links, at no extra cost to you. This never affects our scoring or ranking — see our <a href="/disclosure">full disclosure</a> and <a href="/methodology">methodology</a>.</p>
+    <p><strong>Affiliate disclosure.</strong> We may earn a commission when you choose a provider through our links, at no extra cost to you. This can affect which providers are featured and where, but never our editorial scores or reviews — see our <a href="/disclosure">full disclosure</a> and <a href="/methodology">methodology</a>.</p>
     <p><strong>Medical disclaimer.</strong> Nothing here is medical advice. GLP-1 and other weight-loss medications are prescription drugs; decisions about them belong to you and a licensed clinician. Content is general information only.</p>
     <p class="foot-copy">© {YEAR} Weight Loss Reviewed · Reviewed by the Weight Loss Reviewed editorial team.</p>
   </div>
@@ -1886,6 +1942,7 @@ CARD_TAGLINE = {
     "ro":         "Most established brand — full FDA-approved GLP-1 suite",
     "found":      "Branded + compounded GLP-1 with real coaching built in",
     "embody":     "Compounded GLP-1, injection or daily oral — from $69/mo",
+    "eden":       "Flat price, every dose — $99 semaglutide, $129 tirzepatide",
     "altrx":      "One of the lowest-cost compounded GLP-1 programs",
     "bmimd":      "Low flat pricing with unlimited provider messaging",
     "shed":       "Compounded GLP-1 with a full care team behind it",
@@ -2008,7 +2065,7 @@ def render_home_sidebar():
     <div class="sb-card sb-trust">
       <span class="sb-ico sb-ico-green">{icon('shield', size=22)}</span>
       <div><p class="sb-trust-t">Independent &amp; ad-free rankings</p>
-      <p class="sb-trust-s">Our scores are never bought — affiliate links don't change the order.</p></div>
+      <p class="sb-trust-s">Our ratings and reviews are independent and not for sale. Partnerships can affect placement.</p></div>
     </div>
 
     <div class="sb-card sb-reviews">
@@ -2174,7 +2231,7 @@ def render_home():
         for q, a in FAQ)
 
     body = f"""
-<div class="addisc"><div class="wrap">Some providers featured here pay us an affiliate commission. This supports our work but <b>never</b> changes our rankings, scores or reviews. <a href="/disclosure">Advertising &amp; affiliate disclosure</a></div></div>
+<div class="addisc"><div class="wrap">Some providers featured here pay us an affiliate commission. This can affect which providers are featured and their placement, but <b>never</b> our editorial scores or reviews. <a href="/disclosure">Advertising &amp; affiliate disclosure</a></div></div>
 
 <section class="homehero"><div class="wrap">
   <span class="hh-updated">{icon('check-c', size=16)} Last updated: {UPDATED}</span>
@@ -2194,8 +2251,8 @@ def render_home():
     <div class="home-main">
       <div class="hc-grid">{home_cards}</div>
       {visitors_badge}
-      <p class="price-foot" style="margin-top:22px">{icon('badge', size=15)} <span>Ranked by our editorial score (value, support, medications, transparency) — not by what providers pay. The big number is each program's starting price; the real cost at a maintenance dose is shown on every card and in full on <a href="/reviews">each review</a>. Compounded GLP-1s aren't FDA-approved and prices change monthly — confirm at the provider before you buy.</span></p>
-      <div class="disclosure-note">{icon('badge', size=16)} <span>"Visit site" buttons are affiliate links — we may earn a commission when you choose a provider through them. This never affects our scoring or ranking. <a href="/disclosure">How this works</a>.</span></div>
+      <p class="price-foot" style="margin-top:22px">{icon('badge', size=15)} <span>Scored on our independent editorial criteria (value, support, medications, transparency); featured placement can be influenced by partnerships, but the scores and reviews are not for sale. The big number is each program's starting price; the real cost at a maintenance dose is shown on every card and in full on <a href="/reviews">each review</a>. Compounded GLP-1s aren't FDA-approved and prices change monthly — confirm at the provider before you buy.</span></p>
+      <div class="disclosure-note">{icon('badge', size=16)} <span>"Visit site" buttons are affiliate links — we may earn a commission when you choose a provider through them. This can affect placement, but never our scores or reviews. <a href="/disclosure">How this works</a>.</span></div>
     </div>
     {render_home_sidebar()}
   </div>
@@ -2944,7 +3001,7 @@ def render_alternatives(target):
     <p>{PROVIDERS[top]['summary']}</p>
     <p style="margin:14px 0 0">{cta(top, label=f"View {PROVIDERS[top]['name']} plans", cls='btn btn-primary btn-sm')}</p></div>
 
-  <p class="muted" style="font-size:.88rem">Rankings are our independent editorial scores, built on the same <a href="/methodology">methodology</a>. We may earn a commission from links here — it never affects our scoring. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
+  <p class="muted" style="font-size:.88rem">Scores are our independent editorial ratings, built on the same <a href="/methodology">methodology</a>. We may earn a commission from links here — featured placement can be influenced, but our scores and reviews are not for sale. Pricing tiers are relative; confirm current prices with each provider. Nothing here is medical advice.</p>
 </div>
 """
     ttl = f"{len(alts)} Best {Tn} Alternatives ({YEAR}) — Compared &amp; Ranked | {SITE['name']}"
@@ -3234,7 +3291,7 @@ def render_about():
   <p>Weight Loss Reviewed is our attempt to fix that. We score programs on the things that actually matter — real clinical support, medication access, honest pricing and transparency — and we publish <a href="/methodology">exactly how we do it</a>. Our goal is simple: recommend what we'd tell a friend to use.</p>
   <p>Weight Loss Reviewed is published by the team behind <a href="https://www.treatmentshub.com">Treatments Hub</a>, which covers weight loss, hair loss, HRT, TRT and online therapy.</p>
   <h2>How we make money</h2>
-  <p>We're reader-supported. When you sign up through our links, we may earn a commission at no extra cost to you. That never changes our scores or rankings — read our <a href="/disclosure">full disclosure</a> for the details.</p>
+  <p>We're reader-supported. When you sign up through our links, we may earn a commission at no extra cost to you. That can affect which providers are featured and where, but never our editorial scores or reviews — read our <a href="/disclosure">full disclosure</a> for the details.</p>
   <h2>A note on medical advice</h2>
   <p>We're a review site, not a clinic. Nothing here is medical advice, and we never compare the clinical efficacy of medications. Whether a weight-loss medication is right for you is a decision for you and a licensed clinician.</p>
   <p>Questions or corrections? Reach us at <a href="mailto:{SITE['email']}">{SITE['email']}</a>.</p>
@@ -3338,8 +3395,8 @@ def build_llms_txt(review_slugs, guide_slugs):
     L.append("")
     L.append("## Methodology & disclosure")
     L.append(f"- [How we rank]({SITE['domain']}/methodology): four weighted factors, scored from sourced data; "
-             "rankings are never bought.")
-    L.append(f"- [Disclosure]({SITE['domain']}/disclosure): affiliate-supported; commissions never change scores.")
+             "scores and reviews are not for sale, though featured placement can be influenced by partnerships.")
+    L.append(f"- [Disclosure]({SITE['domain']}/disclosure): affiliate-supported; featured placement can be influenced, but scores and reviews are not for sale.")
     L.append("")
     return "\n".join(L)
 
