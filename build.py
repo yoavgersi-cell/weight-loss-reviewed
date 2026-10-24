@@ -11,6 +11,7 @@ and re-run. Every provider's outbound CTA comes from AFFILIATE_LINKS — swap th
 """
 import os, re, html, datetime, shutil, json
 from pillar import PILLAR_BODY
+from pillar2 import BEYOND_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1038,6 +1039,15 @@ ARTICLES = [
         "description": "The complete, independent guide to GLP-1 weight loss online — semaglutide vs tirzepatide, branded vs compounded, what it really costs, how to choose a safe program, side effects, dosing and what to expect. Evidence-based, with primary sources.",
         "dek": "Everything that actually matters about getting semaglutide or tirzepatide through a telehealth program: the science, the real prices, the safety checks, and how to pick a program you'll actually stay on.",
         "body": PILLAR_BODY,
+    },
+    {
+        "slug": "glp1-beyond-weight-loss",
+        "title": "GLP-1s Beyond Weight Loss: What the Science Really Shows",
+        "tag": "Guides",
+        "date": "2026-10-24",
+        "description": "GLP-1 drugs like semaglutide and tirzepatide do far more than weight loss — cutting heart attacks and strokes, slowing kidney disease, treating sleep apnea. An evidence-based, sourced guide separating what's proven from what's hype, organ by organ.",
+        "dek": "Semaglutide and tirzepatide are turning out to protect the heart, kidneys and more — but the science is uneven. Here's the honest, sourced line between what's proven, what's emerging, and what's just a headline.",
+        "body": BEYOND_BODY,
     },
     {
         "slug": "glp1-weight-loss-programs-compared",
@@ -3077,7 +3087,7 @@ def render_article(a):
     # Medication-focused guides get drug-entity grounding too.
     DRUG_GUIDES = {"tirzepatide-vs-semaglutide", "compounded-vs-brand-vs-pills",
                    "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared",
-                   "glp1-weight-loss-online-complete-guide"}
+                   "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
