@@ -1648,7 +1648,7 @@ def ld_website():
 def ld_product(p, slug):
     d = PDATA[slug]
     price = MAINT.get(slug) or d["price"]
-    return _ld({
+    obj = {
         "@context": "https://schema.org", "@type": "Product", "name": p["name"],
         "description": p["summary"],
         "brand": {"@type": "Brand", "name": p["name"]},
@@ -1669,7 +1669,22 @@ def ld_product(p, slug):
         "citation": [
             {"@type": "CreativeWork", "name": title, "url": url}
             for title, _pub, url in MED_REFERENCES],
-    })
+    }
+    # Real customer aggregate rating (from Trustpilot) — ONLY when we actually hold
+    # it. This is third-party buyer data, distinct from our editorial Review above;
+    # never fabricated for a provider we have no aggregate for.
+    _r = USER_REVIEWS.get(slug)
+    if _r and _r.get("rating"):
+        try:
+            _count = int(str(_r.get("count", "")).replace(",", "").strip())
+        except (TypeError, ValueError):
+            _count = None
+        if _count:
+            obj["aggregateRating"] = {
+                "@type": "AggregateRating", "ratingValue": str(_r["rating"]),
+                "bestRating": "5", "worstRating": "1", "reviewCount": str(_count),
+            }
+    return _ld(obj)
 
 def ld_itemlist(name="Best online GLP-1 weight-loss programs, ranked"):
     # Each item embeds the Product (real price via Offer + our editorial rating)
@@ -2429,7 +2444,31 @@ def who_for(slug):
             f'<ul>{b1}</ul></div><div class="wf-col wf-bad"><h4>Maybe look elsewhere if…</h4>'
             f'<ul class="cons">{b2}</ul></div></div>')
 
-def provider_faq(slug):
+def provider_review_sentiment(slug):
+    """Honest one-paragraph answer to 'what do {n} reviews say?' — built from the
+    real Trustpilot data we hold, or an honest 'no aggregate yet' when we don't.
+    Never fabricates a rating or sentiment."""
+    p = PROVIDERS[slug]; n = p["name"]
+    r = USER_REVIEWS.get(slug)
+    if r and r.get("rating"):
+        # The captured summary already leads with the average, so use it directly
+        # rather than prepending a duplicate rating sentence.
+        if r.get("summary"):
+            return r["summary"]
+        return (f"Across {r.get('count','thousands of')} Trustpilot reviews, {n} averages "
+                f"<strong>{r['rating']} out of 5</strong>. Reviewers weigh the price and ordering "
+                f"experience against occasional shipping and support complaints.")
+    if r and r.get("summary"):
+        return (f"{r['summary']} {n} doesn't carry an aggregate Trustpilot score yet, so treat these as a "
+                f"representative sample and weigh them alongside our own testing.")
+    return (f"{n} doesn't publish an aggregate customer-review score yet, so there's no verified star rating to cite. "
+            f"Our <strong>{p['score']}/10</strong> is an editorial rating based on real price, medication options, "
+            f"clinical support and transparency — see the scorecard above — and we add verified customer reviews here "
+            f"as we capture them. Check {n}'s current standing on independent review sites before you commit.")
+
+def provider_faq_pairs(slug):
+    """The review page's FAQ as (question, answer_html) pairs — reused for both the
+    visible FAQ and the FAQPage structured data."""
     p, d = PROVIDERS[slug], PDATA[slug]
     n = p["name"]
     ins = (f"{n} runs an insurance concierge that pursues coverage for branded medication; many members also pay cash. "
@@ -2439,7 +2478,8 @@ def provider_faq(slug):
              if d.get("flag")
              else f"Yes — a licensed clinician reviews your medical intake before any prescription is issued. ")
     legit += "Compounded GLP-1 medications aren't FDA-approved finished products, so confirm the provider's credentials and your state's availability before you sign up."
-    qa = [
+    return [
+        (f"What do {n} reviews say?", provider_review_sentiment(slug)),
         (f"How much does {n} really cost per month?",
          f"At the dose most people stay on, expect about <strong>{maint_headline(slug)[0]}</strong> — {d['struct'].lower()}. The advertised starting rate is <strong>${d['price']}{d['unit']}</strong>, but that's usually an intro or prepay figure. {d['price_note']}. Confirm the current price at {d['src']}."),
         (f"What medications does {n} prescribe?",
@@ -2450,7 +2490,10 @@ def provider_faq(slug):
         (f"Where is {n} available?", f"{d['avail']}. Confirm your state is covered before you start."),
         (f"Is {n} legit?", legit),
     ]
-    return "".join(f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>' for q, a in qa)
+
+def provider_faq(slug):
+    return "".join(f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>'
+                   for q, a in provider_faq_pairs(slug))
 
 def tp_stars(rating, size="m"):
     """Trustpilot-style star boxes with partial fill on the fractional box."""
@@ -2801,6 +2844,7 @@ def render_review(slug):
         f"An independent {n} review — the real monthly cost ({maint_headline(slug)[0]}, not just the ${d['price']}{d['unit']} intro), {d['meds'].lower()}, what buyers report, and an honest {p['score']}/10. Updated {UPDATED}.",
         review_url(slug), body, active="/reviews",
         jsonld=[ld_product(p, slug), ld_org(), ld_drug_entities(),
+                ld_faq_custom(provider_faq_pairs(slug)),
                 ld_speakable(review_url(slug), [".rv-rating", ".rv-bottomline", ".rv-priceline-main"]),
                 ld_breadcrumb([("Home","/"),("Reviews","/reviews"),(n+" Review", review_url(slug))])])
 
