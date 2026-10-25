@@ -30,6 +30,7 @@ YEAR = TODAY.year
 AFFILIATE_LINKS = {
     "embody":     "https://track.revoffers.com/aff_c?offer_id=1548&aff_id=12904",
     "eden":       "https://track.revoffers.com/aff_c?offer_id=1435&aff_id=12904",
+    "medgm":      "https://track.revoffers.com/aff_c?offer_id=1656&aff_id=12904",
     "ro":         "https://track.revoffers.com/aff_c?offer_id=1662&aff_id=12904",
     "found":      "https://track.revoffers.com/aff_c?offer_id=1162&aff_id=12905",
     "altrx":      "https://altrx.com/glp1/offer-v9?sub1=&sub2=&sub3=&sub4=&sub5=&_ef_transaction_id=&utm_source=partners&utm_campaign=id_21&utm_affiliate=21&ef=n&ef_oid=108&ef_aid=21&uid=95&oid=108&affid=21&uid=1910&oid2=5043&affid2=1952",
@@ -60,7 +61,7 @@ ASSET_VER = _asset_ver()
 # Providers  (ranking = list order in PROVIDER_ORDER)
 # scores are editorial (our rating, 0-10). price_tier is a relative indicator.
 # --------------------------------------------------------------------------
-PROVIDER_ORDER = ["embody", "eden", "ro", "found", "altrx", "medvi",
+PROVIDER_ORDER = ["embody", "eden", "ro", "found", "altrx", "medgm", "medvi",
                   "trimrx", "healthrx", "bmimd", "directmeds", "wellmedr",
                   "shed", "sprout"]
 
@@ -176,6 +177,36 @@ PROVIDERS = {
         ],
         "verdict": "AltRx wins on price and speed. If you already know you want a compounded GLP-1 and don't need hand-holding, it's the most cost-effective door in. Just go in knowing the support is leaner — this is value-first, not coaching-first.",
         "summary": "AltRx is a value-focused telehealth program built around compounded GLP-1 medications and a fast, streamlined intake. It trades some of the coaching depth of premium programs for a notably lower monthly cost and quick time-to-start.",
+    },
+    "medgm": {
+        "name": "MEDGm",
+        "score": 8.9,
+        "tier": "$$",
+        "best_for": "Broadest medication menu",
+        "highlight": "Compounded, a daily oral tablet, and branded Zepbound in one place.",
+        "bullets": [
+            "Compounded GLP-1 injection, a daily oral tablet, or branded Zepbound",
+            "Starting at $169/mo injection, $239/mo tablet; Zepbound via $99 membership",
+            "Telehealth consult with independent licensed providers",
+        ],
+        "subscores": {
+            "Clinical support": 7.6, "Onboarding": 8.4, "Value": 8.0,
+            "Medication access": 9.3, "App & tracking": 7.8, "Transparency": 7.6,
+        },
+        "pros": [
+            "One of the widest medication menus here — compounded injection, a daily oral tablet, and branded Zepbound under one roof",
+            "A genuine daily-tablet option for people who'd rather not inject",
+            "Clear starting prices shown up front for each format",
+            "No long lock-in advertised on the compounded plans",
+        ],
+        "cons": [
+            "Compounded injections start higher than the budget leaders ($169 vs ~$99–$129)",
+            "It's a platform that connects you to independent providers, not a pharmacy or full-service coaching program",
+            "Branded Zepbound is a membership fee plus the drug's own cost, and availability is subject to change",
+            "No public aggregate review score yet to gauge member experience",
+        ],
+        "verdict": "MEDGm's pitch is choice: whether you want a weekly compounded injection, a daily dissolvable tablet, or branded Zepbound, it offers all three through one intake. That breadth — especially a real oral option alongside a branded path — is its strongest card. The trade-offs are a higher compounded starting price than the budget leaders and a lighter, platform-style support layer, so it suits someone who values medication flexibility over the lowest price or heavy coaching.",
+        "summary": "MEDGm is a telehealth platform that connects members with independent licensed providers for GLP-1 weight-loss treatment, with an unusually broad menu: compounded semaglutide/tirzepatide injections from $169/mo, a daily dissolvable oral tablet from $239/mo, and branded Zepbound through a $99/mo membership plus the medication's cost. The appeal is format flexibility — few programs offer injection, oral and branded paths together; the trade-offs are a higher compounded entry price than the cheapest options and a platform-style support model rather than full-service coaching.",
     },
     "trimrx": {
         "name": "TrimRx",
@@ -516,6 +547,16 @@ PDATA = {
         "as_of": "2026", "src": "health.usnews.com", "src_url": "https://health.usnews.com/best-diet/medication/medvi",
         "scores": {"Value": 7.8, "Support": 8.0, "Medications": 8.4, "Transparency": 8.4},
     },
+    "medgm": {
+        "price": 169, "unit": "/mo", "struct": "All-in (compounded); membership + drug for branded",
+        "price_note": "Compounded GLP-1 injection from $169/mo and a daily oral tablet from $239/mo; branded Zepbound is a $99/mo membership plus the medication's own cost, and availability is subject to change",
+        "meds": "Compounded semaglutide & tirzepatide + branded Zepbound", "form": "Weekly injection or daily oral tablet",
+        "visit": "Telehealth consult with independent providers", "insurance": "Cash-pay",
+        "avail": "Telehealth (confirm your state)", "included": "Provider consultation, medication, shipping",
+        "tagline": "Compounded, a daily oral tablet, or branded Zepbound — one of the broadest menus here.",
+        "as_of": "Oct 2026", "src": "medgm.org", "src_url": "https://www.medgm.org/",
+        "scores": {"Value": 8.0, "Support": 7.4, "Medications": 9.0, "Transparency": 7.4},
+    },
     "trimrx": {
         "price": 179, "unit": "/mo", "struct": "All-in, includes medication",
         "price_note": "Advertised 'from $179/mo'; semaglutide ~$199–$349/mo by plan length; branded far higher",
@@ -599,7 +640,7 @@ PDATA = {
 MAINT = {
     "embody": 129, "eden": 99, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
     "trimrx": 253, "healthrx": 133, "bmimd": 129, "directmeds": 297,
-    "wellmedr": 129, "shed": 199, "sprout": 249,
+    "wellmedr": 129, "shed": 199, "sprout": 249, "medgm": None,
 }
 MAINT_BASIS = {
     "embody": "all-in, includes medication",
@@ -815,10 +856,10 @@ def price_block(slug, cls="", checked=True, limit=3):
 # consistent with the overall (overall = weighted average of the lifted
 # sub-scores). Placement is editorial/curated — see our disclosure; the scores
 # and the written reviews are independent and are not sold.
-CURATED_ORDER = ["embody", "altrx", "eden", "ro", "found", "medvi", "trimrx",
+CURATED_ORDER = ["embody", "altrx", "eden", "ro", "found", "medgm", "medvi", "trimrx",
                  "healthrx", "bmimd", "directmeds", "wellmedr", "shed", "sprout"]
 CURATED_TARGET = dict(zip(CURATED_ORDER,
-                          [9.8, 9.7, 9.6, 9.4, 9.3, 9.2, 9.1, 9.0, 8.9, 8.8, 8.7, 8.6, 8.5]))
+                          [9.8, 9.7, 9.6, 9.4, 9.3, 9.2, 9.1, 9.0, 8.9, 8.8, 8.7, 8.6, 8.5, 8.4]))
 for _s, _d in PDATA.items():
     _base = sum(_d["scores"][k] * w for k, w in SCORE_WEIGHTS.items())
     _tgt = CURATED_TARGET.get(_s, _base)
@@ -1953,6 +1994,7 @@ CARD_TAGLINE = {
     "found":      "Branded + compounded GLP-1 with real coaching built in",
     "embody":     "Compounded GLP-1, injection or daily oral — from $69/mo",
     "eden":       "Flat price, every dose — $99 semaglutide, $129 tirzepatide",
+    "medgm":      "Compounded, a daily oral tablet, or branded Zepbound",
     "altrx":      "One of the lowest-cost compounded GLP-1 programs",
     "bmimd":      "Low flat pricing with unlimited provider messaging",
     "shed":       "Compounded GLP-1 with a full care team behind it",
