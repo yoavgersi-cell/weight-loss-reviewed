@@ -524,6 +524,23 @@ table.cmp tbody tr:hover td.attr { background: #E0EAF7; }
 .ct-tag { font-size: .8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pill { display: inline-block; background: var(--accent-tint); color: var(--accent-dark); font-weight: 600; font-size: .8rem;
   padding: 4px 11px; border-radius: 999px; }
+/* Evidence-status pills used in the "beyond weight loss" guide. */
+.pill-proven { background: #E3F3EC; color: var(--good); }
+.pill-emerging { background: #FFF4D6; color: #8A5B00; }
+.pill-hype { background: var(--coral-tint); color: var(--coral-dark); }
+.article-body .pill { font-size: .72rem; padding: 2px 9px; vertical-align: middle; }
+/* Rich glossary / feature list. */
+.article-body ul.rich-list { list-style: none; padding-left: 0; margin: 18px 0; }
+.article-body ul.rich-list li { position: relative; padding: 9px 0 9px 20px; border-bottom: 1px solid var(--line-soft); }
+.article-body ul.rich-list li:last-child { border-bottom: 0; }
+.article-body ul.rich-list li::before { content: ""; position: absolute; left: 2px; top: 17px;
+  width: 7px; height: 7px; border-radius: 2px; background: var(--accent); }
+/* Medical-disclaimer box. */
+.disclaimer-box { background: var(--surface-2); border: 1px solid var(--line); border-left: 4px solid var(--muted);
+  border-radius: var(--radius-sm); padding: 16px 18px; margin: 30px 0 8px; }
+.disclaimer-box p { font-size: .9rem; color: var(--muted); margin: 0; }
+/* Small note under a table or figure. */
+.article-body p.src-note { font-size: .84rem; color: var(--muted); font-style: italic; margin-top: 10px; }
 .ct-price b { font-family: var(--sans); font-weight: 900; color: var(--accent); font-size: 1.05rem; letter-spacing: 1px; }
 .ct-price span { display: block; font-size: .78rem; color: var(--muted); margin-top: 1px; }
 .ct-rate { display: flex; align-items: center; gap: 11px; }

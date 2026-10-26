@@ -11,6 +11,7 @@ and re-run. Every provider's outbound CTA comes from AFFILIATE_LINKS — swap th
 """
 import os, re, html, datetime, shutil, json
 from pillar import PILLAR_BODY
+from pillar2 import BEYOND_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -29,6 +30,7 @@ YEAR = TODAY.year
 AFFILIATE_LINKS = {
     "embody":     "https://track.revoffers.com/aff_c?offer_id=1548&aff_id=12904",
     "eden":       "https://track.revoffers.com/aff_c?offer_id=1435&aff_id=12904",
+    "medgm":      "https://track.revoffers.com/aff_c?offer_id=1656&aff_id=12904",
     "ro":         "https://track.revoffers.com/aff_c?offer_id=1662&aff_id=12904",
     "found":      "https://track.revoffers.com/aff_c?offer_id=1162&aff_id=12905",
     "altrx":      "https://altrx.com/glp1/offer-v9?sub1=&sub2=&sub3=&sub4=&sub5=&_ef_transaction_id=&utm_source=partners&utm_campaign=id_21&utm_affiliate=21&ef=n&ef_oid=108&ef_aid=21&uid=95&oid=108&affid=21&uid=1910&oid2=5043&affid2=1952",
@@ -59,7 +61,7 @@ ASSET_VER = _asset_ver()
 # Providers  (ranking = list order in PROVIDER_ORDER)
 # scores are editorial (our rating, 0-10). price_tier is a relative indicator.
 # --------------------------------------------------------------------------
-PROVIDER_ORDER = ["embody", "eden", "ro", "found", "altrx", "medvi",
+PROVIDER_ORDER = ["embody", "eden", "ro", "found", "altrx", "medgm", "medvi",
                   "trimrx", "healthrx", "bmimd", "directmeds", "wellmedr",
                   "shed", "sprout"]
 
@@ -175,6 +177,36 @@ PROVIDERS = {
         ],
         "verdict": "AltRx wins on price and speed. If you already know you want a compounded GLP-1 and don't need hand-holding, it's the most cost-effective door in. Just go in knowing the support is leaner — this is value-first, not coaching-first.",
         "summary": "AltRx is a value-focused telehealth program built around compounded GLP-1 medications and a fast, streamlined intake. It trades some of the coaching depth of premium programs for a notably lower monthly cost and quick time-to-start.",
+    },
+    "medgm": {
+        "name": "MEDGm",
+        "score": 8.9,
+        "tier": "$$",
+        "best_for": "Broadest medication menu",
+        "highlight": "Compounded, a daily oral tablet, and branded Zepbound in one place.",
+        "bullets": [
+            "Compounded GLP-1 injection, a daily oral tablet, or branded Zepbound",
+            "Starting at $169/mo injection, $239/mo tablet; Zepbound via $99 membership",
+            "Telehealth consult with independent licensed providers",
+        ],
+        "subscores": {
+            "Clinical support": 7.6, "Onboarding": 8.4, "Value": 8.0,
+            "Medication access": 9.3, "App & tracking": 7.8, "Transparency": 7.6,
+        },
+        "pros": [
+            "One of the widest medication menus here — compounded injection, a daily oral tablet, and branded Zepbound under one roof",
+            "A genuine daily-tablet option for people who'd rather not inject",
+            "Clear starting prices shown up front for each format",
+            "No long lock-in advertised on the compounded plans",
+        ],
+        "cons": [
+            "Compounded injections start higher than the budget leaders ($169 vs ~$99–$129)",
+            "It's a platform that connects you to independent providers, not a pharmacy or full-service coaching program",
+            "Branded Zepbound is a membership fee plus the drug's own cost, and availability is subject to change",
+            "No public aggregate review score yet to gauge member experience",
+        ],
+        "verdict": "MEDGm's pitch is choice: whether you want a weekly compounded injection, a daily dissolvable tablet, or branded Zepbound, it offers all three through one intake. That breadth — especially a real oral option alongside a branded path — is its strongest card. The trade-offs are a higher compounded starting price than the budget leaders and a lighter, platform-style support layer, so it suits someone who values medication flexibility over the lowest price or heavy coaching.",
+        "summary": "MEDGm is a telehealth platform that connects members with independent licensed providers for GLP-1 weight-loss treatment, with an unusually broad menu: compounded semaglutide/tirzepatide injections from $169/mo, a daily dissolvable oral tablet from $239/mo, and branded Zepbound through a $99/mo membership plus the medication's cost. The appeal is format flexibility — few programs offer injection, oral and branded paths together; the trade-offs are a higher compounded entry price than the cheapest options and a platform-style support model rather than full-service coaching.",
     },
     "trimrx": {
         "name": "TrimRx",
@@ -515,6 +547,16 @@ PDATA = {
         "as_of": "2026", "src": "health.usnews.com", "src_url": "https://health.usnews.com/best-diet/medication/medvi",
         "scores": {"Value": 7.8, "Support": 8.0, "Medications": 8.4, "Transparency": 8.4},
     },
+    "medgm": {
+        "price": 169, "unit": "/mo", "struct": "All-in (compounded); membership + drug for branded",
+        "price_note": "Compounded GLP-1 injection from $169/mo and a daily oral tablet from $239/mo; branded Zepbound is a $99/mo membership plus the medication's own cost, and availability is subject to change",
+        "meds": "Compounded semaglutide & tirzepatide + branded Zepbound", "form": "Weekly injection or daily oral tablet",
+        "visit": "Telehealth consult with independent providers", "insurance": "Cash-pay",
+        "avail": "Telehealth (confirm your state)", "included": "Provider consultation, medication, shipping",
+        "tagline": "Compounded, a daily oral tablet, or branded Zepbound — one of the broadest menus here.",
+        "as_of": "Oct 2026", "src": "medgm.org", "src_url": "https://www.medgm.org/",
+        "scores": {"Value": 8.0, "Support": 7.4, "Medications": 9.0, "Transparency": 7.4},
+    },
     "trimrx": {
         "price": 179, "unit": "/mo", "struct": "All-in, includes medication",
         "price_note": "Advertised 'from $179/mo'; semaglutide ~$199–$349/mo by plan length; branded far higher",
@@ -598,7 +640,7 @@ PDATA = {
 MAINT = {
     "embody": 129, "eden": 99, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
     "trimrx": 253, "healthrx": 133, "bmimd": 129, "directmeds": 297,
-    "wellmedr": 129, "shed": 199, "sprout": 249,
+    "wellmedr": 129, "shed": 199, "sprout": 249, "medgm": None,
 }
 MAINT_BASIS = {
     "embody": "all-in, includes medication",
@@ -814,10 +856,10 @@ def price_block(slug, cls="", checked=True, limit=3):
 # consistent with the overall (overall = weighted average of the lifted
 # sub-scores). Placement is editorial/curated — see our disclosure; the scores
 # and the written reviews are independent and are not sold.
-CURATED_ORDER = ["embody", "altrx", "eden", "ro", "found", "medvi", "trimrx",
+CURATED_ORDER = ["embody", "altrx", "eden", "ro", "found", "medgm", "medvi", "trimrx",
                  "healthrx", "bmimd", "directmeds", "wellmedr", "shed", "sprout"]
 CURATED_TARGET = dict(zip(CURATED_ORDER,
-                          [9.8, 9.7, 9.6, 9.4, 9.3, 9.2, 9.1, 9.0, 8.9, 8.8, 8.7, 8.6, 8.5]))
+                          [9.8, 9.7, 9.6, 9.4, 9.3, 9.2, 9.1, 9.0, 8.9, 8.8, 8.7, 8.6, 8.5, 8.4]))
 for _s, _d in PDATA.items():
     _base = sum(_d["scores"][k] * w for k, w in SCORE_WEIGHTS.items())
     _tgt = CURATED_TARGET.get(_s, _base)
@@ -1038,6 +1080,15 @@ ARTICLES = [
         "description": "The complete, independent guide to GLP-1 weight loss online — semaglutide vs tirzepatide, branded vs compounded, what it really costs, how to choose a safe program, side effects, dosing and what to expect. Evidence-based, with primary sources.",
         "dek": "Everything that actually matters about getting semaglutide or tirzepatide through a telehealth program: the science, the real prices, the safety checks, and how to pick a program you'll actually stay on.",
         "body": PILLAR_BODY,
+    },
+    {
+        "slug": "glp1-beyond-weight-loss",
+        "title": "GLP-1s Beyond Weight Loss: What the Science Really Shows",
+        "tag": "Guides",
+        "date": "2026-10-24",
+        "description": "GLP-1 drugs like semaglutide and tirzepatide do far more than weight loss — cutting heart attacks and strokes, slowing kidney disease, treating sleep apnea. An evidence-based, sourced guide separating what's proven from what's hype, organ by organ.",
+        "dek": "Semaglutide and tirzepatide are turning out to protect the heart, kidneys and more — but the science is uneven. Here's the honest, sourced line between what's proven, what's emerging, and what's just a headline.",
+        "body": BEYOND_BODY,
     },
     {
         "slug": "glp1-weight-loss-programs-compared",
@@ -1597,7 +1648,7 @@ def ld_website():
 def ld_product(p, slug):
     d = PDATA[slug]
     price = MAINT.get(slug) or d["price"]
-    return _ld({
+    obj = {
         "@context": "https://schema.org", "@type": "Product", "name": p["name"],
         "description": p["summary"],
         "brand": {"@type": "Brand", "name": p["name"]},
@@ -1618,7 +1669,22 @@ def ld_product(p, slug):
         "citation": [
             {"@type": "CreativeWork", "name": title, "url": url}
             for title, _pub, url in MED_REFERENCES],
-    })
+    }
+    # Real customer aggregate rating (from Trustpilot) — ONLY when we actually hold
+    # it. This is third-party buyer data, distinct from our editorial Review above;
+    # never fabricated for a provider we have no aggregate for.
+    _r = USER_REVIEWS.get(slug)
+    if _r and _r.get("rating"):
+        try:
+            _count = int(str(_r.get("count", "")).replace(",", "").strip())
+        except (TypeError, ValueError):
+            _count = None
+        if _count:
+            obj["aggregateRating"] = {
+                "@type": "AggregateRating", "ratingValue": str(_r["rating"]),
+                "bestRating": "5", "worstRating": "1", "reviewCount": str(_count),
+            }
+    return _ld(obj)
 
 def ld_itemlist(name="Best online GLP-1 weight-loss programs, ranked"):
     # Each item embeds the Product (real price via Offer + our editorial rating)
@@ -1943,6 +2009,7 @@ CARD_TAGLINE = {
     "found":      "Branded + compounded GLP-1 with real coaching built in",
     "embody":     "Compounded GLP-1, injection or daily oral — from $69/mo",
     "eden":       "Flat price, every dose — $99 semaglutide, $129 tirzepatide",
+    "medgm":      "Compounded, a daily oral tablet, or branded Zepbound",
     "altrx":      "One of the lowest-cost compounded GLP-1 programs",
     "bmimd":      "Low flat pricing with unlimited provider messaging",
     "shed":       "Compounded GLP-1 with a full care team behind it",
@@ -2377,7 +2444,31 @@ def who_for(slug):
             f'<ul>{b1}</ul></div><div class="wf-col wf-bad"><h4>Maybe look elsewhere if…</h4>'
             f'<ul class="cons">{b2}</ul></div></div>')
 
-def provider_faq(slug):
+def provider_review_sentiment(slug):
+    """Honest one-paragraph answer to 'what do {n} reviews say?' — built from the
+    real Trustpilot data we hold, or an honest 'no aggregate yet' when we don't.
+    Never fabricates a rating or sentiment."""
+    p = PROVIDERS[slug]; n = p["name"]
+    r = USER_REVIEWS.get(slug)
+    if r and r.get("rating"):
+        # The captured summary already leads with the average, so use it directly
+        # rather than prepending a duplicate rating sentence.
+        if r.get("summary"):
+            return r["summary"]
+        return (f"Across {r.get('count','thousands of')} Trustpilot reviews, {n} averages "
+                f"<strong>{r['rating']} out of 5</strong>. Reviewers weigh the price and ordering "
+                f"experience against occasional shipping and support complaints.")
+    if r and r.get("summary"):
+        return (f"{r['summary']} {n} doesn't carry an aggregate Trustpilot score yet, so treat these as a "
+                f"representative sample and weigh them alongside our own testing.")
+    return (f"{n} doesn't publish an aggregate customer-review score yet, so there's no verified star rating to cite. "
+            f"Our <strong>{p['score']}/10</strong> is an editorial rating based on real price, medication options, "
+            f"clinical support and transparency — see the scorecard above — and we add verified customer reviews here "
+            f"as we capture them. Check {n}'s current standing on independent review sites before you commit.")
+
+def provider_faq_pairs(slug):
+    """The review page's FAQ as (question, answer_html) pairs — reused for both the
+    visible FAQ and the FAQPage structured data."""
     p, d = PROVIDERS[slug], PDATA[slug]
     n = p["name"]
     ins = (f"{n} runs an insurance concierge that pursues coverage for branded medication; many members also pay cash. "
@@ -2387,7 +2478,8 @@ def provider_faq(slug):
              if d.get("flag")
              else f"Yes — a licensed clinician reviews your medical intake before any prescription is issued. ")
     legit += "Compounded GLP-1 medications aren't FDA-approved finished products, so confirm the provider's credentials and your state's availability before you sign up."
-    qa = [
+    return [
+        (f"What do {n} reviews say?", provider_review_sentiment(slug)),
         (f"How much does {n} really cost per month?",
          f"At the dose most people stay on, expect about <strong>{maint_headline(slug)[0]}</strong> — {d['struct'].lower()}. The advertised starting rate is <strong>${d['price']}{d['unit']}</strong>, but that's usually an intro or prepay figure. {d['price_note']}. Confirm the current price at {d['src']}."),
         (f"What medications does {n} prescribe?",
@@ -2398,7 +2490,10 @@ def provider_faq(slug):
         (f"Where is {n} available?", f"{d['avail']}. Confirm your state is covered before you start."),
         (f"Is {n} legit?", legit),
     ]
-    return "".join(f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>' for q, a in qa)
+
+def provider_faq(slug):
+    return "".join(f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>'
+                   for q, a in provider_faq_pairs(slug))
 
 def tp_stars(rating, size="m"):
     """Trustpilot-style star boxes with partial fill on the fractional box."""
@@ -2749,6 +2844,7 @@ def render_review(slug):
         f"An independent {n} review — the real monthly cost ({maint_headline(slug)[0]}, not just the ${d['price']}{d['unit']} intro), {d['meds'].lower()}, what buyers report, and an honest {p['score']}/10. Updated {UPDATED}.",
         review_url(slug), body, active="/reviews",
         jsonld=[ld_product(p, slug), ld_org(), ld_drug_entities(),
+                ld_faq_custom(provider_faq_pairs(slug)),
                 ld_speakable(review_url(slug), [".rv-rating", ".rv-bottomline", ".rv-priceline-main"]),
                 ld_breadcrumb([("Home","/"),("Reviews","/reviews"),(n+" Review", review_url(slug))])])
 
@@ -3077,7 +3173,7 @@ def render_article(a):
     # Medication-focused guides get drug-entity grounding too.
     DRUG_GUIDES = {"tirzepatide-vs-semaglutide", "compounded-vs-brand-vs-pills",
                    "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared",
-                   "glp1-weight-loss-online-complete-guide"}
+                   "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
