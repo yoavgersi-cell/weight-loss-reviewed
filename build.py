@@ -13,6 +13,7 @@ import os, re, html, datetime, shutil, json
 from pillar import PILLAR_BODY
 from pillar2 import BEYOND_BODY
 from pillar3 import BEYOND_PILL_BODY
+from pillar4 import COMPOUNDED_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1101,6 +1102,15 @@ ARTICLES = [
         "body": BEYOND_PILL_BODY,
     },
     {
+        "slug": "is-compounded-semaglutide-legal",
+        "title": "Is Compounded Semaglutide Still Legal in 2026? What the Shortage Ruling Changed",
+        "tag": "Guides",
+        "date": "2026-10-29",
+        "description": "Is compounded semaglutide (and tirzepatide) still legal in 2026? The FDA shortage is over, which ended broad compounding — but a narrow 503A patient-specific path remains. What changed, who can still get it legally, the risks, and how to vet a program. Sourced, non-promotional.",
+        "dek": "The shortage that made cheap compounded GLP-1s widely legal is over. Here's what's still allowed, what's on shaky ground, and how to tell a legitimate program from a risky one — with the FDA sources.",
+        "body": COMPOUNDED_BODY,
+    },
+    {
         "slug": "glp1-weight-loss-programs-compared",
         "title": f"GLP-1 Weight-Loss Programs Compared ({YEAR}): What Actually Matters",
         "tag": "Guides",
@@ -1807,6 +1817,8 @@ SOURCE_META = {
         ("FDA approves the Wegovy pill (oral semaglutide 25 mg) for weight management", "Novo Nordisk, 2025"),
     "https://investor.lilly.com/news-releases/news-release-details/fda-approves-lillys-foundayotm-orforglipron-only-glp-1-pill":
         ("FDA approves Foundayo (orforglipron), the first oral small-molecule GLP-1 pill for weight management", "Eli Lilly and Company, 2026"),
+    "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages":
+        ("Drug shortages — current and resolved shortage lists", "U.S. Food & Drug Administration"),
 }
 
 # For the few guides that cite little or nothing inline, add topically relevant
@@ -3192,7 +3204,7 @@ def render_article(a):
     DRUG_GUIDES = {"tirzepatide-vs-semaglutide", "compounded-vs-brand-vs-pills",
                    "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared",
                    "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss",
-                   "glp1-weight-loss-pill"}
+                   "glp1-weight-loss-pill", "is-compounded-semaglutide-legal"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
