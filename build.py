@@ -20,7 +20,12 @@ from pillar4 import COMPOUNDED_BODY
 # --------------------------------------------------------------------------
 SITE = {
     "name": "Weight Loss Reviewed",
-    "domain": "https://weightlossreviewed.com",
+    # Canonical host MUST match the Vercel production domain (www), which the
+    # apex (non-www) 308-redirects to. Pointing canonicals/sitemap at the
+    # non-www host made Google see every canonical URL redirect → "Redirect
+    # error" in Search Console. Keep this as www unless the Vercel primary
+    # domain changes.
+    "domain": "https://www.weightlossreviewed.com",
     "tagline": "We test, score and rank online weight-loss programs.",
     "email": "hello@weightlossreviewed.com",
 }
