@@ -49,7 +49,7 @@ note(f"{len(pages)} HTML pages generated")
 REQUIRED = {
     "<title>": re.compile(r"<title>[^<]{5,}</title>"),
     "meta description": re.compile(r'<meta name="description" content="[^"]{20,}"'),
-    "canonical": re.compile(r'<link rel="canonical" href="https://weightlossreviewed\.com'),
+    "canonical": re.compile(r'<link rel="canonical" href="https://(?:www\.)?weightlossreviewed\.com'),
     "hreflang x-default": re.compile(r'hreflang="x-default"'),
     "robots meta": re.compile(r'<meta name="robots"'),
     "og:title": re.compile(r'property="og:title"'),

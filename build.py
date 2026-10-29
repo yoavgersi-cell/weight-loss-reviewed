@@ -12,13 +12,20 @@ and re-run. Every provider's outbound CTA comes from AFFILIATE_LINKS — swap th
 import os, re, html, datetime, shutil, json
 from pillar import PILLAR_BODY
 from pillar2 import BEYOND_BODY
+from pillar3 import BEYOND_PILL_BODY
+from pillar4 import COMPOUNDED_BODY
 
 # --------------------------------------------------------------------------
 # Site config
 # --------------------------------------------------------------------------
 SITE = {
     "name": "Weight Loss Reviewed",
-    "domain": "https://weightlossreviewed.com",
+    # Canonical host MUST match the Vercel production domain (www), which the
+    # apex (non-www) 308-redirects to. Pointing canonicals/sitemap at the
+    # non-www host made Google see every canonical URL redirect → "Redirect
+    # error" in Search Console. Keep this as www unless the Vercel primary
+    # domain changes.
+    "domain": "https://www.weightlossreviewed.com",
     "tagline": "We test, score and rank online weight-loss programs.",
     "email": "hello@weightlossreviewed.com",
 }
@@ -510,10 +517,10 @@ PDATA = {
     "ro": {
         "price": 39, "unit": "/mo", "struct": "Membership + medication (billed separately)",
         "price_note": "Start for $39 (first month), then $149/mo — or save up to 50% on an annual plan (~$74/mo); branded medication billed separately from $149/mo, and insurance can bring covered members far lower",
-        "meds": "Wegovy, Zepbound, Ozempic & Foundaya", "form": "Oral pill or injection pen",
+        "meds": "Wegovy, Zepbound, Ozempic & Foundayo", "form": "Oral pill or injection pen",
         "visit": "Async + optional video", "insurance": "Dedicated insurance concierge",
         "avail": "Nationwide", "included": "Full branded GLP-1 suite, insurance concierge, labs when indicated, provider messaging, shipping",
-        "tagline": "The most established, most transparent option — a full FDA-approved suite (Wegovy, Zepbound, Ozempic, Foundaya) with a dedicated insurance concierge.",
+        "tagline": "The most established, most transparent option — a full FDA-approved suite (Wegovy, Zepbound, Ozempic, Foundayo) with a dedicated insurance concierge.",
         "as_of": "Sep 2026", "src": "ro.co", "src_url": "https://ro.co/weight-loss/pricing/",
         "scores": {"Value": 8.2, "Support": 9.0, "Medications": 9.3, "Transparency": 9.5},
     },
@@ -1089,6 +1096,24 @@ ARTICLES = [
         "description": "GLP-1 drugs like semaglutide and tirzepatide do far more than weight loss — cutting heart attacks and strokes, slowing kidney disease, treating sleep apnea. An evidence-based, sourced guide separating what's proven from what's hype, organ by organ.",
         "dek": "Semaglutide and tirzepatide are turning out to protect the heart, kidneys and more — but the science is uneven. Here's the honest, sourced line between what's proven, what's emerging, and what's just a headline.",
         "body": BEYOND_BODY,
+    },
+    {
+        "slug": "glp1-weight-loss-pill",
+        "title": "The GLP-1 Weight-Loss Pill: Oral Wegovy vs Foundayo (2026 Guide)",
+        "tag": "Guides",
+        "date": "2026-10-26",
+        "description": "The weight-loss pill is here: oral Wegovy (oral semaglutide 25 mg) and Foundayo (orforglipron) are FDA-approved. An evidence-based guide to how well the GLP-1 pills work, pill vs injection, cost, dosing, side effects and who they're for — with primary sources.",
+        "dek": "Two real, FDA-approved GLP-1 pills arrived in 2026. Here's how well they actually work, how they compare to the injections and to each other, what they cost, and who should consider one — honestly, with the trials.",
+        "body": BEYOND_PILL_BODY,
+    },
+    {
+        "slug": "is-compounded-semaglutide-legal",
+        "title": "Is Compounded Semaglutide Still Legal in 2026? What the Shortage Ruling Changed",
+        "tag": "Guides",
+        "date": "2026-10-29",
+        "description": "Is compounded semaglutide (and tirzepatide) still legal in 2026? The FDA shortage is over, which ended broad compounding — but a narrow 503A patient-specific path remains. What changed, who can still get it legally, the risks, and how to vet a program. Sourced, non-promotional.",
+        "dek": "The shortage that made cheap compounded GLP-1s widely legal is over. Here's what's still allowed, what's on shaky ground, and how to tell a legitimate program from a risky one — with the FDA sources.",
+        "body": COMPOUNDED_BODY,
     },
     {
         "slug": "glp1-weight-loss-programs-compared",
@@ -1789,6 +1814,16 @@ SOURCE_META = {
         ("Prescription medications to treat overweight and obesity", "National Institute of Diabetes and Digestive and Kidney Diseases (NIH)"),
     "https://pubmed.ncbi.nlm.nih.gov/37952131/":
         ("Semaglutide and Cardiovascular Outcomes in Obesity without Diabetes (SELECT trial)", "New England Journal of Medicine, 2023 (PubMed)"),
+    "https://www.nejm.org/doi/abs/10.1056/NEJMoa2500969":
+        ("Oral Semaglutide at a Dose of 25 mg in Adults with Overweight or Obesity (OASIS 4 trial)", "New England Journal of Medicine, 2025"),
+    "https://www.nejm.org/doi/full/10.1056/NEJMoa2511774":
+        ("Orforglipron, an Oral Small-Molecule GLP-1 Receptor Agonist for Obesity Treatment (ATTAIN-1 trial)", "New England Journal of Medicine, 2025"),
+    "https://www.novonordisk.com/content/nncorp/global/en/news-and-media/news-and-ir-materials/news-details.html?id=916472":
+        ("FDA approves the Wegovy pill (oral semaglutide 25 mg) for weight management", "Novo Nordisk, 2025"),
+    "https://investor.lilly.com/news-releases/news-release-details/fda-approves-lillys-foundayotm-orforglipron-only-glp-1-pill":
+        ("FDA approves Foundayo (orforglipron), the first oral small-molecule GLP-1 pill for weight management", "Eli Lilly and Company, 2026"),
+    "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages":
+        ("Drug shortages — current and resolved shortage lists", "U.S. Food & Drug Administration"),
 }
 
 # For the few guides that cite little or nothing inline, add topically relevant
@@ -3173,7 +3208,8 @@ def render_article(a):
     # Medication-focused guides get drug-entity grounding too.
     DRUG_GUIDES = {"tirzepatide-vs-semaglutide", "compounded-vs-brand-vs-pills",
                    "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared",
-                   "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss"}
+                   "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss",
+                   "glp1-weight-loss-pill", "is-compounded-semaglutide-legal"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
