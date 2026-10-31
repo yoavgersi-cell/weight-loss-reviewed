@@ -14,6 +14,7 @@ from pillar import PILLAR_BODY
 from pillar2 import BEYOND_BODY
 from pillar3 import BEYOND_PILL_BODY
 from pillar4 import COMPOUNDED_BODY
+from pillar5 import COST_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1116,6 +1117,15 @@ ARTICLES = [
         "body": COMPOUNDED_BODY,
     },
     {
+        "slug": "glp1-cost-2027",
+        "title": "GLP-1 Cost in 2027: What Wegovy, Zepbound and the Pill Really Cost Now",
+        "tag": "Costs",
+        "date": "2026-10-31",
+        "description": "GLP-1 costs changed more in 2026 than in the prior three years: employer coverage is retreating while direct self-pay prices collapsed and Medicare began covering them. What Wegovy, Zepbound, the pills and compounded really cost now — by channel and by situation — and how to pay the least. Sourced, with ranges.",
+        "dek": "Employer coverage is shrinking, but direct prices fell and Medicare stepped in. Here's what a GLP-1 really costs through every channel in 2026–2027, and how to find the cheapest legitimate route for your situation.",
+        "body": COST_BODY,
+    },
+    {
         "slug": "glp1-weight-loss-programs-compared",
         "title": f"GLP-1 Weight-Loss Programs Compared ({YEAR}): What Actually Matters",
         "tag": "Guides",
@@ -1824,6 +1834,12 @@ SOURCE_META = {
         ("FDA approves Foundayo (orforglipron), the first oral small-molecule GLP-1 pill for weight management", "Eli Lilly and Company, 2026"),
     "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages":
         ("Drug shortages — current and resolved shortage lists", "U.S. Food & Drug Administration"),
+    "https://www.cms.gov/medicare/coverage/prescription-drug-coverage/medicare-glp-1-bridge/information-part-d-plans":
+        ("Medicare GLP-1 Bridge — program information", "Centers for Medicare & Medicaid Services"),
+    "https://www.novocare.com/":
+        ("NovoCare — Wegovy cost, savings and coverage (official)", "Novo Nordisk"),
+    "https://www.zepbound.lilly.com/":
+        ("Zepbound cost and savings (official)", "Eli Lilly and Company"),
 }
 
 # For the few guides that cite little or nothing inline, add topically relevant
@@ -3209,7 +3225,8 @@ def render_article(a):
     DRUG_GUIDES = {"tirzepatide-vs-semaglutide", "compounded-vs-brand-vs-pills",
                    "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared",
                    "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss",
-                   "glp1-weight-loss-pill", "is-compounded-semaglutide-legal"}
+                   "glp1-weight-loss-pill", "is-compounded-semaglutide-legal",
+                   "glp1-cost-2027"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
