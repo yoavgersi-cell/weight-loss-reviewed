@@ -15,6 +15,7 @@ from pillar2 import BEYOND_BODY
 from pillar3 import BEYOND_PILL_BODY
 from pillar4 import COMPOUNDED_BODY
 from pillar5 import COST_BODY
+from pillar6 import RESULTS_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1124,6 +1125,15 @@ ARTICLES = [
         "description": "GLP-1 costs changed more in 2026 than in the prior three years: employer coverage is retreating while direct self-pay prices collapsed and Medicare began covering them. What Wegovy, Zepbound, the pills and compounded really cost now — by channel and by situation — and how to pay the least. Sourced, with ranges.",
         "dek": "Employer coverage is shrinking, but direct prices fell and Medicare stepped in. Here's what a GLP-1 really costs through every channel in 2026–2027, and how to find the cheapest legitimate route for your situation.",
         "body": COST_BODY,
+    },
+    {
+        "slug": "how-much-weight-can-you-lose-glp1",
+        "title": "How Much Weight Can You Lose on a GLP-1? Realistic Results, by the Numbers",
+        "tag": "Guides",
+        "date": "2026-11-02",
+        "description": "How much weight can you really lose on a GLP-1? The trial numbers (semaglutide ~15%, tirzepatide ~21%, the pills ~11-14%), the full distribution behind the averages, a month-by-month timeline, why people plateau or don't respond, and how to get results at the better end of the range. Evidence-based, with the responder data.",
+        "dek": "Semaglutide averages ~15% body-weight loss, tirzepatide ~21% — but the average hides a wide spread. Here are the real numbers, the full distribution, the month-by-month timeline, and what moves your own result up or down.",
+        "body": RESULTS_BODY,
     },
     {
         "slug": "glp1-weight-loss-programs-compared",
@@ -3226,7 +3236,7 @@ def render_article(a):
                    "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared",
                    "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss",
                    "glp1-weight-loss-pill", "is-compounded-semaglutide-legal",
-                   "glp1-cost-2027"}
+                   "glp1-cost-2027", "how-much-weight-can-you-lose-glp1"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
