@@ -1600,12 +1600,27 @@ def header(active=""):
   <nav class="nav" id="nav">{links}</nav>
 </div></header>"""
 
+# Curated flagship guides shown in the site-wide footer, by slug — decoupled
+# from ARTICLES insertion order so new pillars don't silently fall out of the
+# footer (which was starving some flagship guides of internal links).
+FOOTER_GUIDES = [
+    "glp1-weight-loss-online-complete-guide",
+    "how-much-weight-can-you-lose-glp1",
+    "glp1-side-effects",
+    "glp1-cost-2027",
+    "glp1-weight-loss-pill",
+    "is-compounded-semaglutide-legal",
+    "glp1-beyond-weight-loss",
+]
+
 def footer():
     review_links = "".join(f'<a href="{review_url(s)}">{PROVIDERS[s]["name"]}</a>' for s in PROVIDER_ORDER[:8])
     vs_links = "".join(
         f'<a href="{versus_url(v)}">{PROVIDERS[v["a"]]["name"]} vs {PROVIDERS[v["b"]]["name"]}</a>'
         for v in VERSUS[:6])
-    guide_links = "".join(f'<a href="{article_url(a)}">{a["title"].split(":")[0].split("(")[0].strip()}</a>' for a in ARTICLES[:5])
+    _by_slug = {a["slug"]: a for a in ARTICLES}
+    _foot_guides = [_by_slug[s] for s in FOOTER_GUIDES if s in _by_slug]
+    guide_links = "".join(f'<a href="{article_url(a)}">{a["title"].split(":")[0].split("(")[0].strip()}</a>' for a in _foot_guides)
     return f"""<footer class="site-footer"><div class="wrap">
   <div class="foot-top">
     <div class="foot-brand">
@@ -1648,7 +1663,18 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:site_name" content="{SITE['name']}">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="{SITE['domain']}/assets/og-default.png">
+<meta property="og:image:secure_url" content="{SITE['domain']}/assets/og-default.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{html.escape(SITE['name'])} — compare the best GLP-1 weight-loss programs">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{html.escape(title)}">
+<meta name="twitter:description" content="{html.escape(description)}">
+<meta name="twitter:image" content="{SITE['domain']}/assets/og-default.png">
+<meta name="twitter:image:alt" content="{html.escape(SITE['name'])} — compare the best GLP-1 weight-loss programs">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
