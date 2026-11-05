@@ -163,7 +163,7 @@ P6 = r"""
 
 <ol class="rich-list">
 <li><strong>Reach and hold an effective dose.</strong> Work with your clinician to titrate up carefully to a dose that works, managing side effects along the way rather than stalling low. This is the number-one lever.</li>
-<li><strong>Stay on it.</strong> Results track time on an effective dose. Solve the things that make people quit — side effects (with titration and timing), cost (see our <a href="/guides/glp1-cost-2027">cost guide</a>), access — so you can stay the course.</li>
+<li><strong>Stay on it.</strong> Results track time on an effective dose. Solve the things that make people quit — <a href="/guides/glp1-side-effects">side effects</a> (with titration and timing), cost (see our <a href="/guides/glp1-cost-2027">cost guide</a>), access — so you can stay the course.</li>
 <li><strong>Prioritize protein.</strong> Adequate protein supports satiety, helps preserve muscle, and protects your metabolic rate. On a reduced appetite, making protein the priority at each meal matters more than ever.</li>
 <li><strong>Do resistance training.</strong> Lifting (or bodyweight work) is the single best defense against the muscle loss that comes with rapid weight loss, and preserving muscle keeps your metabolism higher, which supports continued fat loss and better maintenance.</li>
 <li><strong>Use the appetite window to build habits.</strong> The drug quiets cravings; use that calm to establish eating patterns you can keep, so your results don't depend on the drug alone forever.</li>

@@ -16,6 +16,7 @@ from pillar3 import BEYOND_PILL_BODY
 from pillar4 import COMPOUNDED_BODY
 from pillar5 import COST_BODY
 from pillar6 import RESULTS_BODY
+from pillar7 import SIDEFX_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1136,6 +1137,15 @@ ARTICLES = [
         "body": RESULTS_BODY,
     },
     {
+        "slug": "glp1-side-effects",
+        "title": "GLP-1 Side Effects: The Complete Guide (and How to Manage Them)",
+        "tag": "Guides",
+        "date": "2026-11-03",
+        "description": "The complete guide to GLP-1 side effects — what they are (mostly digestive), how common (nausea ~44% on semaglutide, ~25-33% on tirzepatide), why they happen, how long they last, exactly how to manage each one, the serious red flags, and who shouldn't take them. Evidence-based, from the trials and the FDA.",
+        "dek": "Side effects are the #1 reason people quit a GLP-1 — and most are manageable. Here's every side effect, why it happens, how long it lasts, exactly how to handle it, and the red flags that mean call your doctor.",
+        "body": SIDEFX_BODY,
+    },
+    {
         "slug": "glp1-weight-loss-programs-compared",
         "title": f"GLP-1 Weight-Loss Programs Compared ({YEAR}): What Actually Matters",
         "tag": "Guides",
@@ -1590,12 +1600,27 @@ def header(active=""):
   <nav class="nav" id="nav">{links}</nav>
 </div></header>"""
 
+# Curated flagship guides shown in the site-wide footer, by slug — decoupled
+# from ARTICLES insertion order so new pillars don't silently fall out of the
+# footer (which was starving some flagship guides of internal links).
+FOOTER_GUIDES = [
+    "glp1-weight-loss-online-complete-guide",
+    "how-much-weight-can-you-lose-glp1",
+    "glp1-side-effects",
+    "glp1-cost-2027",
+    "glp1-weight-loss-pill",
+    "is-compounded-semaglutide-legal",
+    "glp1-beyond-weight-loss",
+]
+
 def footer():
     review_links = "".join(f'<a href="{review_url(s)}">{PROVIDERS[s]["name"]}</a>' for s in PROVIDER_ORDER[:8])
     vs_links = "".join(
         f'<a href="{versus_url(v)}">{PROVIDERS[v["a"]]["name"]} vs {PROVIDERS[v["b"]]["name"]}</a>'
         for v in VERSUS[:6])
-    guide_links = "".join(f'<a href="{article_url(a)}">{a["title"].split(":")[0].split("(")[0].strip()}</a>' for a in ARTICLES[:5])
+    _by_slug = {a["slug"]: a for a in ARTICLES}
+    _foot_guides = [_by_slug[s] for s in FOOTER_GUIDES if s in _by_slug]
+    guide_links = "".join(f'<a href="{article_url(a)}">{a["title"].split(":")[0].split("(")[0].strip()}</a>' for a in _foot_guides)
     return f"""<footer class="site-footer"><div class="wrap">
   <div class="foot-top">
     <div class="foot-brand">
@@ -1638,7 +1663,18 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:site_name" content="{SITE['name']}">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="{SITE['domain']}/assets/og-default.png">
+<meta property="og:image:secure_url" content="{SITE['domain']}/assets/og-default.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{html.escape(SITE['name'])} — compare the best GLP-1 weight-loss programs">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{html.escape(title)}">
+<meta name="twitter:description" content="{html.escape(description)}">
+<meta name="twitter:image" content="{SITE['domain']}/assets/og-default.png">
+<meta name="twitter:image:alt" content="{html.escape(SITE['name'])} — compare the best GLP-1 weight-loss programs">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3236,7 +3272,8 @@ def render_article(a):
                    "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared",
                    "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss",
                    "glp1-weight-loss-pill", "is-compounded-semaglutide-legal",
-                   "glp1-cost-2027", "how-much-weight-can-you-lose-glp1"}
+                   "glp1-cost-2027", "how-much-weight-can-you-lose-glp1",
+                   "glp1-side-effects"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
