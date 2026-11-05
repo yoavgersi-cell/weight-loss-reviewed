@@ -1581,3 +1581,38 @@ a.vsrow:hover { background: #EDF2F8; }
   .rv-hero-logo { width: auto; justify-content: flex-start; }
   .rv-method .method-grid { grid-template-columns: 1fr; }
 }
+
+/* ===== Review page: wider desktop + richer reviews (Nov 2026) ===== */
+.wrap.rv-wrap { max-width: 1020px; }
+
+/* Key features / treatment options */
+.rv-keyfeat { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.kf-h { margin: 0 0 14px; font-size: 1.1rem; color: var(--ink); }
+.kf-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }
+.kf-list li { display: flex; gap: 10px; align-items: flex-start; font-size: .94rem; color: var(--ink-soft); line-height: 1.45; }
+.kf-list svg { color: var(--good); flex: none; margin-top: 2px; }
+.kf-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; margin-top: 8px; }
+
+/* Praise / complaints two-column themes */
+.tp-themes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 24px; }
+.tt-col { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; background: var(--paper); }
+.tt-praise { border-top: 3px solid var(--good); }
+.tt-cons { border-top: 3px solid var(--coral); }
+.tt-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.tt-head h4 { margin: 0; font-size: 1rem; color: var(--ink); }
+.tt-praise .tt-head svg { color: var(--good); }
+.tt-cons .tt-head svg { color: var(--coral); }
+.tt-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 13px; }
+.tt-col li b { display: block; color: var(--ink); font-weight: 700; font-size: .92rem; margin-bottom: 3px; }
+.tt-col li span { color: var(--muted); font-size: .86rem; line-height: 1.5; }
+
+/* Featured review cards (tagged) */
+.tp-h3 { font-size: 1.2rem; margin: 24px 0 4px; color: var(--ink); }
+.tp-sub2 { margin: 0 0 16px; font-size: .88rem; color: var(--muted); }
+.tp-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.tpc-tag { font-size: .7rem; font-weight: 700; color: var(--accent-dark); background: var(--accent-tint);
+  border-radius: 999px; padding: 4px 11px; white-space: nowrap; }
+.tp-card-foot { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.tp-card blockquote { margin: 0; font-size: .94rem; color: var(--ink); line-height: 1.55; }
+
+@media (max-width: 760px){ .rv-keyfeat, .tp-themes { grid-template-columns: 1fr; gap: 16px; } }

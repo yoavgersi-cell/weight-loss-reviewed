@@ -772,18 +772,30 @@ USER_REVIEWS = {
                     "attentive and clear about the plan. The recurring complaints are just as consistent, and "
                     "worth going in aware of: shipping delays and long waits for medication, and unhelpful "
                     "customer support when sorting out membership or billing issues."),
+        # Honest qualitative themes drawn from the aggregate record and the quotes
+        # below — NOT per-review counts (we don't transcribe the full review set).
+        "praise": [
+            ("Fast, straightforward sign-up", "Reviewers repeatedly describe a quick, low-friction intake and getting started without hassle."),
+            ("Thorough, attentive clinicians", "A common theme is providers who take time, answer questions and feel personal rather than rushed."),
+            ("Clear about the plan and doses", "Members note clinicians who explain the plan and dose changes clearly before moving them up."),
+        ],
+        "complaints": [
+            ("Shipping delays and medication waits", "The most consistent complaint: slow shipping and long waits to actually receive medication."),
+            ("Support on membership & billing", "Reviewers report unhelpful or slow customer support when sorting out membership or billing issues."),
+            ("Appointment scheduling friction", "A minority describe long waits for an appointment or needing several reschedules."),
+        ],
         "quotes": [
-            {"rating": 5, "name": "Heather", "source": "Trustpilot",
+            {"rating": 5, "name": "Heather", "source": "Trustpilot", "tag": "Support & communication",
              "text": "The person I spoke to was very knowledgeable and made me feel comfortable with the process. I like the fact that there will be a follow-up email with instructions."},
-            {"rating": 4, "name": "Kristen Malone", "source": "Trustpilot",
+            {"rating": 4, "name": "Kristen Malone", "source": "Trustpilot", "tag": "Wait times",
              "text": "This appointment went well, but I had to wait 3.5 weeks to get it."},
-            {"rating": 5, "name": "Donna Holz", "source": "Trustpilot",
+            {"rating": 5, "name": "Donna Holz", "source": "Trustpilot", "tag": "Clinicians & care",
              "text": "Informative and answered the questions I presented. Respectful and easy to talk to."},
-            {"rating": 4, "name": "Frances Bonaduto", "source": "Trustpilot",
+            {"rating": 4, "name": "Frances Bonaduto", "source": "Trustpilot", "tag": "Clinicians & dosing",
              "text": "I feel my provider was listening to me and helping me understand what changes I had to make before going on my next dose."},
-            {"rating": 5, "name": "Heather Neel", "source": "Trustpilot",
+            {"rating": 5, "name": "Heather Neel", "source": "Trustpilot", "tag": "Support & communication",
              "text": "It was easy! I was heard and understood, and everyone was super friendly."},
-            {"rating": 4, "name": "Debra Parmely", "source": "Trustpilot",
+            {"rating": 4, "name": "Debra Parmely", "source": "Trustpilot", "tag": "Scheduling",
              "text": "The call worked after several reschedules."},
         ],
     },
@@ -2630,22 +2642,45 @@ def render_user_reviews(slug):
                 f'{n} does not publish an aggregate Trustpilot score yet.</p></div></div>')
     summ = (f'<div class="tp-takeaway"><span class="eyebrow-2">What reviewers tell us</span><p>{r["summary"]}</p></div>'
             if r.get("summary") else "")
+
+    # Praise / complaints — honest qualitative themes (no fabricated per-review counts)
+    themes = ""
+    if r.get("praise") or r.get("complaints"):
+        def _col(title, cls, icn, items):
+            if not items:
+                return ""
+            lis = "".join(f'<li><b>{t}</b><span>{desc}</span></li>' for t, desc in items)
+            return (f'<div class="tt-col tt-{cls}"><div class="tt-head">{icon(icn, size=18)}'
+                    f'<h4>{title}</h4></div><ul>{lis}</ul></div>')
+        themes = (f'<div class="tp-themes">'
+                  f'{_col("What customers praise", "praise", "check-c", r.get("praise", []))}'
+                  f'{_col("What customers complain about", "cons", "badge", r.get("complaints", []))}'
+                  f'</div>')
+
+    # Featured review cards (from real captured quotes), each topic-tagged
     cards = ""
     for q in r.get("quotes", []):
         initials = "".join(w[0] for w in q.get("name", "U").split()[:2]).upper()
-        meta = " · ".join(x for x in [q.get("date", ""), tag] if x)
-        cards += (f'<figure class="tp-card"><div class="tp-card-head"><span class="tp-avatar">{initials}</span>'
+        meta = " · ".join(x for x in [q.get("date", ""), q.get("source", "Trustpilot")] if x)
+        qtag = (f'<span class="tpc-tag">{q["tag"]}</span>' if q.get("tag") else "")
+        cards += (f'<figure class="tp-card"><div class="tp-card-top">{tp_stars(q.get("rating",5),"s")}{qtag}</div>'
+                  f'<blockquote>{q["text"]}</blockquote>'
+                  f'<div class="tp-card-foot"><span class="tp-avatar">{initials}</span>'
                   f'<div class="tp-card-who"><b>{q.get("name","Verified user")}</b>'
-                  f'<span class="tp-vf">{icon("check-c", size=12)}Verified customer</span></div></div>'
-                  f'{tp_stars(q.get("rating",5),"s")}<blockquote>{q["text"]}</blockquote>'
-                  f'{f"<figcaption>{meta}</figcaption>" if meta else ""}</figure>')
+                  f'<span class="tp-vf">{icon("check-c", size=12)}Verified{(" · " + meta) if meta else ""}</span></div></div>'
+                  f'</figure>')
+    cards_block = (f'<h3 class="tp-h3">Featured {n} reviews</h3><p class="tp-sub2">Real reviews captured from {n}\'s '
+                   f'{r.get("source","Trustpilot")} profile, tagged by what each is mainly about.</p>'
+                   f'<div class="tp-cards">{cards}</div>') if cards else ""
+
     return f"""
   <h2 id="reviews">What {n} customers actually say</h2>
   <div class="tpbox">
     {head}
     {summ}
-    <div class="tp-cards">{cards}</div>
-    <p class="tp-disc">Rating and reviews from {r.get("source","Trustpilot")}, captured {UPDATED}. We show a representative mix — including critical reviews — and quotes are only lightly trimmed for length. <a href="{r.get("url","#")}" rel="nofollow" target="_blank">Verify on {r.get("source","Trustpilot")} →</a></p>
+    {themes}
+    {cards_block}
+    <p class="tp-disc">Rating and reviews from {r.get("source","Trustpilot")}, captured {UPDATED}. We show a representative mix — including critical reviews — and quotes are only lightly trimmed for length. Themes are our reading of the public review record, not per-review tallies. <a href="{r.get("url","#")}" rel="nofollow" target="_blank">Verify on {r.get("source","Trustpilot")} →</a></p>
   </div>"""
 
 # Real medical & regulatory references. The GLP-1 drugs are the same across
@@ -2777,7 +2812,7 @@ def render_review(slug):
     big_cta = cta(slug, label=f"Visit {n}", cls="btn btn-primary btn-block btn-lg rv-visit")
     offer = f"GLP-1 from ${d['price']}{d['unit']}" if d.get("price") else n
     hero = f"""
-<section class="rv-hero"><div class="wrap narrow">
+<section class="rv-hero"><div class="wrap rv-wrap">
   {crumbs([("Home","/"),("Reviews","/reviews"),(n+" Review", "")])}
   <div class="rv-hero-top">
     <div class="rv-hero-logo">{f'<img src="{logo_src(slug)}" alt="{n} logo">' if logo_src(slug) else f'<span>{n}</span>'}</div>
@@ -2864,15 +2899,35 @@ def render_review(slug):
     ver_html = "".join(f'<div class="ver-row"><span class="ver-label">{k}</span><span class="ver-val">{v}</span></div>'
                        for k, v in ver_rows)
 
+    # ---- Key features / treatment options (two columns, from real data) ----
+    kf = [f"{d['meds']}"]
+    kf.append(f"{d['visit']}")
+    if d.get("included"):
+        kf.append(d["included"])
+    kf.append("Insurance help / navigation" if "insurance" in d["insurance"].lower() and "cash" not in d["insurance"].lower()
+              else "Cash-pay (HSA/FSA accepted) — no insurance needed")
+    kf.append(f"Available: {d['avail']}")
+    kf_li = "".join(f'<li>{icon("check", size=15)}<span>{x}</span></li>' for x in kf)
+    topts = [f"{desc}" for _tag, _cls, desc in opts]
+    topts.append("100% online clinician review and prescription")
+    topts.append(f"Delivered as: {d['form'].lower()}")
+    to_li = "".join(f'<li><span class="kf-dot"></span><span>{x}</span></li>' for x in topts)
+    keyfeat_card = f"""<div class="rv-card rv-keyfeat">
+    <div class="kf-col"><h3 class="kf-h">Key features</h3><ul class="kf-list">{kf_li}</ul></div>
+    <div class="kf-col"><h3 class="kf-h">Treatment options</h3><ul class="kf-list kf-opts">{to_li}</ul></div>
+  </div>"""
+
     body = f"""
 {hero}
 
-<div class="wrap narrow rv-stack">
+<div class="wrap rv-wrap rv-stack">
 
   <div class="rv-card rv-bottomline" id="verdict">
     <span class="rv-eyebrow">The bottom line</span>
     <p>{p['verdict']}</p>
   </div>
+
+  {keyfeat_card}
 
   <section id="pricing">
     <h2 class="rv-h2">{n} products &amp; pricing</h2>
