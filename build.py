@@ -498,13 +498,13 @@ RUBRIC = {
 
 PDATA = {
     "embody": {
-        "price": 69, "unit": "/mo", "struct": "All-in, includes medication",
-        "price_note": "All-in and typically ~$79–$129/mo depending on plan length and medication; promo rates from ~$69/mo to start",
-        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection or daily oral",
+        "price": 49, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "Current Pre-Black-Friday sale: flat $49/mo compounded semaglutide and $99/mo compounded tirzepatide, no hidden fees and free shipping. Standard and renewal rates can run higher than the sale price per embody's terms — confirm your ongoing monthly price at checkout",
+        "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
         "visit": "Clinician-reviewed telehealth", "insurance": "Cash-pay (HSA/FSA)",
         "avail": "Not stated", "included": "Medication, clinician review; rate locks per plan",
-        "tagline": "Compounded GLP-1 as an injection or a daily oral — from a promo $69/mo.",
-        "as_of": "Jul 2026", "src": "exploretreatments.com", "src_url": "https://www.exploretreatments.com/embody-glp1-weight-loss-review/",
+        "tagline": "Compounded GLP-1 injections at a flat $49/mo on embody's current sale.",
+        "as_of": "Nov 2026", "src": "joinem.co", "src_url": "https://joinem.co/",
         "scores": {"Value": 9.4, "Support": 8.7, "Medications": 9.2, "Transparency": 7.4},
     },
     "eden": {
@@ -548,13 +548,13 @@ PDATA = {
         "scores": {"Value": 9.4, "Support": 8.7, "Medications": 8.8, "Transparency": 7.4},
     },
     "medvi": {
-        "price": 179, "unit": "/mo", "struct": "All-in, includes medication",
-        "price_note": "On 12-month prepay; month-to-month is $299/mo; tirzepatide higher",
+        "price": 99, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "Current fall-2026 sale: $99 first month, then about $199/mo for compounded semaglutide with the sale on; the standard month-to-month rate is $299/mo and a 12-month prepay runs around $179/mo. Tirzepatide is higher. Priced from third-party trackers — confirm the current and ongoing price at checkout",
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
         "visit": "Async, ~24h provider review", "insurance": "Cash-pay (HSA/FSA)",
         "avail": "All 50 states", "included": "Medication, free shipping, unlimited telehealth support",
         "tagline": "Flat cash pricing across all 50 states, cheapest on a 12-month prepay.",
-        "as_of": "2026", "src": "health.usnews.com", "src_url": "https://health.usnews.com/best-diet/medication/medvi",
+        "as_of": "Nov 2026", "src": "health.usnews.com", "src_url": "https://health.usnews.com/best-diet/medication/medvi",
         "scores": {"Value": 7.8, "Support": 8.0, "Medications": 8.4, "Transparency": 8.4},
     },
     "medgm": {
@@ -578,23 +578,23 @@ PDATA = {
         "scores": {"Value": 7.8, "Support": 6.8, "Medications": 9.0, "Transparency": 7.0},
     },
     "healthrx": {
-        "price": 99, "unit": "/mo", "struct": "All-in, includes medication",
-        "price_note": "On 12-month plan; $133/mo (3-month) to $189/mo month-to-month; same price at every dose",
+        "price": 39, "unit": "/mo", "struct": "All-in, includes medication",
+        "price_note": "$39 first month, then $125/mo for compounded semaglutide (about $97/mo on the longest prepay plan); compounded tirzepatide is $39 first month, then $201/mo. Every plan includes the clinician review, medication and shipping — confirm today's charge and the ongoing monthly price at checkout",
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
         "visit": "Async health assessment", "insurance": "Cash-pay",
         "avail": "Not clearly stated", "included": "Medication, overnight shipping, money-back guarantee",
-        "tagline": "Same price at every dose, with a weight-loss money-back guarantee.",
-        "as_of": "2026", "src": "matchglp1.com", "src_url": "https://matchglp1.com/providers/healthrx/",
+        "tagline": "A $39 first month, then one flat monthly price — medication included.",
+        "as_of": "Nov 2026", "src": "healthrx.com", "src_url": "https://healthrx.com/pricing",
         "scores": {"Value": 9.0, "Support": 7.0, "Medications": 8.4, "Transparency": 8.2},
     },
     "bmimd": {
         "price": 99, "unit": "/mo", "struct": "All-in, includes medication",
-        "price_note": "On 12-month plan; $109 (6-mo) / $119 (3-mo) / $129–$159 month-to-month",
+        "price_note": "Roughly $99–$119/mo for compounded semaglutide on a 12-month plan, stepping up to about $129–$159/mo month-to-month; tirzepatide is higher. Note a $50 cancellation fee once your intake form is submitted. Priced from third-party trackers — confirm the current price at checkout",
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
         "visit": "Telehealth consult + unlimited messaging", "insurance": "Cash-pay",
         "avail": "48 states (excl. LA, MS)", "included": "Medication, supplies, temp-controlled shipping, physician monitoring",
         "tagline": "Consistent low tiers plus unlimited provider messaging and physician monitoring.",
-        "as_of": "2026", "src": "glp1picks.com", "src_url": "https://www.glp1picks.com/pricing/bmimd",
+        "as_of": "Nov 2026", "src": "glp1picks.com", "src_url": "https://www.glp1picks.com/pricing/bmimd",
         "scores": {"Value": 9.0, "Support": 8.2, "Medications": 8.4, "Transparency": 8.4},
     },
     "directmeds": {
@@ -648,18 +648,18 @@ PDATA = {
 # publishing — prices change monthly.
 # --------------------------------------------------------------------------
 MAINT = {
-    "embody": 129, "eden": 99, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
-    "trimrx": 253, "healthrx": 133, "bmimd": 129, "directmeds": 297,
+    "embody": 79, "eden": 99, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
+    "trimrx": 253, "healthrx": 125, "bmimd": 129, "directmeds": 297,
     "wellmedr": 129, "shed": 199, "sprout": 249, "medgm": None,
 }
 MAINT_BASIS = {
-    "embody": "all-in, includes medication",
+    "embody": "typical month-to-month; flat $49 promo to start",
     "eden": "flat, same at every dose",
     "ro": "$149/mo membership + branded drug",
     "found": "membership + compounded drug",
     "medvi": "paying month-to-month",
     "trimrx": "typical ongoing dose",
-    "healthrx": "paying month-to-month",
+    "healthrx": "month-to-month; ~$97/mo on the longest plan",
     "bmimd": "paying month-to-month",
     "directmeds": "injectable semaglutide",
     "wellmedr": "paying month-to-month",
