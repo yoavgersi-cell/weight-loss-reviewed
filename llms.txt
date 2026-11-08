@@ -10,13 +10,13 @@
 
 ## Quick answers
 - Best overall by our editorial score: embody (9.8/10).
-- Lowest real monthly price at a maintenance dose: Eden, about $99/mo (compounded semaglutide).
+- Lowest real monthly price at a maintenance dose: embody, about $79/mo (compounded semaglutide).
 - Cheapest option that offers FDA-approved branded GLP-1s: MEDGm, from $169/mo.
 - Programs compared: 14 (4 offer FDA-approved branded medication; the rest are compounded).
 - Median real cost across the ranking: about $199/mo at a maintenance dose.
 
 ## Programs ranked (name — our score /10 — real price/mo)
-1. [embody](https://www.weightlossreviewed.com/reviews/embody) — 9.8/10 — $129/mo — Compounded
+1. [embody](https://www.weightlossreviewed.com/reviews/embody) — 9.8/10 — $79/mo — Compounded
 2. [AltRx](https://www.weightlossreviewed.com/reviews/altrx) — 9.7/10 — from $89/mo — Compounded
 3. [Eden](https://www.weightlossreviewed.com/reviews/eden) — 9.6/10 — $99/mo — Compounded
 4. [ro](https://www.weightlossreviewed.com/reviews/ro) — 9.4/10 — $298/mo — FDA-approved
@@ -24,7 +24,7 @@
 6. [MEDGm](https://www.weightlossreviewed.com/reviews/medgm) — 9.2/10 — from $169/mo — FDA-approved + compounded
 7. [MEDVi](https://www.weightlossreviewed.com/reviews/medvi) — 9.1/10 — $299/mo — Compounded
 8. [TrimRx](https://www.weightlossreviewed.com/reviews/trimrx) — 9.0/10 — $253/mo — FDA-approved + compounded
-9. [HealthRx](https://www.weightlossreviewed.com/reviews/healthrx) — 8.9/10 — $133/mo — Compounded
+9. [HealthRx](https://www.weightlossreviewed.com/reviews/healthrx) — 8.9/10 — $125/mo — Compounded
 10. [bmiMD](https://www.weightlossreviewed.com/reviews/bmimd) — 8.8/10 — $129/mo — Compounded
 11. [DirectMeds](https://www.weightlossreviewed.com/reviews/directmeds) — 8.7/10 — $297/mo — Compounded
 12. [WellMedr](https://www.weightlossreviewed.com/reviews/wellmedr) — 8.6/10 — $129/mo — Compounded
