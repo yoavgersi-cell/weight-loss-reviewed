@@ -807,24 +807,46 @@ USER_REVIEWS = {
                     "and fast, straightforward ordering. The recurring caveats are the ones to expect from a "
                     "lower-touch, compounded-only service: occasional shipping waits and support that is quick on "
                     "simple questions but lighter on complex ones."),
+        # Honest qualitative themes drawn from the aggregate review record — not per-review counts.
+        "praise": [
+            ("Flat, predictable pricing", "The theme reviewers return to most: simple, flat pricing with no surprise add-ons."),
+            ("Fast, straightforward ordering", "A quick, low-friction ordering process that gets people started without hassle."),
+            ("Strong overall satisfaction", "At about 4.5/5 across roughly 4,900 reviews, Eden earns one of the higher scores we track in this category."),
+        ],
+        "complaints": [
+            ("Occasional shipping waits", "Some reviewers mention waiting for shipments to arrive."),
+            ("Lighter support on complex issues", "Support is described as quick on simple questions but thinner when problems get complicated — expected for a lower-touch service."),
+        ],
     },
     "altrx": {
         "source": "Trustpilot", "review_tag": "Unprompted review",  # no aggregate Trustpilot score for AltRx
         "summary": ("AltRx doesn't carry an aggregate Trustpilot score yet, but recent reviewers describe a "
                     "smooth start, on-time shipping and responsive support. A few note early-access delays and "
                     "one billing slip that was refunded quickly."),
+        # Honest qualitative themes drawn from the real quotes below plus AltRx's
+        # wider public review record — NOT per-review counts.
+        "praise": [
+            ("Smooth, hassle-free start", "Reviewers repeatedly describe an easy sign-up, often helped by a named care consultant who answered their questions."),
+            ("Responsive, prompt support", "A recurring theme is customer service that replies quickly — several members contacted support more than once and got fast answers."),
+            ("On-time shipping and early results", "Members single out medication arriving on time, including ongoing tirzepatide refills, and some report losing weight in their first weeks."),
+        ],
+        "complaints": [
+            ("Appointment waits early on", "A few note it was hard to get an early appointment because of new-patient volume, with some medication delays at the start."),
+            ("A billing slip (refunded)", "One reviewer was billed in error but said it was refunded immediately — worth checking your statement."),
+            ("Mixed reviews elsewhere", "Several AltRx reviewers reference more critical reviews on other sites that they personally didn't experience. The record isn't uniformly positive, so read widely before you commit."),
+        ],
         "quotes": [
-            {"rating": 5, "name": "Cindi Palmer", "source": "Trustpilot",
+            {"rating": 5, "name": "Cindi Palmer", "source": "Trustpilot", "tag": "Onboarding & support",
              "text": "I'm just starting out with AltRx and the rep who helped me, Natalie, was wonderful. She gave me info on the plan and answered all of my questions and concerns. I was able to join with no hassles."},
-            {"rating": 5, "name": "Alicia Veauthier", "source": "Trustpilot",
+            {"rating": 5, "name": "Alicia Veauthier", "source": "Trustpilot", "tag": "Support & results",
              "text": "I've been using AltRx for 4 months after switching from another company. Not a single problem. I've contacted customer service multiple times and received prompt responses, and I've lost 4-5 pounds a month. They accidentally billed me once but refunded me immediately."},
-            {"rating": 5, "name": "Tori Smith", "source": "Trustpilot",
+            {"rating": 5, "name": "Tori Smith", "source": "Trustpilot", "tag": "Value & results",
              "text": "I don't understand all the bad reviews because I've had a great experience. My care consultant helped me get a discounted rate and answered all my questions. With AltRx I've lost 8 lbs and it hasn't even been a month."},
-            {"rating": 5, "name": "Shannon Roberson", "source": "Trustpilot",
+            {"rating": 5, "name": "Shannon Roberson", "source": "Trustpilot", "tag": "Shipping & refills",
              "text": "I've been with AltRx for a few months. I take tirzepatide from them and I always get everything on time."},
-            {"rating": 5, "name": "Venita Ware", "source": "Trustpilot",
+            {"rating": 5, "name": "Venita Ware", "source": "Trustpilot", "tag": "Wait times",
              "text": "So far so good, no real complaints. It was hard to get an appointment at first because of all the new patients and my meds were delayed a little, but they kept communicating with me the whole time."},
-            {"rating": 5, "name": "Angela", "source": "Trustpilot",
+            {"rating": 5, "name": "Angela", "source": "Trustpilot", "tag": "Trust & experience",
              "text": "I was skeptical at first after reading the reviews, but I'm very happy with this company. Three of my coworkers use them too and they're happy as well."},
         ],
     },
