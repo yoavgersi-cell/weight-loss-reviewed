@@ -18,6 +18,7 @@ from pillar5 import COST_BODY
 from pillar6 import RESULTS_BODY
 from pillar7 import SIDEFX_BODY
 from pillar8 import WEGOVY_ZEP_BODY
+from pillar9 import EMBODY_RO_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1190,6 +1191,15 @@ ARTICLES = [
         "body": WEGOVY_ZEP_BODY,
     },
     {
+        "slug": "embody-vs-ro-weight-loss",
+        "title": "Embody vs Ro Weight Loss (2026): Cost, Meds & Insurance Compared",
+        "tag": "Comparison",
+        "date": "2026-11-09",
+        "description": "Embody vs Ro weight loss, compared honestly: cash-pay compounded GLP-1 (Embody) vs branded Wegovy/Zepbound + insurance concierge (Ro Body). Real 2026 cost breakdowns, hidden fees, medication differences, intake speed, and which wins for budget vs insurance. With our top provider picks.",
+        "dek": "Two opposite models for getting a GLP-1 online: a flat cash price for compounded meds (Embody) vs the FDA brand plus insurance help (Ro Body). Here's the honest cost, medication, and coverage comparison — and which fits you.",
+        "body": EMBODY_RO_BODY,
+    },
+    {
         "slug": "glp1-weight-loss-programs-compared",
         "title": f"GLP-1 Weight-Loss Programs Compared ({YEAR}): What Actually Matters",
         "tag": "Guides",
@@ -1650,6 +1660,7 @@ def header(active=""):
 FOOTER_GUIDES = [
     "glp1-weight-loss-online-complete-guide",
     "wegovy-vs-zepbound",
+    "embody-vs-ro-weight-loss",
     "how-much-weight-can-you-lose-glp1",
     "glp1-side-effects",
     "glp1-cost-2027",
@@ -3404,7 +3415,8 @@ def render_article(a):
                    "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss",
                    "glp1-weight-loss-pill", "is-compounded-semaglutide-legal",
                    "glp1-cost-2027", "how-much-weight-can-you-lose-glp1",
-                   "glp1-side-effects", "wegovy-vs-zepbound"}
+                   "glp1-side-effects", "wegovy-vs-zepbound",
+                   "embody-vs-ro-weight-loss"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
