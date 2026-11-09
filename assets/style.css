@@ -1616,3 +1616,29 @@ a.vsrow:hover { background: #EDF2F8; }
 .tp-card blockquote { margin: 0; font-size: .94rem; color: var(--ink); line-height: 1.55; }
 
 @media (max-width: 760px){ .rv-keyfeat, .tp-themes { grid-template-columns: 1fr; gap: 16px; } }
+
+/* --- Article "top picks" component (live provider cards) ------------------ */
+.toppicks { margin: 26px 0 30px; }
+.tp-pick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.tp-pick { display: flex; flex-direction: column; border: 1px solid var(--line);
+  border-radius: 14px; padding: 18px 16px 16px; background: var(--card); }
+.tp-pick-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.tp-pick-rank { font-weight: 800; font-size: 13px; color: var(--brand);
+  background: var(--brand-weak, rgba(37,99,235,.10)); border-radius: 7px; padding: 2px 8px; }
+.tp-pick-logo { display: flex; align-items: center; margin-right: auto; }
+.tp-pick-logo img { max-height: 24px; max-width: 96px; width: auto; }
+.tp-pick-score { font-size: 12px; color: var(--ink-soft); }
+.tp-pick-score b { font-size: 18px; color: var(--ink); }
+.tp-pick-name { font-weight: 800; font-size: 17px; }
+.tp-pick-tag { font-size: 13px; color: var(--ink-soft); margin: 2px 0 10px; }
+.tp-pick-price { display: flex; flex-direction: column; gap: 1px; padding: 10px 0;
+  border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); }
+.tp-pick-price b { font-size: 20px; color: var(--good); }
+.tp-pick-price span { font-size: 12px; color: var(--ink-soft); }
+.tp-pick-why { font-size: 13.5px; color: var(--ink-soft); margin: 10px 0 14px; flex: 1; }
+.tp-pick-cta { width: 100%; justify-content: center; text-align: center; }
+.tp-pick-read { display: block; text-align: center; font-size: 13px; margin-top: 8px; }
+.tp-pick-disc { font-size: 12px; color: var(--ink-soft); margin-top: 14px; line-height: 1.5; }
+@media (max-width: 760px) {
+  .tp-pick-grid { grid-template-columns: 1fr; gap: 12px; }
+}

@@ -17,6 +17,7 @@ from pillar4 import COMPOUNDED_BODY
 from pillar5 import COST_BODY
 from pillar6 import RESULTS_BODY
 from pillar7 import SIDEFX_BODY
+from pillar8 import WEGOVY_ZEP_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1180,6 +1181,15 @@ ARTICLES = [
         "body": SIDEFX_BODY,
     },
     {
+        "slug": "wegovy-vs-zepbound",
+        "title": "Wegovy vs Zepbound (2026): Which Is Better for Weight Loss?",
+        "tag": "Guides",
+        "date": "2026-11-09",
+        "description": "Wegovy vs Zepbound, compared on the evidence: the head-to-head SURMOUNT-5 trial (Zepbound ~20.2% vs Wegovy ~13.7% weight loss), side effects, dosing, 2026 cost and insurance, the new 7.2mg Wegovy dose, the compounded alternative, and exactly how to get either one online. With our top 3 provider picks.",
+        "dek": "There's only one trial that put these two drugs head to head — and it has a clear winner. Here's the honest comparison: results, side effects, cost, coverage, and how to get either one online, with our top picks.",
+        "body": WEGOVY_ZEP_BODY,
+    },
+    {
         "slug": "glp1-weight-loss-programs-compared",
         "title": f"GLP-1 Weight-Loss Programs Compared ({YEAR}): What Actually Matters",
         "tag": "Guides",
@@ -1639,6 +1649,7 @@ def header(active=""):
 # footer (which was starving some flagship guides of internal links).
 FOOTER_GUIDES = [
     "glp1-weight-loss-online-complete-guide",
+    "wegovy-vs-zepbound",
     "how-much-weight-can-you-lose-glp1",
     "glp1-side-effects",
     "glp1-cost-2027",
@@ -1920,6 +1931,10 @@ SOURCE_META = {
         ("NovoCare — Wegovy cost, savings and coverage (official)", "Novo Nordisk"),
     "https://www.zepbound.lilly.com/":
         ("Zepbound cost and savings (official)", "Eli Lilly and Company"),
+    "https://www.nejm.org/doi/full/10.1056/NEJMoa2416394":
+        ("Tirzepatide as Compared with Semaglutide for the Treatment of Obesity (SURMOUNT-5 trial)", "New England Journal of Medicine, 2025"),
+    "https://www.novonordisk-us.com/media/press-releases/fda-approves-wegovy-hd-7-2mg-injection.html":
+        ("FDA approves Wegovy HD (semaglutide 7.2 mg) for chronic weight management (STEP UP program)", "Novo Nordisk, 2026"),
 }
 
 # For the few guides that cite little or nothing inline, add topically relevant
@@ -3316,6 +3331,41 @@ def article_versus_block(slug):
             f'<p>Weighing two specific programs? These matchups break the decision down to a clear verdict:</p>'
             f'<div class="vs-grid rev-vsgrid">{cards}</div>')
 
+def render_article_top_providers(slugs, note="online GLP-1 programs"):
+    """Live, ranked 'top picks' component embeddable in any article body via a
+    <!--TOPPICKS:slug,slug,slug--> marker. Pulls name, score, real monthly price
+    and best-for straight from PDATA/PROVIDERS so it never drifts from the data."""
+    cards = ""
+    for i, slug in enumerate(slugs, 1):
+        if slug not in PROVIDERS:
+            continue
+        p = PROVIDERS[slug]
+        big, sub = maint_headline(slug)
+        why = p.get("highlight") or p.get("best_for", "")
+        cards += (
+            f'<div class="tp-pick">'
+            f'<div class="tp-pick-top">'
+            f'<span class="tp-pick-logo">{logo_icon(slug)}</span>'
+            f'<span class="tp-pick-score"><b>{p["score"]}</b><span>/10</span></span></div>'
+            f'<div class="tp-pick-name">{p["name"]}</div>'
+            f'<div class="tp-pick-tag">{p.get("best_for","")}</div>'
+            f'<div class="tp-pick-price"><b>{big}</b><span>{sub}</span></div>'
+            f'<p class="tp-pick-why">{why}</p>'
+            f'<a class="btn tp-pick-cta" {cta_attrs(slug)}>Visit {p["name"]} {icon("ext", size=15)}</a>'
+            f'<a class="tp-pick-read" href="{review_url(slug)}">Read our full review</a>'
+            f'</div>'
+        )
+    return (
+        f'<div class="toppicks">'
+        f'<div class="tp-pick-grid">{cards}</div>'
+        f'<p class="tp-pick-disc">{icon("badge", size=14)} Our picks among {note}. '
+        f'Rankings and reviews are decided independently; we may earn a commission from some '
+        f'providers, which can affect placement but not our scores. '
+        f'<a href="/disclosure">How we make money</a> · <a href="/methodology">How we score</a>.</p>'
+        f'</div>'
+    )
+
+
 def render_article(a):
     # build a simple TOC from h2 ids
     heads = re.findall(r'<h2 id="([^"]+)">(.*?)</h2>', a["body"])
@@ -3344,13 +3394,17 @@ def render_article(a):
     See how the leading programs stack up in our <a href="/">ranked comparison</a>, or browse all <a href="/comparisons">head-to-head comparisons</a>.</p>
 </div>
 """
+    # Inject live "top picks" components wherever an article dropped a marker.
+    body = re.sub(r'<!--\s*TOPPICKS:([^>]+?)-->',
+                  lambda m: render_article_top_providers([s.strip() for s in m.group(1).split(",") if s.strip()]),
+                  body)
     # Medication-focused guides get drug-entity grounding too.
     DRUG_GUIDES = {"tirzepatide-vs-semaglutide", "compounded-vs-brand-vs-pills",
                    "compounded-semaglutide-cost", "glp1-weight-loss-programs-compared",
                    "glp1-weight-loss-online-complete-guide", "glp1-beyond-weight-loss",
                    "glp1-weight-loss-pill", "is-compounded-semaglutide-legal",
                    "glp1-cost-2027", "how-much-weight-can-you-lose-glp1",
-                   "glp1-side-effects"}
+                   "glp1-side-effects", "wegovy-vs-zepbound"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
