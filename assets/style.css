@@ -1728,3 +1728,15 @@ a.vsrow:hover { background: #EDF2F8; }
 .tp-flags ul { margin: 0; padding: 0 18px 14px 36px; display: grid; gap: 9px; }
 .tp-flags li { font-size: 13px; color: var(--muted); }
 .tp-flags li b { color: var(--ink-soft); }
+
+/* Product plan cards (per-drug published pricing, e.g. embody) */
+.medopt-plan { gap: 7px; }
+.medopt-price { display: flex; align-items: baseline; gap: 4px; margin-top: 2px; }
+.medopt-price b { font-family: var(--sans); font-weight: 800; font-size: 1.9rem; color: var(--ink); line-height: 1; }
+.medopt-price span { font-size: .95rem; color: var(--muted); font-weight: 600; }
+.medopt-cond { font-size: .82rem; color: var(--muted); line-height: 1.4; }
+.medopt-prov { font-size: .9rem; font-weight: 700; color: var(--ink); }
+.medopt-plan .medopt-ship { color: var(--ink-soft); font-weight: 600; }
+.medopt-plan .medopt-ship svg { color: var(--good); }
+.medopt-plan .btn { margin-top: 8px; }
+@media (max-width: 560px) { .medopts, .medopts-plans { grid-template-columns: 1fr; } }

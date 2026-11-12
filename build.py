@@ -82,12 +82,12 @@ PROVIDERS = {
         "name": "embody",
         "score": 9.4,
         "tier": "$$",
-        "best_for": "Best for an oral option",
-        "highlight": "Real clinician time, meds, and lasting coaching.",
+        "best_for": "Best overall value",
+        "highlight": "Flat $49/mo locked in — meds shipped in 1–2 days.",
         "bullets": [
-            "Video visits with real prescribing clinicians",
-            "Branded + compounded GLP-1 options",
-            "Coaching and tracking built in",
+            "Flat, locked-in $49/mo pricing (semaglutide)",
+            "Compounded semaglutide & tirzepatide injections",
+            "Free 1–2 day shipping from licensed US pharmacies",
         ],
         "subscores": {
             "Clinical support": 9.6, "Onboarding": 9.2, "Value": 9.0,
@@ -500,13 +500,19 @@ RUBRIC = {
 
 PDATA = {
     "embody": {
-        "price": 49, "unit": "/mo", "struct": "All-in, includes medication",
-        "price_note": "Current Pre-Black-Friday sale: flat $49/mo compounded semaglutide and $99/mo compounded tirzepatide, no hidden fees and free shipping. Standard and renewal rates can run higher than the sale price per embody's terms — confirm your ongoing monthly price at checkout",
+        "price": 49, "unit": "/mo", "struct": "Flat, locked-in — includes medication",
+        "price_note": "embody publishes flat, locked-in monthly plans — currently a pre-Black-Friday sale of $49/mo compounded semaglutide and $99/mo compounded tirzepatide (anchored against a $299 regular price), with free 1–2 day shipping and no insurance, clinic visits or hidden fees. The sale rate is promoted as limited-time, so confirm your locked-in price at checkout",
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
-        "visit": "Clinician-reviewed telehealth", "insurance": "Cash-pay (HSA/FSA)",
-        "avail": "Not stated", "included": "Medication, clinician review; rate locks per plan",
-        "tagline": "Compounded GLP-1 injections at a flat $49/mo on embody's current sale.",
+        "visit": "Clinician-reviewed telehealth (no clinic visits)", "insurance": "Cash-pay (HSA/FSA)",
+        "avail": "Ships nationwide in 1–2 days", "included": "Medication, clinician Rx, free 1–2 day shipping, ongoing nursing support",
+        "tagline": "Compounded GLP-1 injections at a flat, locked-in $49/mo.",
         "as_of": "Nov 2026", "src": "joinem.co", "src_url": "https://joinem.co/",
+        "plans": [
+            {"drug": "Semaglutide", "cls": "sema", "name": "Compounded Semaglutide Injection",
+             "price": "$49", "unit": "/mo", "cond": "Flat, locked-in monthly price · pre-Black-Friday rate, seen Nov 2026", "ship": "Free 1–2 day shipping"},
+            {"drug": "Tirzepatide", "cls": "tirz", "name": "Compounded Tirzepatide Injection",
+             "price": "$99", "unit": "/mo", "cond": "Flat, locked-in monthly price · pre-Black-Friday rate, seen Nov 2026", "ship": "Free 1–2 day shipping"},
+        ],
         "scores": {"Value": 9.4, "Support": 8.7, "Medications": 9.2, "Transparency": 7.4},
     },
     "eden": {
@@ -650,12 +656,12 @@ PDATA = {
 # publishing — prices change monthly.
 # --------------------------------------------------------------------------
 MAINT = {
-    "embody": 79, "eden": 99, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
+    "embody": 49, "eden": 99, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
     "trimrx": 253, "healthrx": 125, "bmimd": 129, "directmeds": 297,
     "wellmedr": 129, "shed": 199, "sprout": 249, "medgm": None,
 }
 MAINT_BASIS = {
-    "embody": "typical month-to-month; flat $49 promo to start",
+    "embody": "flat, locked-in — same at every dose",
     "eden": "flat, same at every dose",
     "ro": "$149/mo membership + branded drug",
     "found": "membership + compounded drug",
@@ -1583,6 +1589,7 @@ _IC = {
     "arrow": '<path d="M5 12h14M13 6l6 6-6 6" stroke-width="2"/>',
     "chev-l": '<path d="M15 6l-6 6 6 6" stroke-width="2"/>',
     "chev-r": '<path d="M9 6l6 6-6 6" stroke-width="2"/>',
+    "truck": '<path d="M3 6h11v9H3zM14 9h4l3 3v3h-7z" stroke-width="1.7"/><circle cx="7" cy="18" r="1.6" stroke-width="1.7"/><circle cx="17.5" cy="18" r="1.6" stroke-width="1.7"/>',
     "book": '<path d="M4 5a2 2 0 012-2h13v15H6a2 2 0 00-2 2V5z" stroke-width="1.7"/><path d="M4 20a2 2 0 012-2h13" stroke-width="1.7"/>',
     "stethoscope": '<path d="M5 3v5a4 4 0 008 0V3" stroke-width="1.7"/><path d="M9 14v1a5 5 0 0010 0v-2" stroke-width="1.7"/><circle cx="19" cy="11" r="2" stroke-width="1.7"/><circle cx="5" cy="3" r="0.6" fill="currentColor"/><circle cx="13" cy="3" r="0.6" fill="currentColor"/>',
     "chat": '<path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v9a1 1 0 01-1 1H9l-5 4V5z" stroke-width="1.7"/>',
@@ -2166,7 +2173,7 @@ HOME_VISITORS = SOCIAL_PROOF["number"]
 CARD_TAGLINE = {
     "ro":         "Most established brand — full FDA-approved GLP-1 suite",
     "found":      "Branded + compounded GLP-1 with real coaching built in",
-    "embody":     "Compounded GLP-1, injection or daily oral — from $69/mo",
+    "embody":     "Compounded GLP-1 injections — flat $49/mo, locked in",
     "eden":       "Flat price, every dose — $99 semaglutide, $129 tirzepatide",
     "medgm":      "Compounded, a daily oral tablet, or branded Zepbound",
     "altrx":      "One of the lowest-cost compounded GLP-1 programs",
@@ -2903,8 +2910,22 @@ def render_review(slug):
         opts.append(("Tirzepatide", "tirz", ("Compounded tirzepatide" if "compounded" in ml else "Branded tirzepatide (Zepbound)")))
     if not opts:
         opts = [("GLP-1 medication", "sema", d["meds"])]
-    for tag, tcls, desc in opts:
-        med_cards += f"""<div class="medopt">
+    if d.get("plans"):
+        # Provider publishes explicit per-drug plans (price + conditions) — show them.
+        for pl in d["plans"]:
+            med_cards += f"""<div class="medopt medopt-plan">
+      <span class="medopt-tag mo-{pl['cls']}">{pl['drug']}</span>
+      <div class="medopt-visual mo-{pl['cls']}">{icon('pill', size=30)}</div>
+      <b class="medopt-name">{pl['name']}</b>
+      <div class="medopt-price"><b>{pl['price']}</b><span>{pl['unit']}</span></div>
+      <span class="medopt-cond">{pl['cond']}</span>
+      <span class="medopt-prov">{n}</span>
+      <span class="medopt-ship">{icon('truck', size=15)} {pl['ship']}</span>
+      {cta(slug, label="Check eligibility", cls="btn btn-primary btn-block btn-sm")}
+    </div>"""
+    else:
+        for tag, tcls, desc in opts:
+            med_cards += f"""<div class="medopt">
       <span class="medopt-tag mo-{tcls}">{tag}</span>
       <div class="medopt-visual mo-{tcls}">{icon('pill', size=26)}</div>
       <b class="medopt-name">{desc}</b>
@@ -2992,9 +3013,9 @@ def render_review(slug):
   {keyfeat_card}
 
   <section id="pricing">
-    <h2 class="rv-h2">{n} products &amp; pricing</h2>
-    <p class="rv-sub">What you'll pay and the medications on offer — confirm the current number at checkout.</p>
-    <div class="medopts">{med_cards}</div>
+    <h2 class="rv-h2">{'Shop ' + n + "'s GLP-1 plans" if d.get('plans') else n + ' products &amp; pricing'}</h2>
+    <p class="rv-sub">{n + "'s published plans — conditions shown under each price." if d.get('plans') else "What you'll pay and the medications on offer — confirm the current number at checkout."}</p>
+    <div class="medopts{' medopts-plans' if d.get('plans') else ''}">{med_cards}</div>
     <div class="rv-card rv-priceline">
       <div class="rv-priceline-main"><span>Real cost / month</span><b>{_mbig}</b><em>{_msub or d['struct'].lower()}</em></div>
       <p>{d['price_note']}.</p>
