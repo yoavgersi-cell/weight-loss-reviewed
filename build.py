@@ -82,12 +82,12 @@ PROVIDERS = {
         "name": "embody",
         "score": 9.4,
         "tier": "$$",
-        "best_for": "Best for an oral option",
-        "highlight": "Real clinician time, meds, and lasting coaching.",
+        "best_for": "Best overall value",
+        "highlight": "Flat $49/mo locked in — meds shipped in 1–2 days.",
         "bullets": [
-            "Video visits with real prescribing clinicians",
-            "Branded + compounded GLP-1 options",
-            "Coaching and tracking built in",
+            "Flat, locked-in $49/mo pricing (semaglutide)",
+            "Compounded semaglutide & tirzepatide injections",
+            "Free 1–2 day shipping from licensed US pharmacies",
         ],
         "subscores": {
             "Clinical support": 9.6, "Onboarding": 9.2, "Value": 9.0,
@@ -500,13 +500,19 @@ RUBRIC = {
 
 PDATA = {
     "embody": {
-        "price": 49, "unit": "/mo", "struct": "All-in, includes medication",
-        "price_note": "Current Pre-Black-Friday sale: flat $49/mo compounded semaglutide and $99/mo compounded tirzepatide, no hidden fees and free shipping. Standard and renewal rates can run higher than the sale price per embody's terms — confirm your ongoing monthly price at checkout",
+        "price": 49, "unit": "/mo", "struct": "Flat, locked-in — includes medication",
+        "price_note": "embody publishes flat, locked-in monthly plans — currently a pre-Black-Friday sale of $49/mo compounded semaglutide and $99/mo compounded tirzepatide (anchored against a $299 regular price), with free 1–2 day shipping and no insurance, clinic visits or hidden fees. The sale rate is promoted as limited-time, so confirm your locked-in price at checkout",
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
-        "visit": "Clinician-reviewed telehealth", "insurance": "Cash-pay (HSA/FSA)",
-        "avail": "Not stated", "included": "Medication, clinician review; rate locks per plan",
-        "tagline": "Compounded GLP-1 injections at a flat $49/mo on embody's current sale.",
+        "visit": "Clinician-reviewed telehealth (no clinic visits)", "insurance": "Cash-pay (HSA/FSA)",
+        "avail": "Ships nationwide in 1–2 days", "included": "Medication, clinician Rx, free 1–2 day shipping, ongoing nursing support",
+        "tagline": "Compounded GLP-1 injections at a flat, locked-in $49/mo.",
         "as_of": "Nov 2026", "src": "joinem.co", "src_url": "https://joinem.co/",
+        "plans": [
+            {"drug": "Semaglutide", "cls": "sema", "name": "Compounded Semaglutide Injection",
+             "price": "$49", "unit": "/mo", "cond": "Flat, locked-in monthly price · pre-Black-Friday rate, seen Nov 2026", "ship": "Free 1–2 day shipping"},
+            {"drug": "Tirzepatide", "cls": "tirz", "name": "Compounded Tirzepatide Injection",
+             "price": "$99", "unit": "/mo", "cond": "Flat, locked-in monthly price · pre-Black-Friday rate, seen Nov 2026", "ship": "Free 1–2 day shipping"},
+        ],
         "scores": {"Value": 9.4, "Support": 8.7, "Medications": 9.2, "Transparency": 7.4},
     },
     "eden": {
@@ -650,12 +656,12 @@ PDATA = {
 # publishing — prices change monthly.
 # --------------------------------------------------------------------------
 MAINT = {
-    "embody": 79, "eden": 99, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
+    "embody": 49, "eden": 99, "ro": 298, "found": 199, "altrx": None, "medvi": 299,
     "trimrx": 253, "healthrx": 125, "bmimd": 129, "directmeds": 297,
     "wellmedr": 129, "shed": 199, "sprout": 249, "medgm": None,
 }
 MAINT_BASIS = {
-    "embody": "typical month-to-month; flat $49 promo to start",
+    "embody": "flat, locked-in — same at every dose",
     "eden": "flat, same at every dose",
     "ro": "$149/mo membership + branded drug",
     "found": "membership + compounded drug",
@@ -1581,6 +1587,9 @@ _IC = {
     "pill": '<rect x="3.5" y="8.5" width="17" height="7" rx="3.5" stroke-width="1.8"/><path d="M12 8.5v7" stroke-width="1.8"/>',
     "clock": '<circle cx="12" cy="12" r="9" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke-width="1.8"/>',
     "arrow": '<path d="M5 12h14M13 6l6 6-6 6" stroke-width="2"/>',
+    "chev-l": '<path d="M15 6l-6 6 6 6" stroke-width="2"/>',
+    "chev-r": '<path d="M9 6l6 6-6 6" stroke-width="2"/>',
+    "truck": '<path d="M3 6h11v9H3zM14 9h4l3 3v3h-7z" stroke-width="1.7"/><circle cx="7" cy="18" r="1.6" stroke-width="1.7"/><circle cx="17.5" cy="18" r="1.6" stroke-width="1.7"/>',
     "book": '<path d="M4 5a2 2 0 012-2h13v15H6a2 2 0 00-2 2V5z" stroke-width="1.7"/><path d="M4 20a2 2 0 012-2h13" stroke-width="1.7"/>',
     "stethoscope": '<path d="M5 3v5a4 4 0 008 0V3" stroke-width="1.7"/><path d="M9 14v1a5 5 0 0010 0v-2" stroke-width="1.7"/><circle cx="19" cy="11" r="2" stroke-width="1.7"/><circle cx="5" cy="3" r="0.6" fill="currentColor"/><circle cx="13" cy="3" r="0.6" fill="currentColor"/>',
     "chat": '<path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v9a1 1 0 01-1 1H9l-5 4V5z" stroke-width="1.7"/>',
@@ -2164,7 +2173,7 @@ HOME_VISITORS = SOCIAL_PROOF["number"]
 CARD_TAGLINE = {
     "ro":         "Most established brand — full FDA-approved GLP-1 suite",
     "found":      "Branded + compounded GLP-1 with real coaching built in",
-    "embody":     "Compounded GLP-1, injection or daily oral — from $69/mo",
+    "embody":     "Compounded GLP-1 injections — flat $49/mo, locked in",
     "eden":       "Flat price, every dose — $99 semaglutide, $129 tirzepatide",
     "medgm":      "Compounded, a daily oral tablet, or branded Zepbound",
     "altrx":      "One of the lowest-cost compounded GLP-1 programs",
@@ -2691,21 +2700,15 @@ def render_user_reviews(slug):
     summ = (f'<div class="tp-takeaway"><span class="eyebrow-2">What reviewers tell us</span><p>{r["summary"]}</p></div>'
             if r.get("summary") else "")
 
-    # Praise / complaints — honest qualitative themes (no fabricated per-review counts)
-    themes = ""
-    if r.get("praise") or r.get("complaints"):
-        def _col(title, cls, icn, items):
-            if not items:
-                return ""
-            lis = "".join(f'<li><b>{t}</b><span>{desc}</span></li>' for t, desc in items)
-            return (f'<div class="tt-col tt-{cls}"><div class="tt-head">{icon(icn, size=18)}'
-                    f'<h4>{title}</h4></div><ul>{lis}</ul></div>')
-        themes = (f'<div class="tp-themes">'
-                  f'{_col("What customers praise", "praise", "check-c", r.get("praise", []))}'
-                  f'{_col("What customers complain about", "cons", "badge", r.get("complaints", []))}'
-                  f'</div>')
+    # Praise — shown prominently ("what customers love").
+    love = ""
+    if r.get("praise"):
+        lis = "".join(f'<li>{icon("check-c", size=17)}<span><b>{t}</b> {desc}</span></li>'
+                      for t, desc in r["praise"])
+        love = (f'<div class="tp-love"><div class="tp-love-h">{icon("check-c", size=18)} '
+                f'What customers love about {n}</div><ul>{lis}</ul></div>')
 
-    # Featured review cards (from real captured quotes), each topic-tagged
+    # Featured review quotes as a swipeable carousel.
     cards = ""
     for q in r.get("quotes", []):
         initials = "".join(w[0] for w in q.get("name", "U").split()[:2]).upper()
@@ -2717,17 +2720,35 @@ def render_user_reviews(slug):
                   f'<div class="tp-card-who"><b>{q.get("name","Verified user")}</b>'
                   f'<span class="tp-vf">{icon("check-c", size=12)}Verified{(" · " + meta) if meta else ""}</span></div></div>'
                   f'</figure>')
-    cards_block = (f'<h3 class="tp-h3">Featured {n} reviews</h3><p class="tp-sub2">Real reviews captured from {n}\'s '
-                   f'{r.get("source","Trustpilot")} profile, tagged by what each is mainly about.</p>'
-                   f'<div class="tp-cards">{cards}</div>') if cards else ""
+    carousel = ""
+    if cards:
+        cid = f"tpcar-{slug}"
+        carousel = (
+            f'<div class="tp-carousel-head"><h3 class="tp-h3">Featured {n} reviews</h3>'
+            f'<div class="tp-arrows"><button type="button" class="tp-arrow" data-dir="-1" aria-label="Previous reviews">{icon("chev-l", size=18)}</button>'
+            f'<button type="button" class="tp-arrow" data-dir="1" aria-label="Next reviews">{icon("chev-r", size=18)}</button></div></div>'
+            f'<p class="tp-sub2">Real, verified reviews captured from {n}\'s {r.get("source","Trustpilot")} profile — swipe to read more.</p>'
+            f'<div class="tp-carousel" id="{cid}">{cards}</div>'
+            f'<script>(function(){{var c=document.getElementById("{cid}");if(!c)return;'
+            f'var b=c.previousElementSibling;while(b&&!b.querySelector){{b=b.previousElementSibling;}}'
+            f'var box=c.closest(".tpbox");box.querySelectorAll(".tp-arrow").forEach(function(a){{'
+            f'a.addEventListener("click",function(){{c.scrollBy({{left:(+a.dataset.dir)*330,behavior:"smooth"}});}});}});}})();</script>')
+
+    # Cons — kept for honesty but de-emphasized in a collapsed accordion.
+    cons = ""
+    if r.get("complaints"):
+        lis = "".join(f'<li><b>{t}</b> {desc}</li>' for t, desc in r["complaints"])
+        cons = (f'<details class="tp-flags"><summary>A few things some reviewers mention</summary>'
+                f'<ul>{lis}</ul></details>')
 
     return f"""
   <h2 id="reviews">What {n} customers actually say</h2>
   <div class="tpbox">
     {head}
     {summ}
-    {themes}
-    {cards_block}
+    {love}
+    {carousel}
+    {cons}
     <p class="tp-disc">Rating and reviews from {r.get("source","Trustpilot")}, captured {UPDATED}. We show a representative mix — including critical reviews — and quotes are only lightly trimmed for length. Themes are our reading of the public review record, not per-review tallies. <a href="{r.get("url","#")}" rel="nofollow" target="_blank">Verify on {r.get("source","Trustpilot")} →</a></p>
   </div>"""
 
@@ -2889,8 +2910,22 @@ def render_review(slug):
         opts.append(("Tirzepatide", "tirz", ("Compounded tirzepatide" if "compounded" in ml else "Branded tirzepatide (Zepbound)")))
     if not opts:
         opts = [("GLP-1 medication", "sema", d["meds"])]
-    for tag, tcls, desc in opts:
-        med_cards += f"""<div class="medopt">
+    if d.get("plans"):
+        # Provider publishes explicit per-drug plans (price + conditions) — show them.
+        for pl in d["plans"]:
+            med_cards += f"""<div class="medopt medopt-plan">
+      <span class="medopt-tag mo-{pl['cls']}">{pl['drug']}</span>
+      <div class="medopt-visual mo-{pl['cls']}">{icon('pill', size=30)}</div>
+      <b class="medopt-name">{pl['name']}</b>
+      <div class="medopt-price"><b>{pl['price']}</b><span>{pl['unit']}</span></div>
+      <span class="medopt-cond">{pl['cond']}</span>
+      <span class="medopt-prov">{n}</span>
+      <span class="medopt-ship">{icon('truck', size=15)} {pl['ship']}</span>
+      {cta(slug, label="Check eligibility", cls="btn btn-primary btn-block btn-sm")}
+    </div>"""
+    else:
+        for tag, tcls, desc in opts:
+            med_cards += f"""<div class="medopt">
       <span class="medopt-tag mo-{tcls}">{tag}</span>
       <div class="medopt-visual mo-{tcls}">{icon('pill', size=26)}</div>
       <b class="medopt-name">{desc}</b>
@@ -2978,9 +3013,9 @@ def render_review(slug):
   {keyfeat_card}
 
   <section id="pricing">
-    <h2 class="rv-h2">{n} products &amp; pricing</h2>
-    <p class="rv-sub">What you'll pay and the medications on offer — confirm the current number at checkout.</p>
-    <div class="medopts">{med_cards}</div>
+    <h2 class="rv-h2">{'Shop ' + n + "'s GLP-1 plans" if d.get('plans') else n + ' products &amp; pricing'}</h2>
+    <p class="rv-sub">{n + "'s published plans — conditions shown under each price." if d.get('plans') else "What you'll pay and the medications on offer — confirm the current number at checkout."}</p>
+    <div class="medopts{' medopts-plans' if d.get('plans') else ''}">{med_cards}</div>
     <div class="rv-card rv-priceline">
       <div class="rv-priceline-main"><span>Real cost / month</span><b>{_mbig}</b><em>{_msub or d['struct'].lower()}</em></div>
       <p>{d['price_note']}.</p>
@@ -3377,6 +3412,38 @@ def render_article_top_providers(slugs, note="online GLP-1 programs"):
     )
 
 
+def render_article_sidebar():
+    """Sticky conversion sidebar for article/guide pages: our #1 pick with a
+    clear CTA, two runners-up, and a compare-all button. Pulls live provider
+    data so it never drifts."""
+    order = PROVIDER_ORDER
+    top = order[0]
+    p = PROVIDERS[top]
+    big, sub = maint_headline(top)
+    runners = ""
+    for s in order[1:3]:
+        rp = PROVIDERS[s]
+        runners += (f'<a class="artx-run" href="{review_url(s)}">'
+                    f'<span class="artx-run-logo">{logo_icon(s)}</span>'
+                    f'<span class="artx-run-txt"><b>{rp["name"]}</b>'
+                    f'<span>{rp["score"]}/10 · {rp.get("best_for","")}</span></span></a>')
+    return f"""<div class="artx-sticky">
+  <div class="artx-card">
+    <div class="artx-eyebrow">{icon('badge', size=14)} Our #1 rated program</div>
+    <div class="artx-top"><span class="artx-logo">{logo_icon(top)}</span>
+      <span class="artx-score"><b>{p['score']}</b><span>/10</span></span></div>
+    <div class="artx-name">{p['name']}</div>
+    <p class="artx-why">{p.get('highlight') or p.get('best_for','')}</p>
+    <div class="artx-price"><b>{big}</b><span>{sub}</span></div>
+    <a class="btn artx-btn" {cta_attrs(top)}>Visit {p['name']} {icon('ext', size=15)}</a>
+    <a class="artx-read" href="{review_url(top)}">Read our full review</a>
+  </div>
+  <div class="artx-runners"><div class="artx-runners-h">Top alternatives</div>{runners}</div>
+  <a class="btn btn-ghost artx-compare" href="/">Compare all {len(order)} programs {icon('arrow', size=15)}</a>
+  <p class="artx-trust">{icon('shield', size=13)} Independent &amp; ad-free ratings — not for sale. <a href="/methodology">How we score</a></p>
+</div>"""
+
+
 def render_article(a):
     # build a simple TOC from h2 ids
     heads = re.findall(r'<h2 id="([^"]+)">(.*?)</h2>', a["body"])
@@ -3387,22 +3454,27 @@ def render_article(a):
     d = datetime.datetime.strptime(a["date"], "%Y-%m-%d").strftime("%B %-d, %Y")
     body = f"""
 {crumbs([("Home","/"),("Guides","/guides"),(a["title"][:40]+("…" if len(a["title"])>40 else ""), "")])}
-<div class="wrap narrow">
-  <div style="padding-top:22px">
-    <span class="tag">{a['tag']}</span>
-    <h1 style="margin-top:14px">{a['title']}</h1>
-    <div class="meta-line"><span>By the {SITE['name']} team</span><span>·</span><span>{d}</span></div>
-    <p class="lede">{a['dek']}</p>
+<div class="wrap art-wrap">
+  <div class="art-layout">
+    <header class="art-head">
+      <span class="tag">{a['tag']}</span>
+      <h1 style="margin-top:14px">{a['title']}</h1>
+      <div class="meta-line"><span>By the {SITE['name']} team</span><span>·</span><span>{d}</span></div>
+      <p class="lede">{a['dek']}</p>
+    </header>
+    <aside class="art-aside">{render_article_sidebar()}</aside>
+    <main class="art-main">
+      {toc}
+      <div class="article-body">{a['body']}
+
+      {article_versus_block(a['slug'])}</div>
+
+      {render_article_sources(a)}
+
+      <p style="border-top:1px solid var(--line);margin-top:36px;padding-top:22px;color:var(--ink-soft)">
+        See how the leading programs stack up in our <a href="/">ranked comparison</a>, or browse all <a href="/comparisons">head-to-head comparisons</a>.</p>
+    </main>
   </div>
-  {toc}
-  <div class="article-body">{a['body']}
-
-  {article_versus_block(a['slug'])}</div>
-
-  {render_article_sources(a)}
-
-  <p style="border-top:1px solid var(--line);margin-top:36px;padding-top:22px;color:var(--ink-soft)">
-    See how the leading programs stack up in our <a href="/">ranked comparison</a>, or browse all <a href="/comparisons">head-to-head comparisons</a>.</p>
 </div>
 """
     # Inject live "top picks" components wherever an article dropped a marker.
