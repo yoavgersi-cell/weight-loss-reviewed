@@ -537,9 +537,15 @@ PDATA = {
         "price_note": "Flat $99/mo for compounded semaglutide and $129/mo for compounded tirzepatide — the same price at every dose, with no membership fee or long-term plan required",
         "meds": "Compounded semaglutide & tirzepatide", "form": "Weekly injection",
         "visit": "Doctor-guided telehealth", "insurance": "Cash-pay (no insurance needed)",
-        "avail": "Nationwide", "included": "Medication, doctor-guided dosing, 24/7 human support, shipping",
+        "avail": "All 50 states + DC", "included": "Medication, doctor-guided dosing, 24/7 human support, free expedited shipping",
         "tagline": "Compounded GLP-1 at one flat price — $99 semaglutide, $129 tirzepatide, the same every month.",
-        "as_of": "Oct 2026", "src": "tryeden.com", "src_url": "https://www.tryeden.com/",
+        "as_of": "Nov 2026", "src": "tryeden.com", "src_url": "https://www.tryeden.com/",
+        "plans": [
+            {"drug": "Semaglutide", "cls": "sema", "name": "Compounded Semaglutide Injection",
+             "price": "$99", "unit": "/mo", "cond": "Flat price at every dose · no membership, cancel anytime · seen Nov 2026", "ship": "Free expedited shipping"},
+            {"drug": "Tirzepatide", "cls": "tirz", "name": "Compounded Tirzepatide Injection",
+             "price": "$129", "unit": "/mo", "cond": "Flat price at every dose · no membership, cancel anytime · seen Nov 2026", "ship": "Free expedited shipping"},
+        ],
         "scores": {"Value": 9.6, "Support": 8.6, "Medications": 8.4, "Transparency": 9.3},
     },
     "ro": {
@@ -825,22 +831,40 @@ USER_REVIEWS = {
         ],
     },
     "eden": {
-        "source": "Trustpilot", "rating": 4.5, "count": "4,917", "review_tag": "Invited review",
+        "source": "Trustpilot", "rating": 4.5, "count": "5,167", "review_tag": "Invited review",
         "url": "https://www.trustpilot.com/review/tryeden.com",
-        "summary": ("Across roughly 4,900 Trustpilot reviews, Eden averages about 4.5 out of 5 — one of the "
-                    "stronger scores in this category. Reviewers most often praise the flat, predictable pricing "
-                    "and fast, straightforward ordering. The recurring caveats are the ones to expect from a "
-                    "lower-touch, compounded-only service: occasional shipping waits and support that is quick on "
-                    "simple questions but lighter on complex ones."),
-        # Honest qualitative themes drawn from the aggregate review record — not per-review counts.
+        "summary": ("Across more than 5,100 Trustpilot reviews, Eden averages about 4.5 out of 5 — one of the "
+                    "stronger scores in this category, though it's a claimed profile on a paid Trustpilot plan and "
+                    "many reviews are invited, which tends to lift the average. The praise is overwhelmingly about "
+                    "responsive, caring customer support (members name individual reps again and again) and on-time, "
+                    "well-packaged delivery, with longer-term members reporting real weight loss at Eden's flat price. "
+                    "The complaints from critical reviewers are consistent and worth knowing: billing errors such as "
+                    "double charges or being charged before a doctor review, occasional missing or delayed shipments, "
+                    "and difficulty cancelling for some."),
+        # Honest qualitative themes drawn from the real review record — not per-review counts.
         "praise": [
-            ("Flat, predictable pricing", "The theme reviewers return to most: simple, flat pricing with no surprise add-ons."),
-            ("Fast, straightforward ordering", "A quick, low-friction ordering process that gets people started without hassle."),
-            ("Strong overall satisfaction", "At about 4.5/5 across roughly 4,900 reviews, Eden earns one of the higher scores we track in this category."),
+            ("Responsive, caring support", "By far the most common theme: named support reps who answer fast, explain clearly and follow up — the thing reviewers praise most."),
+            ("On-time, well-packaged delivery", "Many members say medication arrives when promised and well packaged, with prompt shipping."),
+            ("Real results at a flat price", "Longer-term members report steady weight loss on compounded semaglutide or tirzepatide at Eden's flat, predictable monthly price."),
         ],
         "complaints": [
-            ("Occasional shipping waits", "Some reviewers mention waiting for shipments to arrive."),
-            ("Lighter support on complex issues", "Support is described as quick on simple questions but thinner when problems get complicated — expected for a lower-touch service."),
+            ("Billing errors", "The most consistent critical theme: double charges, or being charged before a doctor review or medication arrived."),
+            ("Missing or delayed shipments", "A minority report medication arriving late or not at all, and trouble getting a clear shipping update."),
+            ("Hard to cancel for some", "Some describe difficulty cancelling and slow email replies — though others call cancellation easy, so experiences vary."),
+        ],
+        "quotes": [
+            {"rating": 5, "name": "Selines Torres", "source": "Trustpilot", "tag": "Results & delivery",
+             "text": "I have been with Eden since March 2026, lost 40 pounds on compounded tirzepatide. The experience has been great. Shipments have always been on time. Communication is great. I would recommend them to anyone who is interested in starting their weight loss journey."},
+            {"rating": 5, "name": "Rachel", "source": "Trustpilot", "tag": "First weeks",
+             "text": "I am currently on week 3 and so far the experience with Eden has been phenomenal! They are very responsive and questions are always answered right away. Delivery was prompt."},
+            {"rating": 5, "name": "twoyrhappycustomer", "source": "Trustpilot", "tag": "Care & shipping",
+             "text": "Customer service is great, and responsive. Physicians are knowledgeable and thorough. Medication arrives well packaged and timely."},
+            {"rating": 5, "name": "Daniel Perezalonso", "source": "Trustpilot", "tag": "Smooth experience",
+             "text": "Been with Eden for 2 months and everything has gone great. The support team responded super quick, the doctor responded within the timeframe provided and meds were sent when they said. No issues at all."},
+            {"rating": 5, "name": "Laura Lockhart-Lutzow", "source": "Trustpilot", "tag": "Cancellation",
+             "text": "Easy to cancel. No hassles, quick customer service."},
+            {"rating": 2, "name": "Lauren McCracken", "source": "Trustpilot", "tag": "Shipping updates",
+             "text": "The customer service representative really was not able to help me with my request of when my medication would ship."},
         ],
     },
     "altrx": {
