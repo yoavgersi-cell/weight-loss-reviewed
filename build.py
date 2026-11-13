@@ -58,12 +58,27 @@ AFFILIATE_LINKS = {
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
+def _minify_css(s):
+    """Conservative CSS minify: drop comments, collapse whitespace, trim around
+    structural punctuation. Keeps single spaces so calc()/clamp() operators and
+    multi-value shorthands stay valid."""
+    s = re.sub(r'/\*.*?\*/', '', s, flags=re.S)       # comments
+    s = re.sub(r'\s+', ' ', s)                          # collapse whitespace runs
+    s = re.sub(r'\s*([{};,])\s*', r'\1', s)            # trim around { } ; ,
+    s = re.sub(r';}', '}', s)                           # drop final semicolons
+    return s.strip()
+
 def _asset_ver():
-    """Fingerprint of the stylesheet, so a CSS change busts the immutable cache."""
+    """Build a minified stylesheet (served to users) and fingerprint it so a CSS
+    change busts the immutable cache. Falls back to the raw file if needed."""
     import hashlib
     try:
-        with open(os.path.join(ROOT, "assets", "style.css"), "rb") as f:
-            return hashlib.md5(f.read()).hexdigest()[:10]
+        with open(os.path.join(ROOT, "assets", "style.css"), encoding="utf-8") as f:
+            raw = f.read()
+        mini = _minify_css(raw)
+        with open(os.path.join(ROOT, "assets", "style.min.css"), "w", encoding="utf-8") as f:
+            f.write(mini)
+        return hashlib.md5(mini.encode("utf-8")).hexdigest()[:10]
     except OSError:
         return datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
@@ -1535,12 +1550,47 @@ def logo_src(slug):
             return "/" + rel
     return None
 
+_DIM_CACHE = {}
+def img_dims(src):
+    """Intrinsic (width, height) of a local image/SVG, for explicit width/height
+    attributes (prevents layout shift / CLS). Cached; returns None if unknown."""
+    if not src:
+        return None
+    rel = src.split("?")[0].lstrip("/")
+    if rel in _DIM_CACHE:
+        return _DIM_CACHE[rel]
+    full = os.path.join(ROOT, rel)
+    dims = None
+    try:
+        if rel.endswith(".svg"):
+            t = open(full, encoding="utf-8", errors="ignore").read(4000)
+            m = re.search(r'viewBox="[\d.]+ [\d.]+ ([\d.]+) ([\d.]+)"', t)
+            if m:
+                dims = (round(float(m.group(1))), round(float(m.group(2))))
+            else:
+                mw = re.search(r'\bwidth="([\d.]+)', t); mh = re.search(r'\bheight="([\d.]+)', t)
+                if mw and mh:
+                    dims = (round(float(mw.group(1))), round(float(mh.group(1))))
+        else:
+            import subprocess
+            out = subprocess.check_output(["identify", "-format", "%w %h", full],
+                                          stderr=subprocess.DEVNULL).decode().split()
+            dims = (int(out[0]), int(out[1]))
+    except Exception:
+        dims = None
+    _DIM_CACHE[rel] = dims
+    return dims
+
+def dim_attrs(src):
+    d = img_dims(src)
+    return f' width="{d[0]}" height="{d[1]}"' if d else ""
+
 def logo_img(slug, cls="plogo"):
     src = logo_src(slug)
     if not src:
         return ""
     name = PROVIDERS[slug]["name"]
-    return f'<img class="{cls}" src="{src}" alt="{name} logo" loading="lazy">'
+    return f'<img class="{cls}" src="{src}" alt="{name} logo"{dim_attrs(src)} loading="lazy">'
 
 def logo_icon_src(slug):
     """Square icon logo for round thumbnails (sidebar). Falls back to the
@@ -1555,7 +1605,7 @@ def logo_icon(slug):
     name = PROVIDERS[slug]["name"]
     if not src:
         return f'<span class="sb-rev-init">{name[:2]}</span>'
-    return f'<img src="{src}" alt="{name}" loading="lazy">'
+    return f'<img src="{src}" alt="{name}"{dim_attrs(src)} loading="lazy">'
 
 TIER_MEANING = {"$": "Budget", "$$": "Mid-range", "$$$": "Premium"}
 
@@ -1745,8 +1795,10 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap">
-<link rel="stylesheet" href="/assets/style.css?v={ASSET_VER}">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/style.min.css?v={ASSET_VER}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Ctext x='16' y='22' font-size='15' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EWR%3C/text%3E%3C/svg%3E">
 {ld}
 </head>
@@ -2886,7 +2938,7 @@ def render_review(slug):
 <section class="rv-hero"><div class="wrap rv-wrap">
   {crumbs([("Home","/"),("Reviews","/reviews"),(n+" Review", "")])}
   <div class="rv-hero-top">
-    <div class="rv-hero-logo">{f'<img src="{logo_src(slug)}" alt="{n} logo">' if logo_src(slug) else f'<span>{n}</span>'}</div>
+    <div class="rv-hero-logo">{f'<img src="{logo_src(slug)}" alt="{n} logo"{dim_attrs(logo_src(slug))}>' if logo_src(slug) else f'<span>{n}</span>'}</div>
     <div class="rv-hero-head">
       <h1>{n} Reviews</h1>
       <p class="rv-offer">{offer}</p>
@@ -2915,7 +2967,7 @@ def render_review(slug):
     if d.get("plans"):
         # Provider publishes explicit per-drug plans (price + conditions) — show them.
         for pl in d["plans"]:
-            visual = (f'<img src="{pl["img"]}" alt="{pl["name"]}" loading="lazy">' if pl.get("img")
+            visual = (f'<img src="{pl["img"]}" alt="{pl["name"]}"{dim_attrs(pl["img"])} loading="lazy">' if pl.get("img")
                       else icon('pill', size=30))
             med_cards += f"""<div class="medopt medopt-plan">
       <span class="medopt-tag mo-{pl['cls']}">{pl['drug']}</span>
@@ -3234,7 +3286,7 @@ def render_versus(v):
 
     def mast_logo(slug):
         src = logo_src(slug)
-        inner = (f'<img src="{src}" alt="{PROVIDERS[slug]["name"]} logo">' if src
+        inner = (f'<img src="{src}" alt="{PROVIDERS[slug]["name"]} logo"{dim_attrs(src)}>' if src
                  else f'<span>{PROVIDERS[slug]["name"]}</span>')
         return f'<div class="vs-mast-logo">{inner}</div>'
 
