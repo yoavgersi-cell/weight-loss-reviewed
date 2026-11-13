@@ -542,8 +542,10 @@ PDATA = {
         "as_of": "Nov 2026", "src": "tryeden.com", "src_url": "https://www.tryeden.com/",
         "plans": [
             {"drug": "Semaglutide", "cls": "sema", "name": "Compounded Semaglutide Injection",
+             "img": "/assets/products/eden-sema.png",
              "price": "$99", "unit": "/mo", "cond": "Flat price at every dose · no membership, cancel anytime · seen Nov 2026", "ship": "Free expedited shipping"},
             {"drug": "Tirzepatide", "cls": "tirz", "name": "Compounded Tirzepatide Injection",
+             "img": "/assets/products/eden-tirz.png",
              "price": "$129", "unit": "/mo", "cond": "Flat price at every dose · no membership, cancel anytime · seen Nov 2026", "ship": "Free expedited shipping"},
         ],
         "scores": {"Value": 9.6, "Support": 8.6, "Medications": 8.4, "Transparency": 9.3},
