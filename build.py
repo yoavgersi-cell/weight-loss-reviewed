@@ -509,8 +509,10 @@ PDATA = {
         "as_of": "Nov 2026", "src": "joinem.co", "src_url": "https://joinem.co/",
         "plans": [
             {"drug": "Semaglutide", "cls": "sema", "name": "Compounded Semaglutide Injection",
+             "img": "/assets/products/embody-sema.png",
              "price": "$49", "unit": "/mo", "cond": "Flat, locked-in monthly price · pre-Black-Friday rate, seen Nov 2026", "ship": "Free 1–2 day shipping"},
             {"drug": "Tirzepatide", "cls": "tirz", "name": "Compounded Tirzepatide Injection",
+             "img": "/assets/products/embody-tirz.png",
              "price": "$99", "unit": "/mo", "cond": "Flat, locked-in monthly price · pre-Black-Friday rate, seen Nov 2026", "ship": "Free 1–2 day shipping"},
         ],
         "scores": {"Value": 9.4, "Support": 8.7, "Medications": 9.2, "Transparency": 7.4},
@@ -2913,9 +2915,11 @@ def render_review(slug):
     if d.get("plans"):
         # Provider publishes explicit per-drug plans (price + conditions) — show them.
         for pl in d["plans"]:
+            visual = (f'<img src="{pl["img"]}" alt="{pl["name"]}" loading="lazy">' if pl.get("img")
+                      else icon('pill', size=30))
             med_cards += f"""<div class="medopt medopt-plan">
       <span class="medopt-tag mo-{pl['cls']}">{pl['drug']}</span>
-      <div class="medopt-visual mo-{pl['cls']}">{icon('pill', size=30)}</div>
+      <div class="medopt-visual mo-{pl['cls']}{' has-img' if pl.get('img') else ''}">{visual}</div>
       <b class="medopt-name">{pl['name']}</b>
       <div class="medopt-price"><b>{pl['price']}</b><span>{pl['unit']}</span></div>
       <span class="medopt-cond">{pl['cond']}</span>
