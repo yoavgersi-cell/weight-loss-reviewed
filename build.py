@@ -19,6 +19,7 @@ from pillar6 import RESULTS_BODY
 from pillar7 import SIDEFX_BODY
 from pillar8 import WEGOVY_ZEP_BODY
 from pillar9 import EMBODY_RO_BODY
+from pillar10 import PLATEAU_BODY
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1249,6 +1250,15 @@ ARTICLES = [
         "body": EMBODY_RO_BODY,
     },
     {
+        "slug": "glp1-weight-loss-plateau",
+        "title": "GLP-1 Weight-Loss Plateau: Why It Stalls and How to Break It (2026)",
+        "tag": "Guides",
+        "date": "2026-11-15",
+        "description": "Your GLP-1 weight loss stalled — here's the evidence-based why and how. The trial data on when plateaus happen, the reframe competitors miss (a plateau on a stable dose is usually maintained loss, not failure — proven by STEP 4 and SURMOUNT-4), an appetite-based diagnostic, and the real levers: dose, muscle (62% fat / 38% lean split), switching drugs, and habits. With tables, sources, and our top picks.",
+        "dek": "A stall isn't the drug quitting — the maintenance trials prove it. Here's when plateaus happen, how to diagnose yours in one question, and the evidence-ranked levers to break it (or recognize you've reached the finish line).",
+        "body": PLATEAU_BODY,
+    },
+    {
         "slug": "glp1-weight-loss-programs-compared",
         "title": f"GLP-1 Weight-Loss Programs Compared ({YEAR}): What Actually Matters",
         "tag": "Guides",
@@ -1747,6 +1757,7 @@ def header(active=""):
 FOOTER_GUIDES = [
     "glp1-weight-loss-online-complete-guide",
     "wegovy-vs-zepbound",
+    "glp1-weight-loss-plateau",
     "embody-vs-ro-weight-loss",
     "how-much-weight-can-you-lose-glp1",
     "glp1-side-effects",
@@ -2035,6 +2046,12 @@ SOURCE_META = {
         ("Tirzepatide as Compared with Semaglutide for the Treatment of Obesity (SURMOUNT-5 trial)", "New England Journal of Medicine, 2025"),
     "https://www.novonordisk-us.com/media/press-releases/fda-approves-wegovy-hd-7-2mg-injection.html":
         ("FDA approves Wegovy HD (semaglutide 7.2 mg) for chronic weight management (STEP UP program)", "Novo Nordisk, 2026"),
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9542252/":
+        ("Weight regain and cardiometabolic effects after withdrawal of semaglutide: the STEP 1 trial extension", "Diabetes, Obesity and Metabolism, 2022 (PubMed Central)"),
+    "https://pubmed.ncbi.nlm.nih.gov/33755728/":
+        ("Continued Weekly Semaglutide vs Placebo on Weight-Loss Maintenance (STEP 4 randomized trial)", "JAMA, 2021 (PubMed)"),
+    "https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/2841273":
+        ("Weight regain after tirzepatide withdrawal — a post hoc analysis of the SURMOUNT-4 trial", "JAMA Internal Medicine, 2025"),
 }
 
 # For the few guides that cite little or nothing inline, add topically relevant
@@ -3570,7 +3587,7 @@ def render_article(a):
                    "glp1-weight-loss-pill", "is-compounded-semaglutide-legal",
                    "glp1-cost-2027", "how-much-weight-can-you-lose-glp1",
                    "glp1-side-effects", "wegovy-vs-zepbound",
-                   "embody-vs-ro-weight-loss"}
+                   "embody-vs-ro-weight-loss", "glp1-weight-loss-plateau"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
