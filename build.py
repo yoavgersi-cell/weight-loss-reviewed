@@ -20,6 +20,7 @@ from pillar7 import SIDEFX_BODY
 from pillar8 import WEGOVY_ZEP_BODY
 from pillar9 import EMBODY_RO_BODY
 from pillar10 import PLATEAU_BODY
+from article_images import ARTICLE_IMAGES
 
 # --------------------------------------------------------------------------
 # Site config
@@ -1621,6 +1622,17 @@ def dim_attrs(src):
     d = img_dims(src)
     return f' width="{d[0]}" height="{d[1]}"' if d else ""
 
+def article_image(slug):
+    """(src, alt) for an article's hero image if one has been generated, else None.
+    Safe before generation: returns None until assets/articles/<slug>.webp exists."""
+    meta = ARTICLE_IMAGES.get(slug)
+    if not meta:
+        return None
+    rel = f"assets/articles/{slug}.webp"
+    if not os.path.exists(os.path.join(ROOT, rel)):
+        return None
+    return "/" + rel, meta["alt"]
+
 def logo_img(slug, cls="plogo"):
     src = logo_src(slug)
     if not src:
@@ -1797,9 +1809,13 @@ def footer():
   </div>
 </div></footer>"""
 
-def base_page(title, description, path, body, active="", jsonld="", article_meta=None):
+def base_page(title, description, path, body, active="", jsonld="", article_meta=None, og_image=None):
     canonical = SITE["domain"] + (path if path != "/" else "/")
     og_type = "article" if article_meta else "website"
+    # Per-page social image (e.g. an article's hero) with a site-wide default.
+    _ogi = og_image or {"url": f"{SITE['domain']}/assets/og-default.png", "w": 1200, "h": 630,
+                        "type": "image/png",
+                        "alt": f"{SITE['name']} — compare the best GLP-1 weight-loss programs"}
     blocks = jsonld if isinstance(jsonld, (list, tuple)) else ([jsonld] if jsonld else [])
     ld = "".join(f'<script type="application/ld+json">{b}</script>' for b in blocks if b)
     return f"""<!doctype html>
@@ -1818,17 +1834,17 @@ def base_page(title, description, path, body, active="", jsonld="", article_meta
 <meta property="og:url" content="{canonical}">
 <meta property="og:site_name" content="{SITE['name']}">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="{SITE['domain']}/assets/og-default.png">
-<meta property="og:image:secure_url" content="{SITE['domain']}/assets/og-default.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="{html.escape(SITE['name'])} — compare the best GLP-1 weight-loss programs">
+<meta property="og:image" content="{_ogi['url']}">
+<meta property="og:image:secure_url" content="{_ogi['url']}">
+<meta property="og:image:type" content="{_ogi.get('type', 'image/webp')}">
+<meta property="og:image:width" content="{_ogi['w']}">
+<meta property="og:image:height" content="{_ogi['h']}">
+<meta property="og:image:alt" content="{html.escape(_ogi['alt'])}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{html.escape(title)}">
 <meta name="twitter:description" content="{html.escape(description)}">
-<meta name="twitter:image" content="{SITE['domain']}/assets/og-default.png">
-<meta name="twitter:image:alt" content="{html.escape(SITE['name'])} — compare the best GLP-1 weight-loss programs">
+<meta name="twitter:image" content="{_ogi['url']}">
+<meta name="twitter:image:alt" content="{html.escape(_ogi['alt'])}">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3551,6 +3567,9 @@ def render_article(a):
         items = "".join(f'<li><a href="#{hid}">{re.sub("<.*?>","",txt)}</a></li>' for hid, txt in heads)
         toc = f'<div class="toc"><strong>In this guide</strong><ol>{items}</ol></div>'
     d = datetime.datetime.strptime(a["date"], "%Y-%m-%d").strftime("%B %-d, %Y")
+    ai = article_image(a["slug"])
+    hero_img = (f'<figure class="art-hero"><img src="{ai[0]}" alt="{html.escape(ai[1])}"'
+                f'{dim_attrs(ai[0])} fetchpriority="high" decoding="async"></figure>') if ai else ""
     body = f"""
 {crumbs([("Home","/"),("Guides","/guides"),(a["title"][:40]+("…" if len(a["title"])>40 else ""), "")])}
 <div class="wrap art-wrap">
@@ -3560,6 +3579,7 @@ def render_article(a):
       <h1 style="margin-top:14px">{a['title']}</h1>
       <div class="meta-line"><span>By the {SITE['name']} team</span><span>·</span><span>{d}</span></div>
       <p class="lede">{a['dek']}</p>
+      {hero_img}
     </header>
     <aside class="art-aside">{render_article_sidebar()}</aside>
     <main class="art-main">
@@ -3595,8 +3615,13 @@ def render_article(a):
     faq_pairs = extract_faq_pairs(a["body"])
     if len(faq_pairs) >= 3:
         jl.append(ld_faq_custom(faq_pairs))
+    og = None
+    if ai:
+        _d = img_dims(ai[0])
+        og = {"url": SITE["domain"] + ai[0], "w": (_d[0] if _d else 1536),
+              "h": (_d[1] if _d else 1024), "type": "image/webp", "alt": ai[1]}
     return base_page(f"{a['title']} | {SITE['name']}", a["description"],
-                     article_url(a), body, active="/guides", jsonld=jl, article_meta=True)
+                     article_url(a), body, active="/guides", jsonld=jl, article_meta=True, og_image=og)
 
 # --------------------------------------------------------------------------
 # Index pages
