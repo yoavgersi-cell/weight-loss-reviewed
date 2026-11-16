@@ -1745,3 +1745,8 @@ a.vsrow:hover { background: #EDF2F8; }
 .medopt-visual.has-img { background: linear-gradient(135deg, #f7f9fc, #eef2f8); height: 190px; padding: 8px; overflow: hidden; }
 .medopt-visual.has-img img { height: 172px; width: auto; max-width: 100%; object-fit: contain; object-position: center top; border-radius: 6px; }
 .medopt-visual.mo-tirz.has-img { background: linear-gradient(135deg, #faf3f6, #f3e9ef); }
+
+/* Article hero image */
+.art-hero { margin: 22px 0 4px; }
+.art-hero img { width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line);
+  display: block; background: var(--surface-2); }
