@@ -20,6 +20,7 @@ from pillar7 import SIDEFX_BODY
 from pillar8 import WEGOVY_ZEP_BODY
 from pillar9 import EMBODY_RO_BODY
 from pillar10 import PLATEAU_BODY
+from pillar11 import MOUNJARO_ZEP_BODY
 from article_images import ARTICLE_IMAGES
 
 # --------------------------------------------------------------------------
@@ -1242,6 +1243,15 @@ ARTICLES = [
         "body": WEGOVY_ZEP_BODY,
     },
     {
+        "slug": "mounjaro-vs-zepbound",
+        "title": "Mounjaro vs Zepbound (2026): Same Drug, Different Label",
+        "tag": "Comparison",
+        "date": "2026-11-17",
+        "description": "Mounjaro vs Zepbound, honestly: they're the same drug (tirzepatide, same maker, same doses). Mounjaro is FDA-approved for diabetes, Zepbound for weight loss and sleep apnea — so the real differences are insurance coverage, 2026 cash price, and who can legitimately get each. With real numbers, a decision guide, FAQ, and our top provider picks.",
+        "dek": "They're the identical molecule — so 'which is better for weight loss' is the wrong question. Here's what actually differs: FDA label, insurance coverage, cash price, and which one you can legitimately be prescribed.",
+        "body": MOUNJARO_ZEP_BODY,
+    },
+    {
         "slug": "embody-vs-ro-weight-loss",
         "title": "Embody vs Ro Weight Loss (2026): Cost, Meds & Insurance Compared",
         "tag": "Comparison",
@@ -1769,6 +1779,7 @@ def header(active=""):
 FOOTER_GUIDES = [
     "glp1-weight-loss-online-complete-guide",
     "wegovy-vs-zepbound",
+    "mounjaro-vs-zepbound",
     "glp1-weight-loss-plateau",
     "embody-vs-ro-weight-loss",
     "how-much-weight-can-you-lose-glp1",
@@ -2068,6 +2079,12 @@ SOURCE_META = {
         ("Continued Weekly Semaglutide vs Placebo on Weight-Loss Maintenance (STEP 4 randomized trial)", "JAMA, 2021 (PubMed)"),
     "https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/2841273":
         ("Weight regain after tirzepatide withdrawal — a post hoc analysis of the SURMOUNT-4 trial", "JAMA Internal Medicine, 2025"),
+    "https://www.fda.gov/news-events/press-announcements/fda-approves-first-medication-obstructive-sleep-apnea":
+        ("FDA approves Zepbound (tirzepatide) as the first drug for moderate-to-severe obstructive sleep apnea in adults with obesity", "U.S. Food & Drug Administration, 2024"),
+    "https://pubmed.ncbi.nlm.nih.gov/34370970/":
+        ("Tirzepatide versus Semaglutide Once Weekly in Patients with Type 2 Diabetes (SURPASS-2 trial)", "New England Journal of Medicine, 2021 (PubMed)"),
+    "https://mounjaro.lilly.com/":
+        ("Mounjaro (tirzepatide) cost, savings and coverage (official)", "Eli Lilly and Company"),
 }
 
 # For the few guides that cite little or nothing inline, add topically relevant
@@ -3607,7 +3624,8 @@ def render_article(a):
                    "glp1-weight-loss-pill", "is-compounded-semaglutide-legal",
                    "glp1-cost-2027", "how-much-weight-can-you-lose-glp1",
                    "glp1-side-effects", "wegovy-vs-zepbound",
-                   "embody-vs-ro-weight-loss", "glp1-weight-loss-plateau"}
+                   "embody-vs-ro-weight-loss", "glp1-weight-loss-plateau",
+                   "mounjaro-vs-zepbound"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
