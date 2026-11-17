@@ -22,6 +22,10 @@ ARTICLE_IMAGES = {
         "alt": "Editorial illustration comparing two GLP-1 weight-loss injection medications shown as two balanced vials side by side, representing a Wegovy versus Zepbound comparison.",
         "prompt": "Two stylized medication injection vials of slightly different color standing side by side in balanced symmetry, with a subtle balance-scale motif between them suggesting a head-to-head comparison.",
     },
+    "retatrutide": {
+        "alt": "Editorial illustration of a single medication vial with three distinct abstract molecular pathways converging into it, representing retatrutide's triple-hormone-receptor mechanism, in teal and navy tones.",
+        "prompt": "A single stylized medication injection vial in the center with three distinct thin flowing lines of slightly different shades converging into it from three directions, each ending in a small simple node, suggesting a triple-receptor mechanism, clean minimal composition with generous negative space.",
+    },
     "mounjaro-vs-zepbound": {
         "alt": "Editorial illustration of a single medication vial casting two differently labeled shadows, representing one drug (tirzepatide) sold under two brand names, Mounjaro and Zepbound.",
         "prompt": "A single stylized medication injection vial in the center casting two distinct soft shadows that split in different directions, suggesting one drug with two identities, clean minimal composition with generous negative space.",
