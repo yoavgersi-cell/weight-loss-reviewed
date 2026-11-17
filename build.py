@@ -22,6 +22,7 @@ from pillar9 import EMBODY_RO_BODY
 from pillar10 import PLATEAU_BODY
 from pillar11 import MOUNJARO_ZEP_BODY
 from pillar12 import RETATRUTIDE_BODY
+from pillar13 import ORFORGLIPRON_BODY
 from article_images import ARTICLE_IMAGES
 
 # --------------------------------------------------------------------------
@@ -1244,6 +1245,15 @@ ARTICLES = [
         "body": WEGOVY_ZEP_BODY,
     },
     {
+        "slug": "orforglipron",
+        "title": "Orforglipron (Foundayo): The First Convenient Weight-Loss Pill (2026)",
+        "tag": "Guides",
+        "date": "2026-11-17",
+        "description": "Orforglipron (Foundayo), honestly: the first oral small-molecule GLP-1, FDA-approved for weight loss in April 2026. A daily pill — no needles, no food/water rules, ~$149/mo self-pay. Real data (~11% weight loss in ATTAIN-1), how it compares to the injectables and oral semaglutide, cost, side effects, and who it's for.",
+        "dek": "The first genuinely convenient weight-loss pill — daily, no needles, no food-or-water rules. Not the most powerful (injectables still lose more), but a real breakthrough for access. Here's the honest data, cost, and who it fits.",
+        "body": ORFORGLIPRON_BODY,
+    },
+    {
         "slug": "retatrutide",
         "title": "Retatrutide: What We Actually Know (2026)",
         "tag": "Guides",
@@ -1791,6 +1801,7 @@ FOOTER_GUIDES = [
     "wegovy-vs-zepbound",
     "mounjaro-vs-zepbound",
     "retatrutide",
+    "orforglipron",
     "glp1-weight-loss-plateau",
     "embody-vs-ro-weight-loss",
     "how-much-weight-can-you-lose-glp1",
@@ -2104,6 +2115,10 @@ SOURCE_META = {
         ("Retatrutide for weight loss: availability, status and what to know", "GoodRx"),
     "https://www.healthline.com/health/drugs/retatrutide":
         ("Retatrutide: risks of using it before FDA approval", "Healthline"),
+    "https://www.goodrx.com/foundayo/what-is":
+        ("Foundayo (orforglipron): uses, cost and what to know", "GoodRx"),
+    "https://www.drugs.com/foundayo.html":
+        ("Foundayo (orforglipron) — dosage, cost and side effects", "Drugs.com"),
 }
 
 # For the few guides that cite little or nothing inline, add topically relevant
@@ -3644,7 +3659,7 @@ def render_article(a):
                    "glp1-cost-2027", "how-much-weight-can-you-lose-glp1",
                    "glp1-side-effects", "wegovy-vs-zepbound",
                    "embody-vs-ro-weight-loss", "glp1-weight-loss-plateau",
-                   "mounjaro-vs-zepbound", "retatrutide"}
+                   "mounjaro-vs-zepbound", "retatrutide", "orforglipron"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())

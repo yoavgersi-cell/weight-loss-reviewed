@@ -22,6 +22,10 @@ ARTICLE_IMAGES = {
         "alt": "Editorial illustration comparing two GLP-1 weight-loss injection medications shown as two balanced vials side by side, representing a Wegovy versus Zepbound comparison.",
         "prompt": "Two stylized medication injection vials of slightly different color standing side by side in balanced symmetry, with a subtle balance-scale motif between them suggesting a head-to-head comparison.",
     },
+    "orforglipron": {
+        "alt": "Editorial illustration of a single oral medication pill-capsule beside a small stylized clock with no hands, representing a once-daily GLP-1 weight-loss pill taken any time of day, in teal and navy tones.",
+        "prompt": "A single clean stylized oral capsule-pill in the foreground beside a simple minimal circular clock face with no numerals, and a soft downward curve in the background suggesting gentle weight loss, conveying an easy anytime daily pill, generous negative space.",
+    },
     "retatrutide": {
         "alt": "Editorial illustration of a single medication vial with three distinct abstract molecular pathways converging into it, representing retatrutide's triple-hormone-receptor mechanism, in teal and navy tones.",
         "prompt": "A single stylized medication injection vial in the center with three distinct thin flowing lines of slightly different shades converging into it from three directions, each ending in a small simple node, suggesting a triple-receptor mechanism, clean minimal composition with generous negative space.",

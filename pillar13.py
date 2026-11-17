@@ -1,0 +1,144 @@
+# Pillar guide 13 — "Orforglipron (Foundayo): The First Convenient Weight-Loss Pill (2026)"
+# Honest spine: the first oral small-molecule GLP-1 — a real access breakthrough
+# (daily pill, no needles, no food/water rules, cheap self-pay) but less potent
+# than the injectables. Body stored as a module (not an .html source).
+
+P1 = r"""
+<div class="callout"><h3>The short version</h3><p>Orforglipron — brand name <strong>Foundayo</strong>, from Eli Lilly — is the first weight-loss drug that's genuinely easy to take: a <strong>once-daily pill</strong>, swallowed any time of day, <strong>with or without food or water</strong>, and it was <strong>FDA-approved for weight management in April&nbsp;2026</strong>. That matters because it's a true <strong>small molecule</strong>, not a peptide like semaglutide or tirzepatide — which is why it can survive as a convenient pill and be made at scale without needles or refrigeration. The honest trade-off: it's a real breakthrough for <strong>access and convenience</strong>, but it is <strong>not the most powerful option</strong>. In its pivotal trial, people lost on average about <strong>11% of their body weight</strong> at the top dose over 72 weeks — meaningful and life-changing for many, but below the injectable tirzepatide (~21%) and semaglutide (~15%). So Foundayo isn't "the best weight-loss drug"; it's "the most <em>accessible</em> one," and for a lot of people that's exactly the point. This guide lays out the real data, the real cost, how it compares to the injections and to the other weight-loss pill, and who it actually fits. None of it is medical advice.</p></div>
+
+<p>For years, "GLP-1 for weight loss" meant one thing: a weekly injection. Even the first pills to arrive were peptides that had to be taken on an empty stomach with strict rules, or weren't for weight loss at all. Orforglipron breaks that pattern. It's the first <strong>oral small-molecule GLP-1</strong> approved for weight management, and the convenience leap is real — no needles, no injection-site reactions, no "take it 30 minutes before anything with half a glass of water" ritual. Just a pill, once a day, whenever. For the large share of people who've avoided these drugs purely because of the needle, that changes the math.</p>
+
+<p>But convenience isn't the whole story, and the hype tends to flatten the trade-off that actually matters. A pill you'll take every day beats a stronger injection you dread and skip — but only if the pill is strong enough to get you where you want to go, and orforglipron is meaningfully gentler on the scale than the top injectables. This guide is about holding both truths at once: it's a genuine breakthrough <em>and</em> it's not the most powerful tool in the drawer. We'll go through exactly what the trial showed, what it costs, how it stacks up against the injections and against oral semaglutide, and how to tell whether it's the right fit for you specifically.</p>
+
+<p>A note on scope: this is a guide to an <strong>FDA-approved medication</strong>, but it is not a prescription, a diagnosis, or a substitute for a clinician. Orforglipron is a real drug with real effects and real warnings, and whether it's appropriate for you is a decision for a licensed prescriber who knows your history. With that said, let's start with what it actually is.</p>
+
+<h2 id="what-is-it">What orforglipron actually is</h2>
+
+<p>Orforglipron is a <strong>GLP-1 receptor agonist</strong> — the same broad class as Ozempic, Wegovy, Mounjaro, and Zepbound. It works the familiar way: it mimics the gut hormone GLP-1 to reduce hunger, increase fullness, and slow stomach emptying, so you eat less without constant willpower. If you understand how semaglutide works, you understand the basic mechanism here. What's different isn't the <em>target</em> — it's the <em>molecule</em>.</p>
+
+<p>Semaglutide and tirzepatide are <strong>peptides</strong> — large, fragile protein-like molecules. Your digestive system is very good at destroying peptides, which is why they're normally injected, and why the one peptide pill (oral semaglutide) needs strict empty-stomach dosing and a special absorption helper just to get a little of it into your bloodstream. Orforglipron is a <strong>small molecule</strong> instead — a compact, sturdy compound that survives digestion and absorbs reliably as an ordinary pill. That single chemistry difference is the whole reason Foundayo can be a genuinely convenient tablet: <strong>once daily, any time of day, with or without food or water</strong>, no ritual required. Lilly's own announcement of the <a href="https://investor.lilly.com/news-releases/news-release-details/fda-approves-lillys-foundayotm-orforglipron-only-glp-1-pill" target="_blank" rel="noopener">FDA approval</a> emphasizes exactly that flexibility.</p>
+
+<p>The small-molecule nature has a second, bigger-picture consequence: <strong>scale and cost</strong>. Peptides are expensive and complex to manufacture, and injectables need cold-chain handling. A small-molecule pill is far cheaper and simpler to make and ship in enormous quantities — which is why many analysts see oral orforglipron as the drug most likely to actually widen access to GLP-1 treatment, not just add another premium option. The convenience you feel as a patient and the manufacturing economics behind the scenes are two sides of the same chemical coin, and both point the same direction: this is the GLP-1 built to reach a lot more people.</p>
+
+<p>One scope clarification: as of its 2026 launch, Foundayo is approved for <strong>chronic weight management</strong> — obesity, or overweight with a weight-related health problem. A separate approval for <strong>type&nbsp;2 diabetes</strong> was expected to be pursued but isn't in place at launch, so the diabetes version of this story is still being written. For weight loss, though, it's approved, available, and the newest tool on the shelf.</p>
+"""
+
+P2 = r"""
+<h2 id="the-data">The data: how much weight does orforglipron cause?</h2>
+
+<p>The pivotal evidence is <strong>ATTAIN-1</strong>, a large Phase&nbsp;3 trial published in the <em>New England Journal of Medicine</em> in 2025 (<a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2511774" target="_blank" rel="noopener">ATTAIN-1, NEJM 2025</a>). It randomized more than <strong>3,100 adults</strong> with obesity (and without diabetes) to orforglipron at one of three doses or placebo, for <strong>72 weeks</strong>. Here's what it found.</p>
+
+<div class="prose-table">
+<table>
+<thead><tr><th>Dose</th><th>Avg. weight loss at 72 weeks</th><th>Reached ≥10% loss</th></tr></thead>
+<tbody>
+<tr><td><strong>Orforglipron 36&nbsp;mg (top dose)</strong></td><td><strong>~11.2%</strong></td><td>55%</td></tr>
+<tr><td>Orforglipron 12&nbsp;mg</td><td>~8.4%</td><td>40%</td></tr>
+<tr><td>Orforglipron 6&nbsp;mg</td><td>~7.5%</td><td>33%</td></tr>
+<tr><td>Placebo</td><td>~2.1%</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+<p class="src-note">ATTAIN-1 data from <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2511774" target="_blank" rel="noopener">NEJM 2025</a>. The ~11.2% figure is the primary treatment-regimen analysis; among participants who stayed on the drug, the manufacturer reported roughly 12.4% (about 27&nbsp;lbs) at the top dose. At 36&nbsp;mg, more than a third of participants lost at least 15% and nearly a fifth lost at least 20%.</p>
+
+<p>Read that honestly and two things are true at once. First, <strong>~11% average weight loss is a genuinely good result</strong> — it's clinically meaningful, it beats placebo many times over, and for someone carrying significant excess weight it can be the difference-maker for blood pressure, blood sugar, joints, and quality of life. More than half of people on the top dose hit the 10%-loss mark that doctors consider a strong response. This is not a weak drug.</p>
+
+<p>Second — and this is where honesty matters — <strong>it's not as powerful as the top injectables.</strong> The injectable tirzepatide (Zepbound) averages roughly 21% in its pivotal trial, and injectable semaglutide (Wegovy) roughly 15%. Orforglipron's ~11% sits below both. So if your goal requires the largest possible weight loss, a pill is not currently the way to get there; the injections still win on raw pounds. The orforglipron pitch isn't "most weight lost" — it's "a very good amount of weight lost, in the most convenient and accessible form yet." Which of those matters more depends entirely on you, and we'll help you decide below.</p>
+
+<div class="callout"><h3>The honest framing</h3><p>Orforglipron is the <strong>convenience-and-access</strong> play, not the <strong>maximum-potency</strong> play. ~11% average weight loss as an easy daily pill is a real win for a lot of people — especially anyone who'd otherwise take nothing because of the needle. But if you want the biggest possible result and can handle an injection, tirzepatide and semaglutide still lose more weight. Pick the lane that fits your goal and your tolerance, not the one with the loudest headline.</p></div>
+"""
+
+P3 = r"""
+<h2 id="vs-injections">Orforglipron vs the injections: the real trade-off</h2>
+
+<p>Here's the comparison that actually decides things, laid out plainly. This isn't about which drug is "best" in the abstract — it's about which trade-off fits your life.</p>
+
+<div class="prose-table">
+<table>
+<thead><tr><th>&nbsp;</th><th>Orforglipron (Foundayo)</th><th>Injectable GLP-1s (Wegovy / Zepbound)</th></tr></thead>
+<tbody>
+<tr><td><strong>Form</strong></td><td>Daily pill, any time, food/water optional</td><td>Weekly self-injection</td></tr>
+<tr><td><strong>Avg. weight loss</strong></td><td>~11% (top dose, 72 wks)</td><td>~15% (Wegovy) to ~21% (Zepbound)</td></tr>
+<tr><td><strong>Needles</strong></td><td>None</td><td>Yes (fine, short — but a real barrier for some)</td></tr>
+<tr><td><strong>Storage</strong></td><td>Ordinary pill — no refrigeration</td><td>Often needs refrigeration</td></tr>
+<tr><td><strong>Side effects</strong></td><td>Mostly GI (nausea, diarrhea, constipation)</td><td>Mostly GI (similar class profile)</td></tr>
+<tr><td><strong>Self-pay (2026 snapshot)</strong></td><td>~$149/mo (LillyDirect)</td><td>~$299–$499/mo depending on drug/dose</td></tr>
+<tr><td><strong>Best for</strong></td><td>Convenience, needle-avoidance, lower cost, access</td><td>Maximum weight loss</td></tr>
+</tbody>
+</table>
+</div>
+<p class="src-note">Weight-loss figures from each drug's pivotal trial; prices are a 2026 self-pay snapshot from manufacturer sources and change often — confirm current pricing before you commit.</p>
+
+<p>The pattern is clear: <strong>orforglipron trades some potency for a lot of convenience and a lower price.</strong> If you've been putting off a GLP-1 purely because you can't face a weekly injection — and a surprising number of people genuinely can't — then an easy daily pill that still delivers ~11% loss is vastly better than the injection you'll never start. Adherence is destiny with these drugs: the best medication is the one you'll actually take, week after week, for the long haul. For many needle-averse people, that's the pill, and the "weaker" drug they'll stick with beats the "stronger" one they'll abandon.</p>
+
+<p>On the other hand, if needles don't bother you and your priority is the biggest result — because of how much weight you're carrying, or a health target you're chasing — the injections still have a real edge on the scale, and it's not small. There's also a sensible middle path some people and prescribers consider: start where you're comfortable and switch later if needed. These drugs aren't a permanent marriage; moving between them under medical guidance is routine. The point is to match the tool to your actual priority, which our <a href="/guides/glp1-weight-loss-pill">pill-vs-injection guide</a> digs into further.</p>
+"""
+
+P4 = r"""
+<h2 id="vs-oral-sema">Orforglipron vs oral semaglutide: the two weight-loss pills</h2>
+
+<p>Orforglipron isn't the only GLP-1 pill anymore. Oral <strong>semaglutide</strong> for weight loss (a 25&nbsp;mg Wegovy tablet) arrived shortly before it. Since they're the two oral options, it's worth knowing how they differ — and the difference is mostly about <strong>how you have to take them</strong>, which is exactly the thing a pill is supposed to make easy.</p>
+
+<p>Oral semaglutide is a <strong>peptide</strong> pill, and because peptides are hard to absorb, it comes with strict rules: take it on an <strong>empty stomach</strong>, with no more than a small sip of plain water, and then <strong>wait</strong> before eating, drinking, or taking anything else. Miss the ritual and the drug doesn't absorb properly. Orforglipron, the <strong>small molecule</strong>, has <strong>no such rules</strong> — any time, with or without food or water. For a daily medication you're meant to take for years, that difference in friction is not trivial; the whole value of a pill is convenience, and orforglipron keeps more of it.</p>
+
+<p>On potency, the two oral options are in broadly similar territory — both land well below the top injectables, both are meaningful. The practical tiebreakers tend to be the dosing rules, cost, side-effect tolerance, and what a prescriber recommends for your situation, rather than a big gap in results. If the appeal of a pill is <em>convenience</em>, orforglipron's "take it whenever" edge is the most pill-like of the pills. We cover the oral landscape in general, including both options, in our dedicated <a href="/guides/glp1-weight-loss-pill">GLP-1 weight-loss pill guide</a>.</p>
+
+<h2 id="cost">What it costs</h2>
+
+<p>Cost is one of orforglipron's strongest cards. At launch, Lilly made Foundayo available through its direct-to-patient channel with self-pay pricing reported around <strong>$149 a month</strong>, and as low as roughly <strong>$25 a month</strong> for people whose commercial insurance covers it — with home delivery. That self-pay figure undercuts the branded injectables' self-pay prices (which run a few hundred dollars a month), and it reflects the manufacturing-cost advantage of a small-molecule pill we mentioned earlier.</p>
+
+<p>As always, treat these as a <strong>2026 snapshot to verify</strong>, not a permanent quote — launch pricing, coverage, and program terms shift, and insurance coverage for weight-loss drugs remains uneven (many plans still exclude anti-obesity medications regardless of form). Check the current price and your own coverage before you commit. Consumer references like <a href="https://www.goodrx.com/foundayo/what-is" target="_blank" rel="noopener">GoodRx</a> and <a href="https://www.drugs.com/foundayo.html" target="_blank" rel="noopener">Drugs.com</a> track Foundayo's current pricing and details. For the bigger picture on what GLP-1 treatment really costs across every route, see our <a href="/guides/glp1-cost-2027">GLP-1 cost guide</a>.</p>
+"""
+
+P5 = r"""
+<h2 id="side-effects">Side effects and who it's for</h2>
+
+<p>Orforglipron's side effects are <strong>what you'd expect from a GLP-1</strong>: mostly <strong>gastrointestinal</strong> — nausea, diarrhea, vomiting, constipation, indigestion — generally dose-related, worst during the first weeks and when the dose steps up, and usually easing as your body adjusts. It's the same pattern people manage on semaglutide and tirzepatide, and the same management playbook applies (slow titration, smaller meals, hydration). Our <a href="/guides/glp1-side-effects">GLP-1 side-effects guide</a> covers each one in detail. Being a pill doesn't make it side-effect-free — the drug acts on the same gut-hormone system, so the GI effects come along regardless of how it's delivered. It does, of course, remove injection-specific issues like injection-site reactions.</p>
+
+<p>As a GLP-1, orforglipron carries the <strong>class warnings and precautions</strong> you should go over with a prescriber, and it's not for everyone — which is exactly why it's a prescription drug and not a supplement. Don't let the "it's just a pill" framing lull you into treating it casually; it's a potent medication that deserves the same real medical oversight as the injections.</p>
+
+<p>So who is orforglipron actually for? Honestly:</p>
+<ul>
+<li><strong>Great fit:</strong> people who want a GLP-1 but have avoided one because of needles; people who want the lowest-friction daily routine; people drawn to the lower self-pay price; people for whom ~11% weight loss meets the goal.</li>
+<li><strong>Maybe not the best fit:</strong> people who need the <em>maximum</em> possible weight loss and are comfortable injecting — the injectables still lose more; and anyone who'd struggle to remember a <em>daily</em> medication, for whom a once-weekly shot is actually the easier habit to keep.</li>
+</ul>
+
+<p>That last point is worth sitting with: "pill" and "convenient" aren't automatically the same for everyone. A weekly injection is one decision a week; a daily pill is seven. If daily adherence is your weak spot, the weekly shot may genuinely suit you better. Match the <em>rhythm</em> to your life, not just the <em>format</em>.</p>
+
+<h2 id="what-to-do">Starting a GLP-1 the right way</h2>
+
+<p>Whichever form you lean toward, what determines your results is the same: starting on the right dose, titrating sensibly, protecting muscle with protein and strength training, and having real support when side effects hit or progress stalls. Orforglipron's arrival is great news — it widens the door to GLP-1 treatment for people who were shut out by needles or cost — but it doesn't change the fundamentals of doing this well. The program you choose matters as much as the molecule.</p>
+
+<p>If you'd rather start with a proven, supervised GLP-1 program now — whether you ultimately land on a pill or an injection — these are our current top-rated picks for legitimate, well-run care with real clinicians and honest pricing.</p>
+
+<!--TOPPICKS:embody,eden-->
+"""
+
+PF = r"""
+<h2 id="faq">Orforglipron (Foundayo): frequently asked questions</h2>
+
+<h3>Is orforglipron FDA-approved?</h3>
+<p>Yes. Orforglipron, sold as Foundayo by Eli Lilly, was FDA-approved for chronic weight management (obesity, or overweight with a weight-related health condition) in April 2026, and became available shortly after. It is the first oral small-molecule GLP-1 approved for weight loss. A separate approval for type&nbsp;2 diabetes was expected to be pursued but was not in place at the weight-loss launch.</p>
+
+<h3>How much weight do people lose on orforglipron?</h3>
+<p>In its pivotal Phase&nbsp;3 trial (ATTAIN-1), adults on the top 36&nbsp;mg dose lost an average of about 11% of their body weight at 72 weeks (roughly 12.4% among those who stayed on the drug), versus about 2% on placebo — and more than half reached at least 10% loss. That's a strong, meaningful result, though below the injectable tirzepatide (~21%) and semaglutide (~15%).</p>
+
+<h3>Is orforglipron as good as Ozempic, Wegovy, or Zepbound?</h3>
+<p>It depends what you mean by "good." On raw weight loss, no — the injectables lose more (semaglutide ~15%, tirzepatide ~21% versus orforglipron's ~11%). On convenience and access, orforglipron wins — it's a daily pill with no needles, no food or water restrictions, and a lower self-pay price. The best choice is the one whose trade-off fits your goal and whether a needle is a dealbreaker for you.</p>
+
+<h3>How do you take orforglipron?</h3>
+<p>It's a once-daily pill, taken at any time of day, with or without food or water — no special timing or empty-stomach rules. That flexibility is a key advantage over oral semaglutide, the other GLP-1 pill, which must be taken on an empty stomach with strict timing. Like all GLP-1s, orforglipron is started at a low dose and increased gradually to limit side effects.</p>
+
+<h3>How much does Foundayo cost?</h3>
+<p>At its 2026 launch, Lilly offered Foundayo through its direct-to-patient channel at a self-pay price reported around $149 a month, and as low as about $25 a month for those with commercial insurance coverage, with home delivery. That undercuts the branded injectables' self-pay prices. Pricing and coverage change often and many plans still exclude weight-loss drugs, so verify the current price and your own coverage before committing.</p>
+
+<h3>What are the side effects of orforglipron?</h3>
+<p>Mostly gastrointestinal — nausea, diarrhea, vomiting, constipation, indigestion — which are generally dose-related, worst early and during dose increases, and tend to ease over time. It's the same side-effect pattern as other GLP-1 drugs because it works on the same gut-hormone system; being a pill doesn't remove those effects (though it does avoid injection-site reactions). As a GLP-1 it also carries class warnings to review with a prescriber.</p>
+
+<div class="callout"><h3>The bottom line</h3><p>Orforglipron (Foundayo) is a real milestone: the first genuinely convenient weight-loss pill — daily, no needles, no food-or-water rules, cheaper self-pay, FDA-approved. It is <strong>not</strong> the most powerful option — the injectable tirzepatide and semaglutide still lose more weight — but ~11% average loss in an easy daily pill is a meaningful result and a big step for access, especially for anyone who'd otherwise take nothing because of the needle. Choose it for convenience, access, and cost; choose an injection for maximum weight loss; and start with a legitimate, supervised program either way.</p></div>
+
+<p class="muted"><em>This article is general information, not medical advice, and not a substitute for a licensed clinician. Orforglipron is a prescription medication with warnings and precautions; whether it's right for you is a decision for you and your prescriber. Trial figures, pricing, and coverage described here are a 2026 snapshot and change frequently — verify current details with the manufacturer, your insurer, and official sources before acting.</em></p>
+"""
+
+# Assembly (must stay last).
+ORFORGLIPRON_BODY = (P1 + P2 + P3 + P4 + P5 + PF)
