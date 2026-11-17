@@ -22,6 +22,10 @@ ARTICLE_IMAGES = {
         "alt": "Editorial illustration comparing two GLP-1 weight-loss injection medications shown as two balanced vials side by side, representing a Wegovy versus Zepbound comparison.",
         "prompt": "Two stylized medication injection vials of slightly different color standing side by side in balanced symmetry, with a subtle balance-scale motif between them suggesting a head-to-head comparison.",
     },
+    "mounjaro-vs-zepbound": {
+        "alt": "Editorial illustration of a single medication vial casting two differently labeled shadows, representing one drug (tirzepatide) sold under two brand names, Mounjaro and Zepbound.",
+        "prompt": "A single stylized medication injection vial in the center casting two distinct soft shadows that split in different directions, suggesting one drug with two identities, clean minimal composition with generous negative space.",
+    },
     "embody-vs-ro-weight-loss": {
         "alt": "Editorial illustration of two different online weight-loss program paths compared side by side, one representing a flat-price compounded model and one a membership-and-insurance model.",
         "prompt": "Two distinct winding paths of different color running in parallel from the foreground toward the horizon, each leading to a small stylized medication vial, suggesting two different online program routes being compared.",
