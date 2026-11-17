@@ -21,6 +21,7 @@ from pillar8 import WEGOVY_ZEP_BODY
 from pillar9 import EMBODY_RO_BODY
 from pillar10 import PLATEAU_BODY
 from pillar11 import MOUNJARO_ZEP_BODY
+from pillar12 import RETATRUTIDE_BODY
 from article_images import ARTICLE_IMAGES
 
 # --------------------------------------------------------------------------
@@ -1243,6 +1244,15 @@ ARTICLES = [
         "body": WEGOVY_ZEP_BODY,
     },
     {
+        "slug": "retatrutide",
+        "title": "Retatrutide: What We Actually Know (2026)",
+        "tag": "Guides",
+        "date": "2026-11-17",
+        "description": "Retatrutide, honestly: the investigational triple agonist (GLP-1 + GIP + glucagon) with the strongest weight-loss data yet — ~24.2% at 48 weeks in Phase 2. But it's NOT FDA-approved, won't be before ~late 2027, and the 'research peptide' sold online is unregulated and risky. The real science, timeline, gray-market warning, and what works now.",
+        "dek": "The strongest weight-loss results the field has produced — and a drug you cannot legitimately buy yet. Here's the real trial data, the real FDA timeline, the real danger of the gray market, and what actually works right now.",
+        "body": RETATRUTIDE_BODY,
+    },
+    {
         "slug": "mounjaro-vs-zepbound",
         "title": "Mounjaro vs Zepbound (2026): Same Drug, Different Label",
         "tag": "Comparison",
@@ -1780,6 +1790,7 @@ FOOTER_GUIDES = [
     "glp1-weight-loss-online-complete-guide",
     "wegovy-vs-zepbound",
     "mounjaro-vs-zepbound",
+    "retatrutide",
     "glp1-weight-loss-plateau",
     "embody-vs-ro-weight-loss",
     "how-much-weight-can-you-lose-glp1",
@@ -2085,6 +2096,14 @@ SOURCE_META = {
         ("Tirzepatide versus Semaglutide Once Weekly in Patients with Type 2 Diabetes (SURPASS-2 trial)", "New England Journal of Medicine, 2021 (PubMed)"),
     "https://mounjaro.lilly.com/":
         ("Mounjaro (tirzepatide) cost, savings and coverage (official)", "Eli Lilly and Company"),
+    "https://www.nejm.org/doi/full/10.1056/NEJMoa2301972":
+        ("Triple–Hormone-Receptor Agonist Retatrutide for Obesity — A Phase 2 Trial", "New England Journal of Medicine, 2023"),
+    "https://clinicaltrials.gov/study/NCT05882045":
+        ("A Study of Retatrutide (LY3437943) in Participants With Obesity (TRIUMPH-3)", "ClinicalTrials.gov, U.S. National Library of Medicine"),
+    "https://www.goodrx.com/conditions/weight-loss/retatrutide-weight-loss":
+        ("Retatrutide for weight loss: availability, status and what to know", "GoodRx"),
+    "https://www.healthline.com/health/drugs/retatrutide":
+        ("Retatrutide: risks of using it before FDA approval", "Healthline"),
 }
 
 # For the few guides that cite little or nothing inline, add topically relevant
@@ -3625,7 +3644,7 @@ def render_article(a):
                    "glp1-cost-2027", "how-much-weight-can-you-lose-glp1",
                    "glp1-side-effects", "wegovy-vs-zepbound",
                    "embody-vs-ro-weight-loss", "glp1-weight-loss-plateau",
-                   "mounjaro-vs-zepbound"}
+                   "mounjaro-vs-zepbound", "retatrutide"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
