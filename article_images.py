@@ -26,6 +26,10 @@ ARTICLE_IMAGES = {
         "alt": "Editorial illustration of a single oral medication pill-capsule beside a small stylized clock with no hands, representing a once-daily GLP-1 weight-loss pill taken any time of day, in teal and navy tones.",
         "prompt": "A single clean stylized oral capsule-pill in the foreground beside a simple minimal circular clock face with no numerals, and a soft downward curve in the background suggesting gentle weight loss, conveying an easy anytime daily pill, generous negative space.",
     },
+    "is-compounded-semaglutide-the-same-as-ozempic": {
+        "alt": "Editorial illustration of two medication vials that look alike but are subtly different — one with a verified checkmark badge, one with a question mark — representing brand Ozempic versus compounded semaglutide, in teal and navy tones.",
+        "prompt": "Two stylized medication vials side by side that look similar at a glance but are subtly different in shade and finish, one marked with a simple clean checkmark emblem and the other with a small question-mark emblem, conveying 'looks the same but is it?', minimal flat composition with generous negative space.",
+    },
     "retatrutide": {
         "alt": "Editorial illustration of a single medication vial with three distinct abstract molecular pathways converging into it, representing retatrutide's triple-hormone-receptor mechanism, in teal and navy tones.",
         "prompt": "A single stylized medication injection vial in the center with three distinct thin flowing lines of slightly different shades converging into it from three directions, each ending in a small simple node, suggesting a triple-receptor mechanism, clean minimal composition with generous negative space.",
