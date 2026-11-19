@@ -23,6 +23,7 @@ from pillar10 import PLATEAU_BODY
 from pillar11 import MOUNJARO_ZEP_BODY
 from pillar12 import RETATRUTIDE_BODY
 from pillar13 import ORFORGLIPRON_BODY
+from pillar14 import COMPOUNDED_OZEMPIC_BODY
 from article_images import ARTICLE_IMAGES
 
 # --------------------------------------------------------------------------
@@ -1245,6 +1246,15 @@ ARTICLES = [
         "body": WEGOVY_ZEP_BODY,
     },
     {
+        "slug": "is-compounded-semaglutide-the-same-as-ozempic",
+        "title": "Is Compounded Semaglutide the Same as Ozempic? (2026)",
+        "tag": "Guides",
+        "date": "2026-11-19",
+        "description": "Is compounded semaglutide the same as Ozempic? Honestly: same molecule at best, never the same product — and sometimes not even the same ingredient. The salt-form catch the FDA flags, what FDA approval actually guarantees, why 'generic Ozempic' is a myth, the 2026 legal reality, and how to tell what you're really getting.",
+        "dek": "'Same active ingredient, cheaper!' is only half the story. Here's what's actually identical, what isn't (including the salt-form catch most pages skip), and how to tell what's really in the vial.",
+        "body": COMPOUNDED_OZEMPIC_BODY,
+    },
+    {
         "slug": "orforglipron",
         "title": "Orforglipron (Foundayo): The First Convenient Weight-Loss Pill (2026)",
         "tag": "Guides",
@@ -1802,6 +1812,7 @@ FOOTER_GUIDES = [
     "mounjaro-vs-zepbound",
     "retatrutide",
     "orforglipron",
+    "is-compounded-semaglutide-the-same-as-ozempic",
     "glp1-weight-loss-plateau",
     "embody-vs-ro-weight-loss",
     "how-much-weight-can-you-lose-glp1",
@@ -3659,7 +3670,8 @@ def render_article(a):
                    "glp1-cost-2027", "how-much-weight-can-you-lose-glp1",
                    "glp1-side-effects", "wegovy-vs-zepbound",
                    "embody-vs-ro-weight-loss", "glp1-weight-loss-plateau",
-                   "mounjaro-vs-zepbound", "retatrutide", "orforglipron"}
+                   "mounjaro-vs-zepbound", "retatrutide", "orforglipron",
+                   "is-compounded-semaglutide-the-same-as-ozempic"}
     jl = [ld_article(a), ld_breadcrumb([("Home","/"),("Guides","/guides"),(a["title"], article_url(a))])]
     if a["slug"] in DRUG_GUIDES:
         jl.append(ld_drug_entities())
